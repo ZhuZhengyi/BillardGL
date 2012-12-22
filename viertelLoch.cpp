@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "viertelLoch.h"
 
+//quarter hole
 void viertelLoch(GLfloat x, GLfloat y, GLint xd, GLint yd,
 		GLfloat z1, GLfloat z2, GLfloat r1, GLfloat r2) {
 
@@ -129,6 +130,7 @@ void viertelLoch(GLfloat x, GLfloat y, GLint xd, GLint yd,
 	free(indices);
 }
 
+//quarter hole
 void viertelLoch(GLfloat x, GLfloat y, GLint xd, GLint yd,
 		GLfloat z1, GLfloat z2, GLfloat r1, GLfloat r2,
 		GLfloat xo,GLfloat yo,GLfloat m00,GLfloat m01,GLfloat m10,GLfloat m11) {

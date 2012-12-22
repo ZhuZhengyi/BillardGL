@@ -3,6 +3,6 @@ void AchtEinsetzen();
 void NeunEinsetzen();
 
 extern GLint LageVerbesserungKopffeld;
-extern class Kugel Kugel[16];
-extern GLint KugelnVersenkt[16];
-extern class Kamera Kamera;
+extern class Ball Ball[16];
+extern GLint BallsSunk[16];
+extern class Camera Camera;

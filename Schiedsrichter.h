@@ -1,23 +1,23 @@
 
-class Schiedsrichter {
+class Referee {
 	public:
-		Schiedsrichter();
+		Referee();
 		void KugelKugel(GLint,GLfloat,GLint,GLfloat);
-		void KugelBande(GLint,GLfloat,GLint);
-		void KugelLoch(GLint,GLint);
-		void NeuesSpiel(GLint);
-		void NeuerStoss();
-		void SetzeSpielerAmStoss(GLint);
+		void BallBand(GLint,GLfloat,GLint);
+		void BallHole(GLint,GLint);
+		void NewGame(GLint);
+		void NewStoke();
+		void SetPlayerToStock(GLint);
 		void SetzeFouls(GLint,GLint);
 		GLint Entscheidung();
 
-		GLint KorrekteKugelAngespielt(GLint);
-		GLint KorrekteKugelVersenkt(GLint);
-		GLint KorrekteKugelVersenktDabei(GLint[16]);
-		GLint FarbigeKugel(GLint);
-		GLint FarbigeKugelDabei(GLint[16]);
-		GLint FarbigeKugelSumme(GLint[16]);
-		GLint Summe(GLint[16]);
+		GLint CorrectBallWithPlay(GLint);
+		GLint CorrectBallSunk(GLint);
+		GLint CorrectBallSunkHere(GLint[16]);
+		GLint ColoredBall(GLint);
+		GLint ColoredBallHere(GLint[16]);
+		GLint ColoredBallSum(GLint[16]);
+		GLint Sum(GLint[16]);
 
 		GLint FrageNachSpielerAmStoss();
 		GLint FrageNachGruppenVerteilung();
@@ -26,7 +26,7 @@ class Schiedsrichter {
 
 	private:
 		GLint BandeAusserhalbKopffeldvorKugelBeruehrt;
-		GLint ErsteBeruehrteKugel;
+		GLint FirstTouchedBall ;
 		GLint ErsteBeruehrteBande;
 		GLint ErsteVersenkteKugel;
 		GLint ErsteBeruehrung;
@@ -41,9 +41,9 @@ class Schiedsrichter {
 
 		GLint SchiedsrichterEntscheidung;
 
-		GLint SpielerAmStoss;
+		GLint PlayerToStock;
 
-		GLint Begruendung;
+		GLint Substantiation;
 
 		GLint AufnahmeWechsel;
 		GLint Foul;
@@ -59,14 +59,14 @@ class Schiedsrichter {
 
 		GLint AusKopffeld;
 		GLint Eroeffnungsstoss;
-		GLint Spiel;
+		GLint Game;
 		GLint GruppenVerteilung;
 		GLint NiedrigsteKugel;
 
 };
 
-#define JA   1
-#define NEIN 0
+#define JA   1      //TRUE  YES
+#define NEIN 0      //FALSE NO
 
 #define SPIELER1 0
 #define SPIELER2 1

@@ -8,11 +8,13 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+//ball tables
+
 GLint calc_ind2(GLint b, GLint c, GLint Aufloesung) {
 	return ((c*(2*Aufloesung+3-c))/2)+b;
 }
 
-void Dreieck(GLfloat ax, GLfloat ay, GLfloat az,
+void Triangle(GLfloat ax, GLfloat ay, GLfloat az,
 		GLfloat bx, GLfloat by, GLfloat bz,
 		GLfloat cx, GLfloat cy, GLfloat cz,
 		GLint Aufloesung, GLint &iv, GLint &ii, GLint &it,
@@ -63,8 +65,9 @@ void Dreieck(GLfloat ax, GLfloat ay, GLfloat az,
 	}
 }
 
-void initialisiereKugelTabellen(GLint Aufloesung) {
-	if (Aufloesung<1) Aufloesung=1;
+void initializeBallTables(GLint Aufloesung) {
+
+    if (Aufloesung<1) Aufloesung=1;  //Display resolution
 	if (Aufloesung>29) Aufloesung=29;
 
 	/*
@@ -91,28 +94,28 @@ void initialisiereKugelTabellen(GLint Aufloesung) {
 
 			GLint iv=0,ii=0,it=0;
 
-			Dreieck(a,0,b,d,c,b,0,0,1,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//1
-			Dreieck(d,c,b,f,e,b,0,0,1,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//2
-			Dreieck(f,e,b,f,-e,b,0,0,1,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//3
-			Dreieck(f,-e,b,d,-c,b,0,0,1,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//4
-			Dreieck(d,-c,b,a,0,b,0,0,1,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//5
+            Triangle(a,0,b,d,c,b,0,0,1,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//1
+            Triangle(d,c,b,f,e,b,0,0,1,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//2
+            Triangle(f,e,b,f,-e,b,0,0,1,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//3
+            Triangle(f,-e,b,d,-c,b,0,0,1,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//4
+            Triangle(d,-c,b,a,0,b,0,0,1,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//5
 
-			Dreieck(-f,-e,-b,-f,e,-b,a,0,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//6
-			Dreieck(a,0,b,-f,e,-b,d,c,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//7
-			Dreieck(-f,e,-b,-d,c,-b,d,c,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//8
-			Dreieck(d,c,b,-d,c,-b,f,e,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//9
-			Dreieck(-d,c,-b,-a,0,-b,f,e,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//10
-			Dreieck(f,e,b,-a,0,-b,f,-e,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//11
-			Dreieck(-a,0,-b,-d,-c,-b,f,-e,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//12
-			Dreieck(f,-e,b,-d,-c,-b,d,-c,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//13
-			Dreieck(-d,-c,-b,-f,-e,-b,d,-c,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//14
-			Dreieck(d,-c,b,-f,-e,-b,a,0,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//15
+            Triangle(-f,-e,-b,-f,e,-b,a,0,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//6
+            Triangle(a,0,b,-f,e,-b,d,c,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//7
+            Triangle(-f,e,-b,-d,c,-b,d,c,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//8
+            Triangle(d,c,b,-d,c,-b,f,e,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//9
+            Triangle(-d,c,-b,-a,0,-b,f,e,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//10
+            Triangle(f,e,b,-a,0,-b,f,-e,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//11
+            Triangle(-a,0,-b,-d,-c,-b,f,-e,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//12
+            Triangle(f,-e,b,-d,-c,-b,d,-c,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//13
+            Triangle(-d,-c,-b,-f,-e,-b,d,-c,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//14
+            Triangle(d,-c,b,-f,-e,-b,a,0,b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//15
 
-			Dreieck(-f,e,-b,0,0,-1,-d,c,-b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//16
-			Dreieck(-d,c,-b,0,0,-1,-a,0,-b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//17
-			Dreieck(-a,0,-b,0,0,-1,-d,-c,-b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//18
-			Dreieck(-d,-c,-b,0,0,-1,-f,-e,-b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//19
-			Dreieck(-f,-e,-b,0,0,-1,-f,e,-b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//20
+            Triangle(-f,e,-b,0,0,-1,-d,c,-b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//16
+            Triangle(-d,c,-b,0,0,-1,-a,0,-b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//17
+            Triangle(-a,0,-b,0,0,-1,-d,-c,-b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//18
+            Triangle(-d,-c,-b,0,0,-1,-f,-e,-b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//19
+            Triangle(-f,-e,-b,0,0,-1,-f,e,-b,A,iv,ii,it,ball_vertices[A],ball_indices[A],ball_texcoord[A]);//20
 
 			GLint gespart=0;
 

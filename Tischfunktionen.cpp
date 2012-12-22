@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "Tischfunktionen.h"
 
+//Table surface
 void Tischflaeche() {
 	GLint xteile=16;     // Anzahl muss gerade sein
 	GLint yteile=8;     // Anzahl muss gerade sein; 
@@ -60,6 +61,7 @@ void Tischflaeche() {
 	free(indices);
 }
 
+//Table face Texture
 void TischflaechemitTextur() {
 	GLint xteile=16;     // Anzahl muss gerade sein
 	GLint yteile=8;     // Anzahl muss gerade sein; 
@@ -127,6 +129,7 @@ void TischflaechemitTextur() {
 }
 
 
+//Center hole panel
 void MittelLochVerkleidung() {
 	GLfloat mat_ambient[]={0,0,0,1};
 	GLfloat mat_diffuse[]={.6,.45,0,1};
@@ -487,6 +490,7 @@ void MittelLochVerkleidung() {
 
 }
 
+//Loch Eck panel
 void EckLochVerkleidung() {
 
 	GLfloat vertices[]={0,-9,5,
@@ -671,6 +675,7 @@ void EckLochVerkleidung() {
 	glDisableClientState(GL_NORMAL_ARRAY);
 }
 
+//Center hole inner panel
 void MittelLochInnenverkleidung() {
 
 	GLfloat vertices[]={6.5,68.5,5,
@@ -887,8 +892,8 @@ void EckLochInnenverkleidung() {
 
 }
 
-
-void Holzbande(GLfloat Breite, GLint Unterteilungen, GLfloat TexFaktorX, GLfloat TexFaktorY) {
+//木边
+void WoodBand(GLfloat Breite, GLint Unterteilungen, GLfloat TexFaktorX, GLfloat TexFaktorY) {
 
 	GLfloat mat_diffuse[]={1.0,1.0,1.0,1.0};
 	GLfloat mat_specular[]={1.0,1.0,1.0,1.0};
@@ -1007,7 +1012,7 @@ void Holzbande(GLfloat Breite, GLint Unterteilungen, GLfloat TexFaktorX, GLfloat
 	free(texcoord);
 }
 
-void HolzbandeOT(GLfloat Breite, GLint Unterteilungen) {
+void WoodBandOT(GLfloat Breite, GLint Unterteilungen) {
 
 	GLfloat mat_diffuse[]={.45,.19,.03,1.0};
 	GLfloat mat_specular[]={1.0,1.0,1.0,1.0};
@@ -1354,7 +1359,7 @@ void Banden(GLint richtung, GLint Multiply){
 	free(indices);
 }
 
-
+//Center hole edge
 void MittelLochRand() {
 
 	GLfloat vertices[]={6.3,70.8,4.8,
@@ -1508,6 +1513,7 @@ void MittelLochRand() {
 
 }
 
+//Eck hole edge
 void EckLochRand() {
 
 	GLfloat vertices[]={2.5,-5.9,4.8,
@@ -1647,6 +1653,8 @@ void EckLochRand() {
 
 }
 
+
+//diamond
 void Diamant(GLfloat x, GLfloat y, GLfloat z) {
 	glBegin(GL_QUADS);
 	glNormal3f(0,0,1);

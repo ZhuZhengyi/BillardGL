@@ -4,15 +4,15 @@
  **
  ****************************************************************************/  
 
-class Anzeige {
+class Display {
 	public:
-		Anzeige();
+		Display();
 		void Initialisiere();
-		void male();
-		void setzeStossStaerke(GLfloat);
+        void draw();
+		void setShockStaerke(GLfloat);
 	private:
 		//GLint AusschlagIndex;
-		GLfloat StossStaerke;
+		GLfloat ShockStaerke;
 };
 
 

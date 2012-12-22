@@ -6,24 +6,24 @@
 
 #include <GL/glut.h>
 
-class Kugel {
+class Ball {
 	public:
-		Kugel();
-		void male(GLint);
-		void maleSchatten();
-		void neuePosition(GLfloat[]);  
-		void neuePosition(GLfloat,GLfloat);  
-		void neuePosition(GLfloat,GLfloat,GLfloat);  
-		void neuePositionCM(GLfloat[]);
-		void neuePositionCM(GLfloat,GLfloat);
-		void neuePositionCM(GLfloat,GLfloat,GLfloat);
-		void neuePositionD(GLfloat[]);
-		void neuePositionD(GLfloat,GLfloat);
-		void neuePositionD(GLfloat,GLfloat,GLfloat);
-		void neuePositionINCH(GLfloat[]);
-		void neuePositionINCH(GLfloat,GLfloat);
-		void neuePositionINCH(GLfloat,GLfloat,GLfloat);
-		void ausblenden();
+		Ball();
+		void draw(GLint);
+		void drawShadow();
+		void newPosition(GLfloat[]);  
+		void newPosition(GLfloat,GLfloat);  
+		void newPosition(GLfloat,GLfloat,GLfloat);  
+		void newPositionCM(GLfloat[]);
+		void newPositionCM(GLfloat,GLfloat);
+		void newPositionCM(GLfloat,GLfloat,GLfloat);
+		void newPositionD(GLfloat[]);
+		void newPositionD(GLfloat,GLfloat);
+		void newPositionD(GLfloat,GLfloat,GLfloat);
+		void newPositionINCH(GLfloat[]);
+		void newPositionINCH(GLfloat,GLfloat);
+		void newPositionINCH(GLfloat,GLfloat,GLfloat);
+		void disappear();
 		void Initialisiere(GLint,GLint,GLint,GLint);
 		GLfloat Pos_x();
 		GLfloat Pos_y();
@@ -33,21 +33,21 @@ class Kugel {
 		GLfloat Pos_yCM();
 	private:
 		GLfloat Position[3];
-		GLint Nummer;
+		GLint Number;
 		GLint sphereIndex[30]; 
 		GLint sphereIndexStatisch[30]; 
-		GLint schattenIndex;
-		GLint schattenIndexStatisch;
+		GLint shadowIndex;
+		GLint shadowIndexStatic;
 		GLint schatten2Index;
-		GLint Schatten;
+		GLint Shadow;
 		GLint InAnimation;
-		GLint StatischExistiert[30];
-		GLint StatischExistiertSchatten;
+		GLint StaticExists[30];
+		GLint StaticExistShadow;
 		GLfloat DrehMatrix[16];
-		GLfloat Schatten1_x,Schatten1_y,Schatten1_scale,Schatten1_winkel;
-		GLfloat Schatten2_x,Schatten2_y,Schatten2_scale,Schatten2_winkel;
-		GLfloat Schatten3_x,Schatten3_y,Schatten3_scale,Schatten3_winkel;
-		GLfloat AlteTexturgroesse;
+		GLfloat Shadow1_x,Shadow1_y,Shadow1_scale,Shadow1_angle;
+		GLfloat Shadow2_x,Shadow2_y,Shadow2_scale,Shadow2_angle;
+		GLfloat Shadow3_x,Shadow3_y,Shadow3_scale,Shadow3_angle;
+		GLfloat OldTextureSize;
 
 		GLuint Texturen[9];
 };

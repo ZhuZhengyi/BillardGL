@@ -1,1 +1,1 @@
-void SchattenKreis(GLint, GLfloat, GLfloat, GLfloat, GLfloat);
+void ShadowCircle(GLint, GLfloat, GLfloat, GLfloat, GLfloat);

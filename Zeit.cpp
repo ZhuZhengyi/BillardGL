@@ -7,6 +7,6 @@
 #include <GL/glut.h>
 #include "Zeit.h"
 
-GLint Zeit() {
+GLint ElapsedTime() {
 	return glutGet(GLUT_ELAPSED_TIME)/10;
 }

@@ -13,41 +13,41 @@ GLfloat random(GLfloat Epsilon) {
 	return (Epsilon*(((rand()*2.0)/RAND_MAX)-1));
 }
 
-void SpielfeldAufbau() {
-	if (StateMaschin==BETRACHTEN||
-			StateMaschin==START||
-			StateMaschin==WEISSNEU||
-			StateMaschin==SCHIEDSRICHTER) {
+void BoardLayout() {
+	if (StateMachine==BETRACHTEN||
+			StateMachine==START||
+			StateMachine==WEISSNEU||
+			StateMachine==SCHIEDSRICHTER) {
 
 		//Anfangsstoss=1;
 		//WeisseVersetzbar=1;
 
-		LageVerbesserungKopffeld=1;
+        LageVerbesserungKopffeld=1;     //Situation improving header
 
 		GLfloat r=5.715;
 		GLfloat a=r+3*Epsilon;
 		GLfloat asw3=a*sqrt(3)/6;
 
-		srand(Zeit());
+		srand(ElapsedTime());
 
 		//Anzeige.AlleKugelnAusblenden();
 
 		for (int i=0;i<16;i++) {
-			KugelnImSpiel[i]=0;
-			KugelnVersenkt[i]=0;
+			BallsInGame[i]=0;
+			BallsSunk[i]=0;
 		}
 
 
 		switch (Spiel) {        // Was f"ur ein Spiel?
 
 			case 2: {               // Nur zwei Kugeln
-						Kugel[0].neuePositionCM(0.0,0.0);
-						Kugel[1].neuePositionCM(20.0,0.0);
+						Ball[0].newPositionCM(0.0,0.0);
+						Ball[1].newPositionCM(20.0,0.0);
 						for (int i=0;i<2;i++) {
-							KugelnImSpiel[i]=1;
+							BallsInGame[i]=1;
 						}
 						for (int j=2;j<16;j++) {
-							Kugel[j].ausblenden();
+							Ball[j].disappear();
 						}
 						break;
 					}
@@ -80,26 +80,26 @@ void SpielfeldAufbau() {
 							}
 						} while ((nummer[1]<8)&&(nummer[15]<8)||(nummer[1]>8)&&(nummer[15]>8));
 
-						Kugel[nummer[0]].neuePositionCM(-63.5,0.0);
-						Kugel[nummer[1]].neuePositionCM(63.5+12*asw3+random(Epsilon),-2.0*a+random(Epsilon));
-						Kugel[nummer[2]].neuePositionCM(63.5+9*asw3+random(Epsilon),-1.5*a+random(Epsilon));
-						Kugel[nummer[3]].neuePositionCM(63.5+6*asw3+random(Epsilon),-1.0*a+random(Epsilon));
-						Kugel[nummer[4]].neuePositionCM(63.5+3*asw3+random(Epsilon),-0.5*a+random(Epsilon));
-						Kugel[nummer[5]].neuePositionCM(63.5+0*asw3+random(Epsilon),0.0+random(Epsilon));
-						Kugel[nummer[6]].neuePositionCM(63.5+12*asw3+random(Epsilon),-1.0*a+random(Epsilon));
-						Kugel[nummer[7]].neuePositionCM(63.5+9*asw3+random(Epsilon),-0.5*a+random(Epsilon));
-						Kugel[nummer[8]].neuePositionCM(63.5+6*asw3+random(Epsilon),0.0+random(Epsilon));
-						Kugel[nummer[9]].neuePositionCM(63.5+3*asw3+random(Epsilon),0.5*a+random(Epsilon));
-						Kugel[nummer[10]].neuePositionCM(63.5+12*asw3+random(Epsilon),0.0+random(Epsilon));
-						Kugel[nummer[11]].neuePositionCM(63.5+9*asw3+random(Epsilon),0.5*a+random(Epsilon));
-						Kugel[nummer[12]].neuePositionCM(63.5+6*asw3+random(Epsilon),1.0*a+random(Epsilon));
-						Kugel[nummer[13]].neuePositionCM(63.5+12*asw3+random(Epsilon),1.0*a+random(Epsilon));
-						Kugel[nummer[14]].neuePositionCM(63.5+9*asw3+random(Epsilon),1.5*a+random(Epsilon));
-						Kugel[nummer[15]].neuePositionCM(63.5+12*asw3+random(Epsilon),2.0*a+random(Epsilon));
+						Ball[nummer[0]].newPositionCM(-63.5,0.0);
+						Ball[nummer[1]].newPositionCM(63.5+12*asw3+random(Epsilon),-2.0*a+random(Epsilon));
+						Ball[nummer[2]].newPositionCM(63.5+9*asw3+random(Epsilon),-1.5*a+random(Epsilon));
+						Ball[nummer[3]].newPositionCM(63.5+6*asw3+random(Epsilon),-1.0*a+random(Epsilon));
+						Ball[nummer[4]].newPositionCM(63.5+3*asw3+random(Epsilon),-0.5*a+random(Epsilon));
+						Ball[nummer[5]].newPositionCM(63.5+0*asw3+random(Epsilon),0.0+random(Epsilon));
+						Ball[nummer[6]].newPositionCM(63.5+12*asw3+random(Epsilon),-1.0*a+random(Epsilon));
+						Ball[nummer[7]].newPositionCM(63.5+9*asw3+random(Epsilon),-0.5*a+random(Epsilon));
+						Ball[nummer[8]].newPositionCM(63.5+6*asw3+random(Epsilon),0.0+random(Epsilon));
+						Ball[nummer[9]].newPositionCM(63.5+3*asw3+random(Epsilon),0.5*a+random(Epsilon));
+						Ball[nummer[10]].newPositionCM(63.5+12*asw3+random(Epsilon),0.0+random(Epsilon));
+						Ball[nummer[11]].newPositionCM(63.5+9*asw3+random(Epsilon),0.5*a+random(Epsilon));
+						Ball[nummer[12]].newPositionCM(63.5+6*asw3+random(Epsilon),1.0*a+random(Epsilon));
+						Ball[nummer[13]].newPositionCM(63.5+12*asw3+random(Epsilon),1.0*a+random(Epsilon));
+						Ball[nummer[14]].newPositionCM(63.5+9*asw3+random(Epsilon),1.5*a+random(Epsilon));
+						Ball[nummer[15]].newPositionCM(63.5+12*asw3+random(Epsilon),2.0*a+random(Epsilon));
 
 						{
 							for (int i=0;i<=15;i++) {
-								KugelnImSpiel[i]=1;
+								BallsInGame[i]=1;
 							}
 						}
 
@@ -113,7 +113,7 @@ void SpielfeldAufbau() {
 
 						{
 							for (int i=0;i<10;i++) {
-								KugelnImSpiel[i]=1;
+								BallsInGame[i]=1;
 								nummer[i]=0;
 								plaziert[i]=0;
 							}
@@ -135,20 +135,20 @@ void SpielfeldAufbau() {
 							}
 						}
 
-						Kugel[nummer[0]].neuePositionCM(-63.5,0.0);
-						Kugel[nummer[1]].neuePositionCM(63.5+6*asw3+random(Epsilon),-1.0*a+random(Epsilon));
-						Kugel[nummer[2]].neuePositionCM(63.5+3*asw3+random(Epsilon),-0.5*a+random(Epsilon));
-						Kugel[nummer[3]].neuePositionCM(63.5+0*asw3+random(Epsilon),0.0+random(Epsilon));
-						Kugel[nummer[4]].neuePositionCM(63.5+3*asw3+random(Epsilon),0.5*a+random(Epsilon));
-						Kugel[nummer[5]].neuePositionCM(63.5+6*asw3+random(Epsilon),1.0*a+random(Epsilon));
-						Kugel[nummer[6]].neuePositionCM(63.5+9*asw3+random(Epsilon),0.5*a+random(Epsilon));
-						Kugel[nummer[7]].neuePositionCM(63.5+12*asw3+random(Epsilon),0.0+random(Epsilon));
-						Kugel[nummer[8]].neuePositionCM(63.5+9*asw3+random(Epsilon),-0.5*a+random(Epsilon));
-						Kugel[nummer[9]].neuePositionCM(63.5+6*asw3+random(Epsilon),0.0+random(Epsilon));
+						Ball[nummer[0]].newPositionCM(-63.5,0.0);
+						Ball[nummer[1]].newPositionCM(63.5+6*asw3+random(Epsilon),-1.0*a+random(Epsilon));
+						Ball[nummer[2]].newPositionCM(63.5+3*asw3+random(Epsilon),-0.5*a+random(Epsilon));
+						Ball[nummer[3]].newPositionCM(63.5+0*asw3+random(Epsilon),0.0+random(Epsilon));
+						Ball[nummer[4]].newPositionCM(63.5+3*asw3+random(Epsilon),0.5*a+random(Epsilon));
+						Ball[nummer[5]].newPositionCM(63.5+6*asw3+random(Epsilon),1.0*a+random(Epsilon));
+						Ball[nummer[6]].newPositionCM(63.5+9*asw3+random(Epsilon),0.5*a+random(Epsilon));
+						Ball[nummer[7]].newPositionCM(63.5+12*asw3+random(Epsilon),0.0+random(Epsilon));
+						Ball[nummer[8]].newPositionCM(63.5+9*asw3+random(Epsilon),-0.5*a+random(Epsilon));
+						Ball[nummer[9]].newPositionCM(63.5+6*asw3+random(Epsilon),0.0+random(Epsilon));
 
 						{
 							for (int i=10;i<16;i++) {
-								Kugel[i].ausblenden();
+								Ball[i].disappear();
 							}
 						}
 						break;
@@ -157,7 +157,7 @@ void SpielfeldAufbau() {
 			case 7: {               // Zufalls-Belegung
 						{
 							for (int i=0;i<=15;i++) {
-								KugelnImSpiel[i]=1;
+								BallsInGame[i]=1;
 							}
 						}
 						{
@@ -168,13 +168,13 @@ void SpielfeldAufbau() {
 									x=118*((((rand()+0.0)/RAND_MAX)*2)-1);
 									y= 59*((((rand()+0.0)/RAND_MAX)*2)-1);
 									for (int j=0;j<i;j++) {
-										GLfloat dx=x-Kugel[j].Pos_xCM();
-										GLfloat dy=y-Kugel[j].Pos_yCM();
+										GLfloat dx=x-Ball[j].Pos_xCM();
+										GLfloat dy=y-Ball[j].Pos_yCM();
 										GLfloat Abstand=sqrt(dx*dx+dy*dy);
 										if (Abstand<min) {min=Abstand;}
 									}
 								} while (min<7);
-								Kugel[i].neuePositionCM(x,y);
+								Ball[i].newPositionCM(x,y);
 							}
 							break;
 						}
@@ -183,7 +183,7 @@ void SpielfeldAufbau() {
 			case 0: {               // Keine Kugeln
 						{
 							for (int i=0;i<16;i++) {
-								Kugel[i].ausblenden();
+								Ball[i].disappear();
 							}
 						}
 						break;
@@ -192,6 +192,6 @@ void SpielfeldAufbau() {
 		}
 	}
 
-	Menu.NeuerMenuZustand();
+    Menu.NewMenuState();
 
 }

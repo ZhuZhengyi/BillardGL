@@ -6,18 +6,18 @@
 
 #include <GL/glut.h>
 
-class Tisch {
+class Table {
 	public:
-		Tisch();
+		Table();
 		void Initialisiere(GLint);
-		void maleFlaeche();
+		void maleArea();
 		void maleBanden();
 		void maleLinien();
 	private:
-		GLint TischFlaecheIndex;
+		GLint TableAreaIndex;
 		GLint BandenIndex;
-		GLint LinienIndex;
-		GLuint TischFlaechenTextur;
+		GLint LinesIndex;
+		GLuint TableAreaTexture;
 		GLuint HolzBandenTextur;
 };
 

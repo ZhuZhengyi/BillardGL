@@ -51,14 +51,14 @@ void Menu::Update(GLint Faktor) {
 		return;
 	} else {
 
-		Animationszeit+=Faktor;
-		if (Animationszeit>=ANIMATIONSDAUER) {
-			Animationszeit=ANIMATIONSDAUER;
+        AnimationsTime+=Faktor;
+        if (AnimationsTime>=ANIMATIONSDAUER) {
+            AnimationsTime=ANIMATIONSDAUER;
 			InAnimation=0;
 		}
 
 		for (GLint SchildNr=0;SchildNr<SchildAnzahl;SchildNr++) {
-			SchildArray[SchildNr]->Animiere(Faktor);
+            SchildArray[SchildNr]->Animate(Faktor);
 		}
 
 		for (GLint TextfeldNr=0;TextfeldNr<1000;TextfeldNr++) {
@@ -69,16 +69,17 @@ void Menu::Update(GLint Faktor) {
 	}
 }
 
-void Menu::male() {
+void Menu::draw()
+{
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+    glMatrixMode(GL_PROJECTION);        // 选择投影矩阵
+    glLoadIdentity();                   // 重置投影矩阵
 	gluOrtho2D(0.0,16.0,0.0,12.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	for (GLint SchildNr=0;SchildNr<SchildAnzahl;SchildNr++) {
-		SchildArray[SchildNr]->male();
+        SchildArray[SchildNr]->draw();
 	}
 
 	for (GLint TextfeldNr=0;TextfeldNr<1000;TextfeldNr++) {
@@ -88,7 +89,8 @@ void Menu::male() {
 
 }
 
-void Menu::ladeSprache(GLint Sprache) {
+void Menu::LoadLanguage(GLint Sprache)
+{
 	char wort[2000];
 	char temp[2000];
 	int index;
@@ -138,7 +140,8 @@ void Menu::ladeSprache(GLint Sprache) {
 	}
 }
 
-void Menu::Initialisiere(GLint Texturgroesse) {
+void Menu::Initialisiere(GLint Texturgroesse)
+{
 
 	if (!TDL) { 
 		TDL=dummyTextfeld.dummyInitialisiere(Texturgroesse);
@@ -146,11 +149,11 @@ void Menu::Initialisiere(GLint Texturgroesse) {
 	}
 
 	//printf(" Loading languages\n");
-	ladeSprache(900); //Deutsch zuerst
-	ladeSprache(901); //drueber Englisch als default
-	ladeSprache(999); //Sprachenuebersicht
+    LoadLanguage(900); //Deutsch zuerst
+    LoadLanguage(901); //drueber Englisch als default
+    LoadLanguage(999); //Sprachenuebersicht
 
-	if (Sprache) ladeSprache(Sprache);
+    if (Language) LoadLanguage(Language);
 
 	//Tutorial-Texta auf Breite 31.2 
 	for (GLint tf=640 ; tf < 700 ; tf++ ) {
@@ -168,15 +171,15 @@ void Menu::Initialisiere(GLint Texturgroesse) {
 
 	for (GLint dl=0 ; dl < 1000 ; dl++ ) {
 		if (!TextfeldArray[dl]) continue;
-		TextfeldArray[dl]->GeneriereDisplayList();
+        TextfeldArray[dl]->GenerateDisplayList();
 		//printf("."); fflush(stdout);
 	}
 
 	//printf("\n\n");
 
-	TextfeldArray[T_SPIELER1NAME]->SetzeText(Spieler1);
+	TextfeldArray[T_SPIELER1NAME]->SetzeText(Player1);
 
-	TextfeldArray[T_SPIELER2NAME]->SetzeText(Spieler2);
+	TextfeldArray[T_SPIELER2NAME]->SetzeText(Player2);
 
 	if (TextfeldArray[T_FPS]) 
 		TextfeldArray[T_FPS]->SetzeText("0 fps");
@@ -187,8 +190,8 @@ void Menu::Initialisiere(GLint Texturgroesse) {
 
 	SchildAnzahl=0;
 
-	menuhintergrund.Initialisiere();
-	SchildArray[SchildAnzahl++]=&menuhintergrund;
+    MenuBackground.Initialisiere();
+    SchildArray[SchildAnzahl++]=&MenuBackground;
 
 	logo.InitialisiereLogo();
 	SchildArray[SchildAnzahl++]=&logo;
@@ -235,16 +238,16 @@ void Menu::Initialisiere(GLint Texturgroesse) {
 	//SchildArray[SchildAnzahl++]=&GameStar;
 
 
-	if (!MenuZustand) {MenuZustand=STARTBILDSCHIRM;}
+    if (!MenuState) {MenuState=STARTBILDSCHIRM;}
 
-	NeuerMenuZustand();
+    NewMenuState();
 	StarteAnimation();
 
 	MenuGesperrt=0;
 
 }
 
-GLint Menu::Maustaste(int Taste,int Richtung,int x,int y){
+GLint Menu::MouseClick(int Taste,int Richtung,int x,int y){
 
 	StarteAnimation();
 
@@ -253,28 +256,28 @@ GLint Menu::Maustaste(int Taste,int Richtung,int x,int y){
 	GLint TextfeldNr=0;
 
 	while (!Signal && SchildNr<SchildAnzahl) {
-		Signal=SchildArray[SchildNr++]->Maustaste(Taste,Richtung,x,y);
+        Signal=SchildArray[SchildNr++]->MouseButton(Taste,Richtung,x,y);
 	}
 
 	for (TextfeldNr=0 ; TextfeldNr<1000; TextfeldNr++) {
 		if (Signal) break;
 		if (TextfeldArray[TextfeldNr]) 
-			Signal=TextfeldArray[TextfeldNr]->Maustaste(Taste,Richtung,x,y);
+            Signal=TextfeldArray[TextfeldNr]->MouseButton(Taste,Richtung,x,y);
 	}
 
 	if (Signal>0) {
-		SignalAusfuehrung(Signal);
+        SignalExecution(Signal);
 	}
 
-	if (MenuZustand==STARTBILDSCHIRM &&
+    if (MenuState==STARTBILDSCHIRM &&
 			Richtung==GLUT_UP) {
-		if (Sprache) SetzeMenuZustand(HAUPTMENU);
-		else SetzeMenuZustand(SPRACHAUSWAHL);
+        if (Language) setMenuState(HAUPTMENU);
+        else setMenuState(SPRACHAUSWAHL);
 		return 1;
 	}
 
 	if (MenuGesperrt || 
-			MenuZustand!=SPIEL) {
+            MenuState!=SPIEL) {
 		return 1;
 	}
 
@@ -283,15 +286,15 @@ GLint Menu::Maustaste(int Taste,int Richtung,int x,int y){
 
 void Menu::StarteAnimation() {
 	InAnimation=1;
-	Animationszeit=0;
+    AnimationsTime=0;
 }
 
-void Menu::SetzeMenuZustand(GLint NeuerZustand) {
-	MenuZustand=NeuerZustand;
-	NeuerMenuZustand();
+void Menu::setMenuState(GLint NeuerZustand) {
+    MenuState=NeuerZustand;
+    NewMenuState();
 }
 
-void Menu::NeuerMenuZustand(){
+void Menu::NewMenuState(){
 
 	for (GLint SchildNr=0;SchildNr<SchildAnzahl;SchildNr++) {
 		SchildArray[SchildNr]->Desaktiviere();
@@ -302,9 +305,9 @@ void Menu::NeuerMenuZustand(){
 			TextfeldArray[TextfeldNr]->Desaktiviere();
 	}
 
-	if (ZeigeFPS) TextfeldArray[T_FPS]->Positioniere(0,11.7,.3,A_LINKS);
+	if (ShowFPS) TextfeldArray[T_FPS]->Positioniere(0,11.7,.3,A_LINKS);
 
-	switch (MenuZustand) {
+    switch (MenuState) {
 
 		case STARTBILDSCHIRM: {
 
@@ -329,8 +332,8 @@ void Menu::NeuerMenuZustand(){
 
 		case SPRACHAUSWAHL: {
 
-								menuhintergrund.Positioniere(2,2.5,14,8.5);
-								logo.Positioniere(5,9,11,11);
+                                MenuBackground.Positioning(2,2.5,14,8.5);
+                                logo.Positioning(5,9,11,11);
 								logo.VollSichtbar();
 
 								TextfeldArray[T_SPRACHAUSWAHL]->Positioniere(8,8,1,A_MITTE);
@@ -344,7 +347,7 @@ void Menu::NeuerMenuZustand(){
 									}
 								}
 
-								if (Sprache) {
+                                if (Language) {
 									TextfeldArray[T_ZURUECK]->Positioniere(8,1,1,A_MITTE);
 									TextfeldArray[T_ZURUECK]->SetzeSignal(S_HM_EINSTELLUNGEN);
 								}
@@ -354,11 +357,11 @@ void Menu::NeuerMenuZustand(){
 
 		case HAUPTMENU: {
 
-							menuhintergrund.Positioniere(2,2.5,14,8.5);
+                            MenuBackground.Positioning(2,2.5,14,8.5);
 
-							logo.Positioniere(5,9,11,11);
+                            logo.Positioning(5,9,11,11);
 							logo.VollSichtbar();
-							logo.SetzeSignal(S_LOGO);
+                            logo.SetSignal(S_LOGO);
 
 							TextfeldArray[T_HAUPTMENU]->Positioniere(8,8,1,A_MITTE);
 							TextfeldArray[T_HAUPTMENU]->VollSichtbar();
@@ -384,9 +387,9 @@ void Menu::NeuerMenuZustand(){
 
 		case TRAINING: {
 
-						   menuhintergrund.Positioniere(4,5,12,8.5);
+                           MenuBackground.Positioning(4,5,12,8.5);
 
-						   logo.Positioniere(4,9,12,11);
+                           logo.Positioning(4,9,12,11);
 						   logo.VollSichtbar();
 
 						   TextfeldArray[T_TRAINING]->Positioniere(8,8,1,A_MITTE);
@@ -406,8 +409,8 @@ void Menu::NeuerMenuZustand(){
 					   } break;
 
 		case ZWEISPIELER: {
-							  menuhintergrund.Positioniere(3,2.5,13,8.5);
-							  logo.Positioniere(4,9,12,11);
+                              MenuBackground.Positioning(3,2.5,13,8.5);
+                              logo.Positioning(4,9,12,11);
 							  logo.VollSichtbar();
 							  TextfeldArray[T_ZWEISPIELER]->Positioniere(8,8,1,A_MITTE);
 							  TextfeldArray[T_ZWEISPIELER]->VollSichtbar();
@@ -431,8 +434,8 @@ void Menu::NeuerMenuZustand(){
 						  } break;
 
 		case EINSTELLUNGEN: {
-								menuhintergrund.Positioniere(4,2.5,12,8.5);
-								logo.Positioniere(4,9,12,11);
+                                MenuBackground.Positioning(4,2.5,12,8.5);
+                                logo.Positioning(4,9,12,11);
 								logo.VollSichtbar();
 								TextfeldArray[T_EINSTELLUNGEN]->Positioniere(8,8,1,A_MITTE);
 								TextfeldArray[T_EINSTELLUNGEN]->VollSichtbar();
@@ -456,8 +459,8 @@ void Menu::NeuerMenuZustand(){
 							} break;
 
 		case EINSTELLUNGENSTEUERUNG: {
-										 menuhintergrund.Positioniere(2,3.5,14,8.5);
-										 logo.Positioniere(4,9,12,11);
+                                         MenuBackground.Positioning(2,3.5,14,8.5);
+                                         logo.Positioning(4,9,12,11);
 										 logo.VollSichtbar();
 										 TextfeldArray[T_EINSTELLUNGEN]->Positioniere(4,8,1,A_LINKS);
 										 TextfeldArray[T_EINSTELLUNGEN]->VollSichtbar();
@@ -572,8 +575,8 @@ void Menu::NeuerMenuZustand(){
 											  E_GrueneLampe==1) {Qualitaet=5;}
 									  else Qualitaet=0;
 
-									  menuhintergrund.Positioniere(2,1.7,14,8.5);
-									  logo.Positioniere(4,9,12,11);
+                                      MenuBackground.Positioning(2,1.7,14,8.5);
+                                      logo.Positioning(4,9,12,11);
 									  logo.VollSichtbar();
 									  TextfeldArray[T_EINSTELLUNGEN]->Positioniere(4,8,1,A_LINKS);
 									  TextfeldArray[T_EINSTELLUNGEN]->VollSichtbar();
@@ -830,18 +833,18 @@ void Menu::NeuerMenuZustand(){
 												   }break;
 									  }
 
-									  if( E_Texturgroesse==Texturgroesse &&
-											  E_AnzeigeTexturgroesse==AnzeigeTexturgroesse &&
-											  E_TischTexturgroesse==TischTexturgroesse &&
-											  E_KugelAufloesung==KugelAufloesung &&
-											  E_BildschirmAufloesung==BildschirmAufloesung &&
-											  E_Farbtiefe==Farbtiefe &&
-											  E_Reflektionen==Reflektionen &&
-											  E_Schatten==Schatten &&
-											  E_AmbientesLicht==AmbientesLicht &&
-											  E_TischLampen==TischLampen &&
+									  if( E_Texturgroesse==TextureSize &&
+											  E_AnzeigeTexturgroesse==DisplayTextureSize &&
+											  E_TischTexturgroesse==TableTextureSize &&
+											  E_KugelAufloesung==BallResolution &&
+											  E_BildschirmAufloesung==ScreenResolution &&
+											  E_Farbtiefe==ColorDepth &&
+											  E_Reflektionen==Reflections &&
+											  E_Schatten==Shadow &&
+											  E_AmbientesLicht==AmbientLighting &&
+											  E_TischLampen==TableLamps &&
 											  E_TexMMM==TexMMM &&
-											  E_GrueneLampe==GrueneLampe) {
+											  E_GrueneLampe==GrueneLamp) {
 										  TextfeldArray[T_ZURUECK]->Positioniere(8,.7,1,A_MITTE);
 										  TextfeldArray[T_ZURUECK]->SetzeSignal(S_EI_GRAFIKZURUECK);
 									  } else {
@@ -855,8 +858,8 @@ void Menu::NeuerMenuZustand(){
 								  } break;
 
 		case EINSTELLUNGENGRAFIKHINWEIS: {
-											 menuhintergrund.Positioniere(2,3.5,14,8.5);
-											 logo.Positioniere(4,9,12,11);
+                                             MenuBackground.Positioning(2,3.5,14,8.5);
+                                             logo.Positioning(4,9,12,11);
 											 logo.VollSichtbar();
 											 TextfeldArray[T_HINWEIS]->Positioniere(8,8,1,A_MITTE);
 											 TextfeldArray[T_HINWEIS]->VollSichtbar();
@@ -872,8 +875,8 @@ void Menu::NeuerMenuZustand(){
 										 } break;
 
 		case HILFE: {
-						menuhintergrund.Positioniere(4.5,3.5,11.5,8.5);
-						logo.Positioniere(4,9,12,11);
+                        MenuBackground.Positioning(4.5,3.5,11.5,8.5);
+                        logo.Positioning(4,9,12,11);
 						logo.VollSichtbar();
 						TextfeldArray[T_HILFE]->Positioniere(8,8,1,A_MITTE);
 						TextfeldArray[T_HILFE]->VollSichtbar();
@@ -900,8 +903,8 @@ void Menu::NeuerMenuZustand(){
 					} break;
 
 		case HILFETASTENBELEGUNGEN: {
-										menuhintergrund.Positioniere(.5,1,15.5,10.5);
-										logo.Positioniere(0,11,4,12);
+                                        MenuBackground.Positioning(.5,1,15.5,10.5);
+                                        logo.Positioning(0,11,4,12);
 										logo.VollSichtbar();
 										TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
 										TextfeldArray[T_HILFE]->VollSichtbar();
@@ -938,8 +941,8 @@ void Menu::NeuerMenuZustand(){
 									} break;
 
 		case HILFEREGELN1: {
-							   menuhintergrund.Positioniere(.5,.7,15.5,11);
-							   logo.Positioniere(0,11,4,12);
+                               MenuBackground.Positioning(.5,.7,15.5,11);
+                               logo.Positioning(0,11,4,12);
 							   logo.VollSichtbar();
 							   TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
 							   TextfeldArray[T_HILFE]->VollSichtbar();
@@ -976,8 +979,8 @@ void Menu::NeuerMenuZustand(){
 						   } break;
 
 		case HILFEREGELN2: {
-							   menuhintergrund.Positioniere(.5,.7,15.5,11);
-							   logo.Positioniere(0,11,4,12);
+                               MenuBackground.Positioning(.5,.7,15.5,11);
+                               logo.Positioning(0,11,4,12);
 							   logo.VollSichtbar();
 							   TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
 							   TextfeldArray[T_HILFE]->VollSichtbar();
@@ -986,19 +989,19 @@ void Menu::NeuerMenuZustand(){
 
 							   GLfloat ypos=10;
 							   TextfeldArray[740]->Positioniere(1,ypos,1,A_LINKS);
-							   ypos-=.7*TextfeldArray[740]->TextfeldHoehe();
+                               ypos-=.7*TextfeldArray[740]->TextboxHeight();
 							   TextfeldArray[741]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[741]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[741]->TextboxHeight();
 							   TextfeldArray[742]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[742]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[742]->TextboxHeight()+.5;
 							   TextfeldArray[743]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[743]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[743]->TextboxHeight();
 							   TextfeldArray[744]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[744]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[744]->TextboxHeight()+.5;
 							   TextfeldArray[745]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[745]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[745]->TextboxHeight();
 							   TextfeldArray[746]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[746]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[746]->TextboxHeight()+.5;
 
 							   TextfeldArray[T_ZURUECK]->Positioniere(8,0,.7,A_MITTE);
 							   TextfeldArray[T_ZURUECK]->SetzeSignal(S_H_ZUHILFE);
@@ -1009,8 +1012,8 @@ void Menu::NeuerMenuZustand(){
 						   } break;
 
 		case HILFEREGELN3: {
-							   menuhintergrund.Positioniere(.5,.7,15.5,11);
-							   logo.Positioniere(0,11,4,12);
+                               MenuBackground.Positioning(.5,.7,15.5,11);
+                               logo.Positioning(0,11,4,12);
 							   logo.VollSichtbar();
 							   TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
 							   TextfeldArray[T_HILFE]->VollSichtbar();
@@ -1019,21 +1022,21 @@ void Menu::NeuerMenuZustand(){
 
 							   GLfloat ypos=10;
 							   TextfeldArray[747]->Positioniere(1,ypos,1,A_LINKS);
-							   ypos-=.7*TextfeldArray[747]->TextfeldHoehe();
+                               ypos-=.7*TextfeldArray[747]->TextboxHeight();
 							   TextfeldArray[748]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[748]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[748]->TextboxHeight();
 							   TextfeldArray[749]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[749]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[749]->TextboxHeight()+.5;
 							   TextfeldArray[750]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[750]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[750]->TextboxHeight();
 							   TextfeldArray[751]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[751]->TextfeldHoehe()+.2;
+                               ypos-=.5*TextfeldArray[751]->TextboxHeight()+.2;
 							   TextfeldArray[752]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[752]->TextfeldHoehe()+.2;
+                               ypos-=.5*TextfeldArray[752]->TextboxHeight()+.2;
 							   TextfeldArray[753]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[753]->TextfeldHoehe()+.2;
+                               ypos-=.5*TextfeldArray[753]->TextboxHeight()+.2;
 							   TextfeldArray[754]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[754]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[754]->TextboxHeight()+.5;
 
 							   TextfeldArray[T_ZURUECK]->Positioniere(8,0,.7,A_MITTE);
 							   TextfeldArray[T_ZURUECK]->SetzeSignal(S_H_ZUHILFE);
@@ -1044,8 +1047,8 @@ void Menu::NeuerMenuZustand(){
 						   } break;
 
 		case HILFEREGELN4: {
-							   menuhintergrund.Positioniere(.5,.7,15.5,11);
-							   logo.Positioniere(0,11,4,12);
+                               MenuBackground.Positioning(.5,.7,15.5,11);
+                               logo.Positioning(0,11,4,12);
 							   logo.VollSichtbar();
 							   TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
 							   TextfeldArray[T_HILFE]->VollSichtbar();
@@ -1054,23 +1057,23 @@ void Menu::NeuerMenuZustand(){
 
 							   GLfloat ypos=10;
 							   TextfeldArray[747]->Positioniere(1,ypos,1,A_LINKS);
-							   ypos-=.7*TextfeldArray[747]->TextfeldHoehe();
+                               ypos-=.7*TextfeldArray[747]->TextboxHeight();
 							   TextfeldArray[755]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[755]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[755]->TextboxHeight();
 							   TextfeldArray[756]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[756]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[756]->TextboxHeight()+.5;
 							   TextfeldArray[757]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[757]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[757]->TextboxHeight();
 							   TextfeldArray[758]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[758]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[758]->TextboxHeight()+.5;
 							   TextfeldArray[759]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[759]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[759]->TextboxHeight();
 							   TextfeldArray[760]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[760]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[760]->TextboxHeight()+.5;
 							   TextfeldArray[761]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[761]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[761]->TextboxHeight();
 							   TextfeldArray[762]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[762]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[762]->TextboxHeight()+.5;
 
 							   TextfeldArray[T_ZURUECK]->Positioniere(8,0,.7,A_MITTE);
 							   TextfeldArray[T_ZURUECK]->SetzeSignal(S_H_ZUHILFE);
@@ -1081,8 +1084,8 @@ void Menu::NeuerMenuZustand(){
 						   } break;
 
 		case HILFEREGELN5: {
-							   menuhintergrund.Positioniere(.5,.7,15.5,11);
-							   logo.Positioniere(0,11,4,12);
+                               MenuBackground.Positioning(.5,.7,15.5,11);
+                               logo.Positioning(0,11,4,12);
 							   logo.VollSichtbar();
 							   TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
 							   TextfeldArray[T_HILFE]->VollSichtbar();
@@ -1091,17 +1094,17 @@ void Menu::NeuerMenuZustand(){
 
 							   GLfloat ypos=10;
 							   TextfeldArray[770]->Positioniere(1,ypos,1,A_LINKS);
-							   ypos-=.7*TextfeldArray[770]->TextfeldHoehe();
+                               ypos-=.7*TextfeldArray[770]->TextboxHeight();
 							   TextfeldArray[771]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[771]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[771]->TextboxHeight();
 							   TextfeldArray[772]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[772]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[772]->TextboxHeight()+.5;
 							   TextfeldArray[773]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[773]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[773]->TextboxHeight();
 							   TextfeldArray[774]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[774]->TextfeldHoehe()+.2;
+                               ypos-=.5*TextfeldArray[774]->TextboxHeight()+.2;
 							   TextfeldArray[775]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[775]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[775]->TextboxHeight();
 
 
 							   TextfeldArray[T_ZURUECK]->Positioniere(8,0,.7,A_MITTE);
@@ -1113,8 +1116,8 @@ void Menu::NeuerMenuZustand(){
 						   } break;
 
 		case HILFEREGELN6: {
-							   menuhintergrund.Positioniere(.5,.7,15.5,11);
-							   logo.Positioniere(0,11,4,12);
+                               MenuBackground.Positioning(.5,.7,15.5,11);
+                               logo.Positioning(0,11,4,12);
 							   logo.VollSichtbar();
 							   TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
 							   TextfeldArray[T_HILFE]->VollSichtbar();
@@ -1123,23 +1126,23 @@ void Menu::NeuerMenuZustand(){
 
 							   GLfloat ypos=10;
 							   TextfeldArray[770]->Positioniere(1,ypos,1,A_LINKS);
-							   ypos-=.7*TextfeldArray[770]->TextfeldHoehe();
+                               ypos-=.7*TextfeldArray[770]->TextboxHeight();
 							   TextfeldArray[776]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[776]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[776]->TextboxHeight();
 							   TextfeldArray[777]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[777]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[777]->TextboxHeight()+.5;
 							   TextfeldArray[778]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[778]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[778]->TextboxHeight();
 							   TextfeldArray[779]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[779]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[779]->TextboxHeight()+.5;
 							   TextfeldArray[780]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[780]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[780]->TextboxHeight();
 							   TextfeldArray[781]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[781]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[781]->TextboxHeight()+.5;
 							   TextfeldArray[782]->Positioniere(1.25,ypos,.7,A_LINKS);
-							   ypos-=.5*TextfeldArray[782]->TextfeldHoehe();
+                               ypos-=.5*TextfeldArray[782]->TextboxHeight();
 							   TextfeldArray[783]->Positioniere(1.5,ypos,.5,A_LINKS);
-							   ypos-=.5*TextfeldArray[783]->TextfeldHoehe()+.5;
+                               ypos-=.5*TextfeldArray[783]->TextboxHeight()+.5;
 
 							   TextfeldArray[T_ZURUECK]->Positioniere(8,0,.7,A_MITTE);
 							   TextfeldArray[T_ZURUECK]->SetzeSignal(S_H_ZUHILFE);
@@ -1150,8 +1153,8 @@ void Menu::NeuerMenuZustand(){
 						   } break;
 
 		case BEENDEN: {
-						  menuhintergrund.Positioniere(4.5,4.5,11.5,8.5);
-						  logo.Positioniere(4,9,12,11);
+                          MenuBackground.Positioning(4.5,4.5,11.5,8.5);
+                          logo.Positioning(4,9,12,11);
 						  logo.VollSichtbar();
 						  TextfeldArray[T_BEENDEN]->Positioniere(8,8,1,A_MITTE);
 						  TextfeldArray[T_BEENDEN]->VollSichtbar();
@@ -1170,8 +1173,8 @@ void Menu::NeuerMenuZustand(){
 					  } break;
 
 		case AUSSPIEL: {
-						   menuhintergrund.Positioniere(3.5,0.5,12.5,8.5);
-						   logo.Positioniere(4,9,12,11);
+                           MenuBackground.Positioning(3.5,0.5,12.5,8.5);
+                           logo.Positioning(4,9,12,11);
 						   logo.VollSichtbar();
 						   TextfeldArray[T_WEITERSPIELEN]->Positioniere(8,7,1,A_MITTE);
 						   TextfeldArray[T_WEITERSPIELEN]->SetzeSignal(S_AS_WEITERSPIELEN);
@@ -1192,21 +1195,21 @@ void Menu::NeuerMenuZustand(){
 		case SPIEL: {
 						//    menuhintergrund.Positioniere(0,11,16,12);
 
-						if (SpielModus==TRAININGSSPIEL) {
-							logo.Positioniere(0,11,4,12);
-						} else if (SpielModus==TUTORIAL) {
-							logo.Positioniere(12,0,16,1);
+                        if (GameMode==TRAININGSSPIEL) {
+                            logo.Positioning(0,11,4,12);
+                        } else if (GameMode==TUTORIAL) {
+                            logo.Positioning(12,0,16,1);
 						} else {
-							logo.Positioniere(6,11,10,12);
+                            logo.Positioning(6,11,10,12);
 						}
-						logo.SetzeSignal(S_SP_LOGO);
+                        logo.SetSignal(S_SP_LOGO);
 
-						switch (SpielModus) {
+                        switch (GameMode) {
 							case TUTORIAL: {
 											   GLfloat posy=11.5;
 											   GLint Bereich=0;
 											   //TextfeldArray[T_H_TUTORIAL]->Positioniere(15.75,0,1,A_RECHTS);//
-											   switch (StateMaschin) {
+                                               switch (StateMachine) {
 												   case BETRACHTEN: {
 																		if (AllerersterStoss)
 																			Bereich=640;
@@ -1230,10 +1233,10 @@ void Menu::NeuerMenuZustand(){
 												   if (TextfeldArray[i]) {
 													   TextfeldArray[i]->Positioniere(0.2,posy,.5,A_LINKS);
 													   TextfeldArray[i]->VollSichtbar();
-													   posy-=.5*TextfeldArray[i]->TextfeldHoehe()+.2;
+                                                       posy-=.5*TextfeldArray[i]->TextboxHeight()+.2;
 												   }
 											   }
-											   menuhintergrund.Positioniere(0,posy+.5,16,12);
+                                               MenuBackground.Positioning(0,posy+.5,16,12);
 										   } break;
 
 							case TRAININGSSPIEL: {
@@ -1245,41 +1248,41 @@ void Menu::NeuerMenuZustand(){
 												 } break;
 							case ZWEISPIELERSPIEL: {
 													   TextfeldArray[T_ZWEISPIELER]->Positioniere(15.75,0,1,A_RECHTS);//12,11,16,12);
-													   if (Schiedsrichter.FrageNachSpielerAmStoss()==0) {
+                                                       if (Referee.FrageNachSpielerAmStoss()==0) {
 														   TextfeldArray[T_SPIELER1NAME]->Positioniere(0.2,11,1,A_LINKS);
 														   TextfeldArray[T_SPIELER2NAME]->Positioniere(15.9,11.5,.5,A_RECHTS);
 														   if (Spiel==ACHTBALL) {
-															   if (Schiedsrichter.FrageNachGruppenVerteilung()==1) {
-																   volle.Positioniere(0.2,10,1.2,11);
-																   halbe.Positioniere(15.4,11,15.9,11.5);
+                                                               if (Referee.FrageNachGruppenVerteilung()==1) {
+                                                                   volle.Positioning(0.2,10,1.2,11);
+                                                                   halbe.Positioning(15.4,11,15.9,11.5);
 															   }
-															   if (Schiedsrichter.FrageNachGruppenVerteilung()==2) {
-																   halbe.Positioniere(0.2,10,1.2,11);
-																   volle.Positioniere(15.4,11,15.9,11.5);
+                                                               if (Referee.FrageNachGruppenVerteilung()==2) {
+                                                                   halbe.Positioning(0.2,10,1.2,11);
+                                                                   volle.Positioning(15.4,11,15.9,11.5);
 															   }
 														   }
 														   if (Spiel==NEUNBALL) {
-															   if (Schiedsrichter.FrageNachFouls(0)==1) {
+                                                               if (Referee.FrageNachFouls(0)==1) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("1 Foul");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
 															   }
-															   if (Schiedsrichter.FrageNachFouls(0)==2) {
+                                                               if (Referee.FrageNachFouls(0)==2) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("2 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
 															   }
-															   if (Schiedsrichter.FrageNachFouls(0)==3) {
+                                                               if (Referee.FrageNachFouls(0)==3) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("3 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
 															   }
-															   if (Schiedsrichter.FrageNachFouls(1)==1) {
+                                                               if (Referee.FrageNachFouls(1)==1) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("1 Foul");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
 															   }
-															   if (Schiedsrichter.FrageNachFouls(1)==2) {
+                                                               if (Referee.FrageNachFouls(1)==2) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("2 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
 															   }
-															   if (Schiedsrichter.FrageNachFouls(1)==3) {
+                                                               if (Referee.FrageNachFouls(1)==3) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("3 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
 															   }
@@ -1288,37 +1291,37 @@ void Menu::NeuerMenuZustand(){
 														   TextfeldArray[T_SPIELER1NAME]->Positioniere(0.1,11.5,.5,A_LINKS);
 														   TextfeldArray[T_SPIELER2NAME]->Positioniere(15.8,11,1,A_RECHTS);
 														   if (Spiel==ACHTBALL) {
-															   if (Schiedsrichter.FrageNachGruppenVerteilung()==1) {
-																   volle.Positioniere(0.1,11,.5,11.5);
-																   halbe.Positioniere(14.8,10,15.8,11);
+                                                               if (Referee.FrageNachGruppenVerteilung()==1) {
+                                                                   volle.Positioning(0.1,11,.5,11.5);
+                                                                   halbe.Positioning(14.8,10,15.8,11);
 															   }
-															   if (Schiedsrichter.FrageNachGruppenVerteilung()==2) {
-																   halbe.Positioniere(0.1,11,.5,11.5);
-																   volle.Positioniere(14.8,10,15.8,11);
+                                                               if (Referee.FrageNachGruppenVerteilung()==2) {
+                                                                   halbe.Positioning(0.1,11,.5,11.5);
+                                                                   volle.Positioning(14.8,10,15.8,11);
 															   }
 														   }
 														   if (Spiel==NEUNBALL) {
-															   if (Schiedsrichter.FrageNachFouls(0)==1) {
+                                                               if (Referee.FrageNachFouls(0)==1) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("1 Foul");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
 															   }
-															   if (Schiedsrichter.FrageNachFouls(0)==2) {
+                                                               if (Referee.FrageNachFouls(0)==2) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("2 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
 															   }
-															   if (Schiedsrichter.FrageNachFouls(0)==3) {
+                                                               if (Referee.FrageNachFouls(0)==3) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("3 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
 															   }
-															   if (Schiedsrichter.FrageNachFouls(1)==1) {
+                                                               if (Referee.FrageNachFouls(1)==1) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("1 Foul");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
 															   }
-															   if (Schiedsrichter.FrageNachFouls(1)==2) {
+                                                               if (Referee.FrageNachFouls(1)==2) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("2 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
 															   }
-															   if (Schiedsrichter.FrageNachFouls(1)==3) {
+                                                               if (Referee.FrageNachFouls(1)==3) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("3 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
 															   }
@@ -1341,7 +1344,7 @@ void Menu::NeuerMenuZustand(){
 						}
 
 
-						switch (StateMaschin) {
+                        switch (StateMachine) {
 							case BETRACHTEN: {
 												 TextfeldArray[T_BETRACHTEN]->Positioniere(0.25,0,1,A_LINKS);
 											 } break;
@@ -1361,12 +1364,12 @@ void Menu::NeuerMenuZustand(){
 													 TextfeldArray[T_STOSS]->Positioniere(0.25,0,1,A_LINKS);
 													 if (Foul) {
 														 TextfeldArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE); 
-														 if (Schiedsrichter.FrageNachBegruendung())
-															 TextfeldArray[Schiedsrichter.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
+                                                         if (Referee.FrageNachBegruendung())
+                                                             TextfeldArray[Referee.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
 													 }
-													 if (!Spieler1Gewonnen && !Spieler2Gewonnen) {
+                                                     if (!Player1Win && !Player2Win) {
 														 TextfeldArray[T_ISTAMTISCH]->Positioniere(8,5,1,A_MITTE);      
-														 if (Schiedsrichter.FrageNachSpielerAmStoss()==0) {
+                                                         if (Referee.FrageNachSpielerAmStoss()==0) {
 															 TextfeldArray[T_SPIELER1NAME]->Positioniere(8,6,1.5,A_MITTE);
 															 TextfeldArray[T_SPIELER1NAME]->VollSichtbar();
 														 } else {
@@ -1385,11 +1388,11 @@ void Menu::NeuerMenuZustand(){
 															 MenuGesperrt=1;
 															 if (Foul) {
 																 TextfeldArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);      
-																 if (Schiedsrichter.FrageNachBegruendung())
-																	 TextfeldArray[Schiedsrichter.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
+                                                                 if (Referee.FrageNachBegruendung())
+                                                                     TextfeldArray[Referee.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
 															 }
 															 TextfeldArray[T_ISTAMTISCH]->Positioniere(8,6,1,A_MITTE);  
-															 if (Schiedsrichter.FrageNachSpielerAmStoss()==0) {
+                                                             if (Referee.FrageNachSpielerAmStoss()==0) {
 																 TextfeldArray[T_SPIELER1NAME]->Positioniere(8,7,1.5,A_MITTE);
 																 TextfeldArray[T_SPIELER1NAME]->VollSichtbar();
 															 } else {
@@ -1405,11 +1408,11 @@ void Menu::NeuerMenuZustand(){
 															 MenuGesperrt=1;
 															 if (Foul) {
 																 TextfeldArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);      
-																 if (Schiedsrichter.FrageNachBegruendung())
-																	 TextfeldArray[Schiedsrichter.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
+                                                                 if (Referee.FrageNachBegruendung())
+                                                                     TextfeldArray[Referee.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
 															 }
 															 TextfeldArray[T_ISTAMTISCH]->Positioniere(8,6,1,A_MITTE);  
-															 if (Schiedsrichter.FrageNachSpielerAmStoss()==0) {
+                                                             if (Referee.FrageNachSpielerAmStoss()==0) {
 																 TextfeldArray[T_SPIELER1NAME]->Positioniere(8,7,1.5,A_MITTE);
 																 TextfeldArray[T_SPIELER1NAME]->VollSichtbar();
 															 } else {
@@ -1423,7 +1426,7 @@ void Menu::NeuerMenuZustand(){
 															 TextfeldArray[T_WEITERSPIELEN]->SetzeSignal(S_SP_WEITERSPIELEN);
 														 }
 													 }
-													 if (Spieler1Gewonnen||Spieler2Gewonnen) {
+                                                     if (Player1Win||Player2Win) {
 														 MenuGesperrt=1;
 														 TextfeldArray[T_HATGEWONNEN]->Positioniere(8,5,1,A_MITTE);
 
@@ -1432,11 +1435,11 @@ void Menu::NeuerMenuZustand(){
 														 TextfeldArray[T_TISCHVERLASSEN]->Positioniere(10.5,3,1,A_MITTE);
 														 TextfeldArray[T_TISCHVERLASSEN]->SetzeSignal(S_SP_HAUPTMENU);
 
-														 if (Spieler1Gewonnen) {
+                                                         if (Player1Win) {
 															 TextfeldArray[T_SPIELER1NAME]->Positioniere(8,6,1.5,A_MITTE);
 															 TextfeldArray[T_SPIELER1NAME]->VollSichtbar();
 														 }
-														 if (Spieler2Gewonnen) {
+                                                         if (Player2Win) {
 															 TextfeldArray[T_SPIELER2NAME]->Positioniere(8,6,1.5,A_MITTE);
 															 TextfeldArray[T_SPIELER2NAME]->VollSichtbar();
 														 }
@@ -1447,28 +1450,28 @@ void Menu::NeuerMenuZustand(){
 						GLint i;
 						if (Spiel==ACHTBALL) {
 							for (i=0;i<8;i++) {
-								if (!KugelnVersenkt[i]&&KugelnImSpiel[i]) {
-									ball[i].Positioniere(6+.5*i,.5,6+.5*(i+1),1);
-									ball[i].SetzeSignal(S_SP_BALL+i);
+                                if (!BallsSunk[i]&&BallsInGame[i]) {
+                                    ball[i].Positioning(6+.5*i,.5,6+.5*(i+1),1);
+                                    ball[i].SetSignal(S_SP_BALL+i);
 								}
 							}
 							for (i=8;i<16;i++) {
-								if (!KugelnVersenkt[i]&&KugelnImSpiel[i]) {
-									ball[i].Positioniere(6+.5*(i-8),0,6+.5*(i-7),.5);
-									ball[i].SetzeSignal(S_SP_BALL+i);
+                                if (!BallsSunk[i]&&BallsInGame[i]) {
+                                    ball[i].Positioning(6+.5*(i-8),0,6+.5*(i-7),.5);
+                                    ball[i].SetSignal(S_SP_BALL+i);
 								}
 							} 
 						} else {
 							for (i=0;i<5;i++) {
-								if (!KugelnVersenkt[i]&&KugelnImSpiel[i]) {
-									ball[i].Positioniere(6.75+.5*i,.5,6.75+.5*(i+1),1);
-									ball[i].SetzeSignal(S_SP_BALL+i);
+                                if (!BallsSunk[i]&&BallsInGame[i]) {
+                                    ball[i].Positioning(6.75+.5*i,.5,6.75+.5*(i+1),1);
+                                    ball[i].SetSignal(S_SP_BALL+i);
 								}
 							}
 							for (i=5;i<10;i++) {
-								if (!KugelnVersenkt[i]&&KugelnImSpiel[i]) {
-									ball[i].Positioniere(6.75+.5*(i-5),0,6.75+.5*(i-4),.5);
-									ball[i].SetzeSignal(S_SP_BALL+i);
+                                if (!BallsSunk[i]&&BallsInGame[i]) {
+                                    ball[i].Positioning(6.75+.5*(i-5),0,6.75+.5*(i-4),.5);
+                                    ball[i].SetSignal(S_SP_BALL+i);
 								}
 							}
 						}
@@ -1478,32 +1481,32 @@ void Menu::NeuerMenuZustand(){
 	StarteAnimation();
 }
 
-void Menu::SignalAusfuehrung(GLint Signal) {
-	DelayAusgleich=1;
+void Menu::SignalExecution(GLint Signal) {
+    DelayCompensation=1;
 	switch (Signal) {
 		case S_LOGO: {
-						 SetzeMenuZustand(STARTBILDSCHIRM);
+                         setMenuState(STARTBILDSCHIRM);
 					 } break;
 		case S_HM_TRAINING: {
-								SetzeMenuZustand(TRAINING);
+                                setMenuState(TRAINING);
 							} break;
 		case S_HM_ZWEISPIELER: {
-								   SetzeMenuZustand(ZWEISPIELER);
+                                   setMenuState(ZWEISPIELER);
 							   } break;
 		case S_HM_NETZWERKSPIEL: {
-									 SetzeMenuZustand(NETZWERKHAUPT);
+                                     setMenuState(NETZWERKHAUPT);
 								 } break;
 		case S_HM_EINSTELLUNGEN: {
 									 AusSpiel=0;
-									 SetzeMenuZustand(EINSTELLUNGEN);
+                                     setMenuState(EINSTELLUNGEN);
 								 } break;
 		case S_HM_HILFE: {
 							 AusSpiel=0;
-							 SetzeMenuZustand(HILFE);
+                             setMenuState(HILFE);
 						 } break;
 		case S_HM_BEENDEN: {
 							   AusSpiel=0;
-							   SetzeMenuZustand(BEENDEN);
+                               setMenuState(BEENDEN);
 						   } break;
 		case S_TR_ACHTBALL: {
 								Foul=0;
@@ -1511,17 +1514,17 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 								LageVerbesserung=0;
 								NeuAufbauenOderWeiterspielen=0;
 								NeuAufbauenOderAchtEinsetzen=0;
-								Spieler1Gewonnen=0;
-								Spieler2Gewonnen=0;
+                                Player1Win=0;
+                                Player2Win=0;
 								MenuGesperrt=0;
-								SpielModus=TRAININGSSPIEL;
-								StateMaschin=WEISSNEU;
+                                GameMode=TRAININGSSPIEL;
+                                StateMachine=WEISSNEU;
 								Spiel=ACHTBALL;
-								SpielfeldAufbau();
-								Schiedsrichter.NeuesSpiel(Spiel);
-								SchiedsrichterEntscheidung=0;
-								Kamera.ladePosition(4);
-								SetzeMenuZustand(SPIEL);
+                                BoardLayout();
+                                Referee.NewGame(Spiel);
+                                RefereeDecision=0;
+                                Camera.loadPosition(4);
+                                setMenuState(SPIEL);
 							} break;
 		case S_TR_NEUNBALL: {
 								Foul=0;
@@ -1529,78 +1532,78 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 								LageVerbesserung=0;
 								NeuAufbauenOderWeiterspielen=0;
 								NeuAufbauenOderAchtEinsetzen=0;
-								Spieler1Gewonnen=0;
-								Spieler2Gewonnen=0;
+                                Player1Win=0;
+                                Player2Win=0;
 								MenuGesperrt=0;
-								SpielModus=TRAININGSSPIEL;
-								StateMaschin=WEISSNEU;
+                                GameMode=TRAININGSSPIEL;
+                                StateMachine=WEISSNEU;
 								Spiel=NEUNBALL;
-								SpielfeldAufbau();
-								Schiedsrichter.NeuesSpiel(Spiel);
-								SchiedsrichterEntscheidung=0;
-								Kamera.ladePosition(4);
-								SetzeMenuZustand(SPIEL);
+                                BoardLayout();
+                                Referee.NewGame(Spiel);
+                                RefereeDecision=0;
+                                Camera.loadPosition(4);
+                                setMenuState(SPIEL);
 							} break;
 		case S_TR_VIERZEHNPLUSEINS: {
 									} break;
 		case S_TR_ZURUECK: {
-							   SetzeMenuZustand(HAUPTMENU);
+                               setMenuState(HAUPTMENU);
 						   } break;
 		case S_ZW_ACHTBALL: {
-								sprintf(Spieler1,"%s",TextfeldArray[T_SPIELER1NAME]->Text());
-								sprintf(Spieler2,"%s",TextfeldArray[T_SPIELER2NAME]->Text());
-								SchreibeKonfiguration();
+								sprintf(Player1,"%s",TextfeldArray[T_SPIELER1NAME]->Text());
+								sprintf(Player2,"%s",TextfeldArray[T_SPIELER2NAME]->Text());
+								WriteConfig();
 								Foul=0;
 								LageVerbesserungKopffeld=1;
 								LageVerbesserung=0;
 								NeuAufbauenOderWeiterspielen=0;
 								NeuAufbauenOderAchtEinsetzen=0;
-								Spieler1Gewonnen=0;
-								Spieler2Gewonnen=0;
+                                Player1Win=0;
+                                Player2Win=0;
 								MenuGesperrt=0;
-								SpielModus=ZWEISPIELERSPIEL;
-								StateMaschin=SCHIEDSRICHTER;
+                                GameMode=ZWEISPIELERSPIEL;
+                                StateMachine=SCHIEDSRICHTER;
 								Spiel=ACHTBALL;
-								SpielfeldAufbau();
-								Schiedsrichter.NeuesSpiel(Spiel);
-								SchiedsrichterEntscheidung=0;
-								Kamera.ladePosition(4);
-								SetzeMenuZustand(SPIEL);
+                                BoardLayout();
+                                Referee.NewGame(Spiel);
+                                RefereeDecision=0;
+                                Camera.loadPosition(4);
+                                setMenuState(SPIEL);
 							} break;
 		case S_ZW_NEUNBALL: {
-								sprintf(Spieler1,"%s",TextfeldArray[T_SPIELER1NAME]->Text());
-								sprintf(Spieler2,"%s",TextfeldArray[T_SPIELER2NAME]->Text());
-								SchreibeKonfiguration();
+								sprintf(Player1,"%s",TextfeldArray[T_SPIELER1NAME]->Text());
+								sprintf(Player2,"%s",TextfeldArray[T_SPIELER2NAME]->Text());
+								WriteConfig();
 								Foul=0;
 								LageVerbesserungKopffeld=1;
 								LageVerbesserung=0;
 								NeuAufbauenOderWeiterspielen=0;
 								NeuAufbauenOderAchtEinsetzen=0;
-								Spieler1Gewonnen=0;
-								Spieler2Gewonnen=0;
+                                Player1Win=0;
+                                Player2Win=0;
 								MenuGesperrt=0;
-								SpielModus=ZWEISPIELERSPIEL;
-								StateMaschin=SCHIEDSRICHTER;
+                                GameMode=ZWEISPIELERSPIEL;
+                                StateMachine=SCHIEDSRICHTER;
 								Spiel=NEUNBALL;
-								SpielfeldAufbau();
-								Schiedsrichter.NeuesSpiel(Spiel);
-								SchiedsrichterEntscheidung=0;
-								Kamera.ladePosition(4);
-								SetzeMenuZustand(SPIEL);
+                                BoardLayout();
+                                Referee.NewGame(Spiel);
+                                RefereeDecision=0;
+                                Camera.loadPosition(4);
+                                setMenuState(SPIEL);
 							} break;
 		case S_ZW_VIERZEHNPLUSEINS: {
 									} break;
 		case S_ZW_ZURUECK: {
-							   SetzeMenuZustand(HAUPTMENU);
+                               setMenuState(HAUPTMENU);
 						   } break;
 		case S_NE_BEGINNEN: {
-								SetzeMenuZustand(NETZWERKNEU);
+                                setMenuState(NETZWERKNEU);
 							} break;
 		case S_NE_TEILNEHMEN: {
-								  SetzeMenuZustand(NETZWERKBEITRETEN);
+                                  setMenuState(NETZWERKBEITRETEN);
 							  } break;
 		case S_NE_ZURUECK: {
-							   SetzeMenuZustand(HAUPTMENU);
+                               setMenuState(HAUPTMENU);
 						   } break;
 		case S_NB_ACHTBALL: {
 							} break;
@@ -1620,26 +1623,26 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 								 E_MouseSpeed=MouseSpeed;
 								 E_InvertX=InvertX;
 								 E_InvertY=InvertY;
-								 SetzeMenuZustand(EINSTELLUNGENSTEUERUNG);
+                                 setMenuState(EINSTELLUNGENSTEUERUNG);
 							 } break;
 		case S_EI_SPRACHE: {
-							   SetzeMenuZustand(SPRACHAUSWAHL);
+                               setMenuState(SPRACHAUSWAHL);
 						   } break;
 		case S_EI_GRAFIK: {
-							  E_Texturgroesse=Texturgroesse;
-							  E_AnzeigeTexturgroesse=AnzeigeTexturgroesse;
-							  E_TischTexturgroesse=TischTexturgroesse;
-							  E_KugelAufloesung=KugelAufloesung;
-							  E_BildschirmAufloesung=BildschirmAufloesung;
-							  E_Farbtiefe=Farbtiefe;
-							  E_Reflektionen=Reflektionen;
-							  E_Schatten=Schatten;
-							  E_AmbientesLicht=AmbientesLicht;
-							  E_TischLampen=TischLampen;
-							  E_GrueneLampe=GrueneLampe;
-							  E_ZeigeFPS=ZeigeFPS;
+							  E_Texturgroesse=TextureSize;
+							  E_AnzeigeTexturgroesse=DisplayTextureSize;
+							  E_TischTexturgroesse=TableTextureSize;
+							  E_KugelAufloesung=BallResolution;
+							  E_BildschirmAufloesung=ScreenResolution;
+							  E_Farbtiefe=ColorDepth;
+							  E_Reflektionen=Reflections;
+							  E_Schatten=Shadow;
+							  E_AmbientesLicht=AmbientLighting;
+							  E_TischLampen=TableLamps;
+							  E_GrueneLampe=GrueneLamp;
+							  E_ZeigeFPS=ShowFPS;
 							  E_TexMMM=TexMMM;
-							  SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                              setMenuState(EINSTELLUNGENGRAFIK);
 						  } break;
 		case S_EI_BALLTEXTUREN: {
 									switch (E_Texturgroesse) {
@@ -1648,7 +1651,7 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 										case 4: E_Texturgroesse=8; break;
 										case 8: E_Texturgroesse=1; break;
 									}  
-									SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                    setMenuState(EINSTELLUNGENGRAFIK);
 								} break;
 		case S_EI_TISCHTEXTUREN: {
 									 switch (E_TischTexturgroesse) {
@@ -1659,7 +1662,7 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 										 case 0: E_TischTexturgroesse=1; break;
 										 default: E_TischTexturgroesse=4; break;
 									 }
-									 SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                     setMenuState(EINSTELLUNGENGRAFIK);
 								 } break;
 		case S_EI_ANZEIGETEXTUREN: {
 									   switch (E_AnzeigeTexturgroesse) {
@@ -1667,7 +1670,7 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 										   case 2: E_AnzeigeTexturgroesse=1; break;
 										   default: E_AnzeigeTexturgroesse=1; break;
 									   }
-									   SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                       setMenuState(EINSTELLUNGENGRAFIK);
 								   } break;
 		case S_EI_AUFLOESUNG: {
 								  switch (E_BildschirmAufloesung) {
@@ -1678,28 +1681,28 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 									  case 1600: E_BildschirmAufloesung=1280; break;
 									  default: E_BildschirmAufloesung=800; break;
 								  }
-								  SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                  setMenuState(EINSTELLUNGENGRAFIK);
 							  } break;
 		case S_EI_FARBTIEFE: {
 								 switch (E_Farbtiefe) {
 									 case 16: E_Farbtiefe=32; break;
 									 default: E_Farbtiefe=16; break;
 								 }
-								 SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                 setMenuState(EINSTELLUNGENGRAFIK);
 							 } break;
 		case S_EI_REFLEKTIONEN: {
 									switch (E_Reflektionen) {
 										case 0: E_Reflektionen=1; break;
 										default:  E_Reflektionen=0; break;    
 									}
-									SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                    setMenuState(EINSTELLUNGENGRAFIK);
 								} break;
 		case S_EI_SCHATTEN: {
 								switch (E_Schatten) {
 									case 0: E_Schatten=1; break;
 									default:  E_Schatten=0; break;    
 								}
-								SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                setMenuState(EINSTELLUNGENGRAFIK);
 							} break;
 		case S_EI_TEXTURINTERPOLATION: {
 										   switch (E_TexMMM) {
@@ -1708,14 +1711,14 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 											   case 3: E_TexMMM=2; break;
 											   default:  E_TexMMM=3; break;    
 										   }
-										   SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                           setMenuState(EINSTELLUNGENGRAFIK);
 									   } break;
 		case S_EI_AMBIENTESLICHT: {
 									  switch (E_AmbientesLicht) {
 										  case 1: E_AmbientesLicht=0; break;
 										  default:  E_AmbientesLicht=1; break;    
 									  }
-									  SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                      setMenuState(EINSTELLUNGENGRAFIK);
 								  } break;
 		case S_EI_TISCHLAMPEN: {
 								   switch (E_TischLampen) {
@@ -1724,21 +1727,21 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 									   case 3: E_TischLampen=1; break;
 									   default:  E_TischLampen=1; break;    
 								   }
-								   SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                   setMenuState(EINSTELLUNGENGRAFIK);
 							   } break;
 		case S_EI_GRUENELAMPE: {
 								   switch (E_GrueneLampe) {
 									   case 1: E_GrueneLampe=0; break;
 									   default:  E_GrueneLampe=1; break;    
 								   }
-								   SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                   setMenuState(EINSTELLUNGENGRAFIK);
 							   } break;
 		case S_EI_FPS: {
 						   switch (E_ZeigeFPS) {
-							   case 1: ZeigeFPS=E_ZeigeFPS=0; break;
-							   default: ZeigeFPS=E_ZeigeFPS=1; break;    
+							   case 1: ShowFPS=E_ZeigeFPS=0; break;
+							   default: ShowFPS=E_ZeigeFPS=1; break;    
 						   }
-						   SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                           setMenuState(EINSTELLUNGENGRAFIK);
 					   } break;
 		case S_EI_BALLGEOMETRIE: {
 									 switch (E_KugelAufloesung) {
@@ -1767,7 +1770,7 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 													  E_KugelAufloesung=7;
 												  } break;
 									 }
-									 SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                     setMenuState(EINSTELLUNGENGRAFIK);
 								 } break;
 		case S_EI_MOUSESPEED: {
 								  if (E_MouseSpeed<=.21) {
@@ -1781,7 +1784,7 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 								  } else {
 									  E_MouseSpeed=.565;
 								  }
-								  SetzeMenuZustand(EINSTELLUNGENSTEUERUNG);
+                                  setMenuState(EINSTELLUNGENSTEUERUNG);
 							  } break;
 		case S_EI_XINVERT: {
 							   if (E_InvertX) {
@@ -1789,7 +1792,7 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 							   } else {
 								   E_InvertX=1;
 							   }
-							   SetzeMenuZustand(EINSTELLUNGENSTEUERUNG);
+                               setMenuState(EINSTELLUNGENSTEUERUNG);
 						   } break;
 		case S_EI_YINVERT: {
 							   if (E_InvertY) {
@@ -1797,7 +1800,7 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 							   } else {
 								   E_InvertY=1;
 							   }
-							   SetzeMenuZustand(EINSTELLUNGENSTEUERUNG);
+                               setMenuState(EINSTELLUNGENSTEUERUNG);
 						   } break;
 
 
@@ -1882,7 +1885,7 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 												  E_TexMMM=3;
 											  } break;
 								 }
-								 SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                 setMenuState(EINSTELLUNGENGRAFIK);
 							 } break;
 
 		case S_EI_GRAFIKUEBERNEHMEN: {
@@ -1894,253 +1897,253 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 											 TexMMM=E_TexMMM;
 										 }
 
-										 if (Texturgroesse!=E_Texturgroesse ||
-												 KugelAufloesung!=E_KugelAufloesung ||
+										 if (TextureSize!=E_Texturgroesse ||
+												 BallResolution!=E_KugelAufloesung ||
 												 TexMMMgeaendert ||
-												 Schatten!=E_Schatten) {
+												 Shadow!=E_Schatten) {
 
-											 initialisiereKugelTabellen(E_KugelAufloesung);
+                                             initializeBallTables(E_KugelAufloesung);
 
 											 for (GLint j=0;j<16;j++) {  // Initialisierung der Baelle + Laden der Texturen
-												 Kugel[j].Initialisiere(j,E_Texturgroesse,E_KugelAufloesung,E_Schatten);
+                                                 Ball[j].Initialisiere(j,E_Texturgroesse,E_KugelAufloesung,E_Schatten);
 											 }
 										 }
 
-										 if (TischTexturgroesse!=E_TischTexturgroesse ||
+										 if (TableTextureSize!=E_TischTexturgroesse ||
 												 TexMMMgeaendert){
-											 Tisch.Initialisiere(E_TischTexturgroesse);
+                                             Table.Initialisiere(E_TischTexturgroesse);
 										 }
 
-										 if (Reflektionen!=E_Reflektionen ||
-												 AmbientesLicht!=E_AmbientesLicht ||
-												 TischLampen!=E_TischLampen ||
-												 GrueneLampe!=E_GrueneLampe) {
-											 Beleuchtung.Initialisiere(E_AmbientesLicht,E_TischLampen,E_GrueneLampe,E_Reflektionen);
+										 if (Reflections!=E_Reflektionen ||
+												 AmbientLighting!=E_AmbientesLicht ||
+												 TableLamps!=E_TischLampen ||
+												 GrueneLamp!=E_GrueneLampe) {
+                                             Lighting.Initialisiere(E_AmbientesLicht,E_TischLampen,E_GrueneLampe,E_Reflektionen);
 										 }
 
-										 if (AnzeigeTexturgroesse!=E_AnzeigeTexturgroesse||
+										 if (DisplayTextureSize!=E_AnzeigeTexturgroesse||
 												 TexMMMgeaendert){
 											 Initialisiere(E_AnzeigeTexturgroesse);
 										 }
 
 										 GLint NeueAufloesung=0;
-										 if (Farbtiefe!=E_Farbtiefe || BildschirmAufloesung!=E_BildschirmAufloesung)
+										 if (ColorDepth!=E_Farbtiefe || ScreenResolution!=E_BildschirmAufloesung)
 											 NeueAufloesung=1;
 
-										 KugelAufloesung=E_KugelAufloesung;
-										 Texturgroesse=E_Texturgroesse;
-										 AnzeigeTexturgroesse=E_AnzeigeTexturgroesse;
-										 TischTexturgroesse=E_TischTexturgroesse;
-										 Reflektionen=E_Reflektionen;
-										 BildschirmAufloesung=E_BildschirmAufloesung;
-										 Farbtiefe=E_Farbtiefe;
-										 Schatten=E_Schatten;
-										 TischTexturgroesse=E_TischTexturgroesse;
-										 AmbientesLicht=E_AmbientesLicht;
-										 TischLampen=E_TischLampen;
-										 GrueneLampe=E_GrueneLampe;
-										 ZeigeFPS=E_ZeigeFPS;
+										 BallResolution=E_KugelAufloesung;
+										 TextureSize=E_Texturgroesse;
+										 DisplayTextureSize=E_AnzeigeTexturgroesse;
+										 TableTextureSize=E_TischTexturgroesse;
+										 Reflections=E_Reflektionen;
+										 ScreenResolution=E_BildschirmAufloesung;
+										 ColorDepth=E_Farbtiefe;
+										 Shadow=E_Schatten;
+										 TableTextureSize=E_TischTexturgroesse;
+										 AmbientLighting=E_AmbientesLicht;
+										 TableLamps=E_TischLampen;
+										 GrueneLamp=E_GrueneLampe;
+										 ShowFPS=E_ZeigeFPS;
 
-										 SchreibeKonfiguration();
+										 WriteConfig();
 
 										 if (NeueAufloesung)
-											 SetzeMenuZustand(EINSTELLUNGENGRAFIKHINWEIS);
+                                             setMenuState(EINSTELLUNGENGRAFIKHINWEIS);
 										 else 
-											 SetzeMenuZustand(EINSTELLUNGENGRAFIK);
+                                             setMenuState(EINSTELLUNGENGRAFIK);
 
 									 } break;
 		case S_EI_GRAFIKZURUECK: {
-									 SetzeMenuZustand(EINSTELLUNGEN);
+                                     setMenuState(EINSTELLUNGEN);
 								 } break;
 		case S_EI_STEUERUNGUEBERNEHMEN: {
 											InvertX=E_InvertX;
 											InvertY=E_InvertY;
 											MouseSpeed=E_MouseSpeed;
-											SchreibeKonfiguration();
-											SetzeMenuZustand(EINSTELLUNGEN);
+											WriteConfig();
+                                            setMenuState(EINSTELLUNGEN);
 										} break;
 		case S_EI_STEUERUNGZURUECK: {
-										SetzeMenuZustand(EINSTELLUNGEN);
+                                        setMenuState(EINSTELLUNGEN);
 									} break;
 		case S_EI_ZURUECK: {
-							   SetzeMenuZustand(HAUPTMENU);
+                               setMenuState(HAUPTMENU);
 						   } break;
 		case S_EI_ZURUECK_AS: {
-								  SetzeMenuZustand(AUSSPIEL);
+                                  setMenuState(AUSSPIEL);
 							  } break;
 		case S_BE_JABEENDEN: {
 								 exit(0);
 							 } break;
 		case S_BE_ZURUECK: {
-							   SetzeMenuZustand(HAUPTMENU);
+                               setMenuState(HAUPTMENU);
 						   } break;
 		case S_BE_ZURUECK_AS: {
-								  SetzeMenuZustand(AUSSPIEL);
+                                  setMenuState(AUSSPIEL);
 							  } break;
 		case S_AS_WEITERSPIELEN: {
-									 SetzeMenuZustand(SPIEL);
+                                     setMenuState(SPIEL);
 								 } break;
 		case S_AS_HAUPTMENU: {
 								 AusSpiel=0;
-								 StateMaschin=START;
-								 SetzeMenuZustand(HAUPTMENU);
+                                 StateMachine=START;
+                                 setMenuState(HAUPTMENU);
 							 } break;
 		case S_AS_HILFE: {
 							 AusSpiel=1;
-							 SetzeMenuZustand(HILFE);
+                             setMenuState(HILFE);
 						 } break;
 		case S_AS_EINSTELLUNGEN: {
 									 AusSpiel=1;
-									 SetzeMenuZustand(EINSTELLUNGEN);
+                                     setMenuState(EINSTELLUNGEN);
 								 } break;
 		case S_AS_BEENDEN: {
 							   AusSpiel=1;
-							   SetzeMenuZustand(BEENDEN);
+                               setMenuState(BEENDEN);
 						   } break;
 		case S_SP_LOGO: {
 							AusSpiel=1;
-							SetzeMenuZustand(AUSSPIEL);
+                            setMenuState(AUSSPIEL);
 						} break;
 		case S_SP_BALL+0: {
-							  if (StateMaschin==BETRACHTEN ||
-									  StateMaschin==WEISSNEU) {
-								  Kamera.BlickeAuf3(Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
-							  } else if (StateMaschin==STOSS) {
-								  Kamera.Verfolge(0);
+                              if (StateMachine==BETRACHTEN ||
+                                      StateMachine==WEISSNEU) {
+                                  Camera.EyesOn3(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
+                              } else if (StateMachine==STOSS) {
+                                  Camera.Track(0);
 							  }
 						  } break;
 		case S_SP_BALL+1: {
-							  if (StateMaschin==BETRACHTEN ||
-									  StateMaschin==WEISSNEU) {
-								  Kamera.BlickeAuf3(Kugel[1].Pos_xCM(),Kugel[1].Pos_yCM());
-							  } else if (StateMaschin==STOSS) {
-								  Kamera.Verfolge(1);
+                              if (StateMachine==BETRACHTEN ||
+                                      StateMachine==WEISSNEU) {
+                                  Camera.EyesOn3(Ball[1].Pos_xCM(),Ball[1].Pos_yCM());
+                              } else if (StateMachine==STOSS) {
+                                  Camera.Track(1);
 							  }
 						  } break;
 		case S_SP_BALL+2: {
-							  if (StateMaschin==BETRACHTEN ||
-									  StateMaschin==WEISSNEU) {
-								  Kamera.BlickeAuf3(Kugel[2].Pos_xCM(),Kugel[2].Pos_yCM());
-							  } else if (StateMaschin==STOSS) {
-								  Kamera.Verfolge(2);
+                              if (StateMachine==BETRACHTEN ||
+                                      StateMachine==WEISSNEU) {
+                                  Camera.EyesOn3(Ball[2].Pos_xCM(),Ball[2].Pos_yCM());
+                              } else if (StateMachine==STOSS) {
+                                  Camera.Track(2);
 							  }
 						  } break;
 		case S_SP_BALL+3: {
-							  if (StateMaschin==BETRACHTEN ||
-									  StateMaschin==WEISSNEU) {
-								  Kamera.BlickeAuf3(Kugel[3].Pos_xCM(),Kugel[3].Pos_yCM());
-							  } else if (StateMaschin==STOSS) {
-								  Kamera.Verfolge(3);
+                              if (StateMachine==BETRACHTEN ||
+                                      StateMachine==WEISSNEU) {
+                                  Camera.EyesOn3(Ball[3].Pos_xCM(),Ball[3].Pos_yCM());
+                              } else if (StateMachine==STOSS) {
+                                  Camera.Track(3);
 							  }
 						  } break;
 		case S_SP_BALL+4: {
-							  if (StateMaschin==BETRACHTEN ||
-									  StateMaschin==WEISSNEU) {
-								  Kamera.BlickeAuf3(Kugel[4].Pos_xCM(),Kugel[4].Pos_yCM());
-							  } else if (StateMaschin==STOSS) {
-								  Kamera.Verfolge(4);
+                              if (StateMachine==BETRACHTEN ||
+                                      StateMachine==WEISSNEU) {
+                                  Camera.EyesOn3(Ball[4].Pos_xCM(),Ball[4].Pos_yCM());
+                              } else if (StateMachine==STOSS) {
+                                  Camera.Track(4);
 							  }
 						  } break;
 		case S_SP_BALL+5: {
-							  if (StateMaschin==BETRACHTEN ||
-									  StateMaschin==WEISSNEU) {
-								  Kamera.BlickeAuf3(Kugel[5].Pos_xCM(),Kugel[5].Pos_yCM());
-							  } else if (StateMaschin==STOSS) {
-								  Kamera.Verfolge(5);
+                              if (StateMachine==BETRACHTEN ||
+                                      StateMachine==WEISSNEU) {
+                                  Camera.EyesOn3(Ball[5].Pos_xCM(),Ball[5].Pos_yCM());
+                              } else if (StateMachine==STOSS) {
+                                  Camera.Track(5);
 							  }
 						  } break;
 		case S_SP_BALL+6: {
-							  if (StateMaschin==BETRACHTEN ||
-									  StateMaschin==WEISSNEU) {
-								  Kamera.BlickeAuf3(Kugel[6].Pos_xCM(),Kugel[6].Pos_yCM());
-							  } else if (StateMaschin==STOSS) {
-								  Kamera.Verfolge(6);
+                              if (StateMachine==BETRACHTEN ||
+                                      StateMachine==WEISSNEU) {
+                                  Camera.EyesOn3(Ball[6].Pos_xCM(),Ball[6].Pos_yCM());
+                              } else if (StateMachine==STOSS) {
+                                  Camera.Track(6);
 							  }
 						  } break;
 		case S_SP_BALL+7: {
-							  if (StateMaschin==BETRACHTEN ||
-									  StateMaschin==WEISSNEU) {
-								  Kamera.BlickeAuf3(Kugel[7].Pos_xCM(),Kugel[7].Pos_yCM());
-							  } else if (StateMaschin==STOSS) {
-								  Kamera.Verfolge(7);
+                              if (StateMachine==BETRACHTEN ||
+                                      StateMachine==WEISSNEU) {
+                                  Camera.EyesOn3(Ball[7].Pos_xCM(),Ball[7].Pos_yCM());
+                              } else if (StateMachine==STOSS) {
+                                  Camera.Track(7);
 							  }
 						  } break;
 		case S_SP_BALL+8: {
-							  if (StateMaschin==BETRACHTEN ||
-									  StateMaschin==WEISSNEU) {
-								  Kamera.BlickeAuf3(Kugel[8].Pos_xCM(),Kugel[8].Pos_yCM());
-							  } else if (StateMaschin==STOSS) {
-								  Kamera.Verfolge(8);
+                              if (StateMachine==BETRACHTEN ||
+                                      StateMachine==WEISSNEU) {
+                                  Camera.EyesOn3(Ball[8].Pos_xCM(),Ball[8].Pos_yCM());
+                              } else if (StateMachine==STOSS) {
+                                  Camera.Track(8);
 							  }
 						  } break;
 		case S_SP_BALL+9: {
-							  if (StateMaschin==BETRACHTEN ||
-									  StateMaschin==WEISSNEU) {
-								  Kamera.BlickeAuf3(Kugel[9].Pos_xCM(),Kugel[9].Pos_yCM());
-							  } else if (StateMaschin==STOSS) {
-								  Kamera.Verfolge(9);
+                              if (StateMachine==BETRACHTEN ||
+                                      StateMachine==WEISSNEU) {
+                                  Camera.EyesOn3(Ball[9].Pos_xCM(),Ball[9].Pos_yCM());
+                              } else if (StateMachine==STOSS) {
+                                  Camera.Track(9);
 							  }
 						  } break;
 		case S_SP_BALL+10: {
-							   if (StateMaschin==BETRACHTEN ||
-									   StateMaschin==WEISSNEU) {
-								   Kamera.BlickeAuf3(Kugel[10].Pos_xCM(),Kugel[10].Pos_yCM());
-							   } else if (StateMaschin==STOSS) {
-								   Kamera.Verfolge(10);
+                               if (StateMachine==BETRACHTEN ||
+                                       StateMachine==WEISSNEU) {
+                                   Camera.EyesOn3(Ball[10].Pos_xCM(),Ball[10].Pos_yCM());
+                               } else if (StateMachine==STOSS) {
+                                   Camera.Track(10);
 							   }
 						   } break;
 		case S_SP_BALL+11: {
-							   if (StateMaschin==BETRACHTEN ||
-									   StateMaschin==WEISSNEU) {
-								   Kamera.BlickeAuf3(Kugel[11].Pos_xCM(),Kugel[11].Pos_yCM());
-							   } else if (StateMaschin==STOSS) {
-								   Kamera.Verfolge(11);
+                               if (StateMachine==BETRACHTEN ||
+                                       StateMachine==WEISSNEU) {
+                                   Camera.EyesOn3(Ball[11].Pos_xCM(),Ball[11].Pos_yCM());
+                               } else if (StateMachine==STOSS) {
+                                   Camera.Track(11);
 							   }
 						   } break;
 		case S_SP_BALL+12: {
-							   if (StateMaschin==BETRACHTEN ||
-									   StateMaschin==WEISSNEU) {
-								   Kamera.BlickeAuf3(Kugel[12].Pos_xCM(),Kugel[12].Pos_yCM());
-							   } else if (StateMaschin==STOSS) {
-								   Kamera.Verfolge(12);
+                               if (StateMachine==BETRACHTEN ||
+                                       StateMachine==WEISSNEU) {
+                                   Camera.EyesOn3(Ball[12].Pos_xCM(),Ball[12].Pos_yCM());
+                               } else if (StateMachine==STOSS) {
+                                   Camera.Track(12);
 							   }
 						   } break;
 		case S_SP_BALL+13: {
-							   if (StateMaschin==BETRACHTEN ||
-									   StateMaschin==WEISSNEU) {
-								   Kamera.BlickeAuf3(Kugel[13].Pos_xCM(),Kugel[13].Pos_yCM());
-							   } else if (StateMaschin==STOSS) {
-								   Kamera.Verfolge(13);
+                               if (StateMachine==BETRACHTEN ||
+                                       StateMachine==WEISSNEU) {
+                                   Camera.EyesOn3(Ball[13].Pos_xCM(),Ball[13].Pos_yCM());
+                               } else if (StateMachine==STOSS) {
+                                   Camera.Track(13);
 							   }
 						   } break;
 		case S_SP_BALL+14: {
-							   if (StateMaschin==BETRACHTEN ||
-									   StateMaschin==WEISSNEU) {
-								   Kamera.BlickeAuf3(Kugel[14].Pos_xCM(),Kugel[14].Pos_yCM());
-							   } else if (StateMaschin==STOSS) {
-								   Kamera.Verfolge(14);
+                               if (StateMachine==BETRACHTEN ||
+                                       StateMachine==WEISSNEU) {
+                                   Camera.EyesOn3(Ball[14].Pos_xCM(),Ball[14].Pos_yCM());
+                               } else if (StateMachine==STOSS) {
+                                   Camera.Track(14);
 							   }
 						   } break;
 		case S_SP_BALL+15: {
-							   if (StateMaschin==BETRACHTEN ||
-									   StateMaschin==WEISSNEU) {
-								   Kamera.BlickeAuf3(Kugel[15].Pos_xCM(),Kugel[15].Pos_yCM());
-							   } else if (StateMaschin==STOSS) {
-								   Kamera.Verfolge(15);
+                               if (StateMachine==BETRACHTEN ||
+                                       StateMachine==WEISSNEU) {
+                                   Camera.EyesOn3(Ball[15].Pos_xCM(),Ball[15].Pos_yCM());
+                               } else if (StateMachine==STOSS) {
+                                   Camera.Track(15);
 							   }
 						   } break;
 		case S_SP_WEITERSPIELEN: {
 									 NeuAufbauenOderWeiterspielen=0;
 									 NeuAufbauenOderAchtEinsetzen=0;
 									 MenuGesperrt=0;
-									 NeuerMenuZustand();
+                                     NewMenuState();
 								 } break;
 		case S_SP_ACHTEINSETZEN: {
 									 NeuAufbauenOderWeiterspielen=0;
 									 NeuAufbauenOderAchtEinsetzen=0;
 									 MenuGesperrt=0;
 									 AchtEinsetzen();
-									 NeuerMenuZustand();
+                                     NewMenuState();
 								 } break;
 		case S_SP_NEUAUFBAUEN: {
 								   Foul=0;
@@ -2148,26 +2151,26 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 								   LageVerbesserung=0;
 								   NeuAufbauenOderWeiterspielen=0;
 								   NeuAufbauenOderAchtEinsetzen=0;
-								   Spieler1Gewonnen=0;
-								   Spieler2Gewonnen=0;
+                                   Player1Win=0;
+                                   Player2Win=0;
 								   MenuGesperrt=0;
-								   StateMaschin=SCHIEDSRICHTER;
-								   GLint Spieler=Schiedsrichter.FrageNachSpielerAmStoss();
-								   GLint Fouls0=Schiedsrichter.FrageNachFouls(0);
-								   GLint Fouls1=Schiedsrichter.FrageNachFouls(1);
-								   Schiedsrichter.NeuesSpiel(Spiel);
+                                   StateMachine=SCHIEDSRICHTER;
+                                   GLint Spieler=Referee.FrageNachSpielerAmStoss();
+                                   GLint Fouls0=Referee.FrageNachFouls(0);
+                                   GLint Fouls1=Referee.FrageNachFouls(1);
+                                   Referee.NewGame(Spiel);
 								   //SchiedsrichterEntscheidung=0; nur nicht!
-								   Schiedsrichter.SetzeSpielerAmStoss(Spieler);
-								   Schiedsrichter.SetzeFouls(0,Fouls0);
-								   Schiedsrichter.SetzeFouls(1,Fouls1);    
-								   SpielfeldAufbau();
-								   Kamera.ladePosition(4);
-								   NeuerMenuZustand();
+                                   Referee.SetPlayerToStock(Spieler);
+                                   Referee.SetzeFouls(0,Fouls0);
+                                   Referee.SetzeFouls(1,Fouls1);
+                                   BoardLayout();
+                                   Camera.loadPosition(4);
+                                   NewMenuState();
 							   } break;
 		case S_SP_HAUPTMENU:{
 								AusSpiel=0;
-								StateMaschin=START;
-								SetzeMenuZustand(HAUPTMENU);
+                                StateMachine=START;
+                                setMenuState(HAUPTMENU);
 							} break;
 		case S_SP_NEUESSPIEL:{
 								 Foul=0;
@@ -2175,32 +2178,32 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 								 LageVerbesserung=0;
 								 NeuAufbauenOderWeiterspielen=0;
 								 NeuAufbauenOderAchtEinsetzen=0;
-								 Spieler1Gewonnen=0;
-								 Spieler2Gewonnen=0;
+                                 Player1Win=0;
+                                 Player2Win=0;
 								 NeuAufbauenOderWeiterspielen=0;
 								 NeuAufbauenOderAchtEinsetzen=0;
 								 MenuGesperrt=0;
-								 StateMaschin=SCHIEDSRICHTER;
-								 GLint Spieler=Schiedsrichter.FrageNachSpielerAmStoss();
-								 Schiedsrichter.NeuesSpiel(Spiel);
-								 SchiedsrichterEntscheidung=0;
-								 Schiedsrichter.SetzeSpielerAmStoss(1-Spieler);
-								 SpielfeldAufbau();
-								 Kamera.ladePosition(4);
-								 NeuerMenuZustand();
+                                 StateMachine=SCHIEDSRICHTER;
+                                 GLint Spieler=Referee.FrageNachSpielerAmStoss();
+                                 Referee.NewGame(Spiel);
+                                 RefereeDecision=0;
+                                 Referee.SetPlayerToStock(1-Spieler);
+                                 BoardLayout();
+                                 Camera.loadPosition(4);
+                                 NewMenuState();
 							 } break;
 		case S_SP_NEUEACHTBALLAUFSTELLUNG:{
-											  if (StateMaschin==BETRACHTEN||
-													  StateMaschin==WEISSNEU) {
+                                              if (StateMachine==BETRACHTEN||
+                                                      StateMachine==WEISSNEU) {
 												  Spiel=ACHTBALL;
-												  SpielfeldAufbau();
+                                                  BoardLayout();
 											  }
 										  } break;
 		case S_SP_NEUENEUNBALLAUFSTELLUNG:{
-											  if (StateMaschin==BETRACHTEN||
-													  StateMaschin==WEISSNEU) {
+                                              if (StateMachine==BETRACHTEN||
+                                                      StateMachine==WEISSNEU) {
 												  Spiel=NEUNBALL;
-												  SpielfeldAufbau();
+                                                  BoardLayout();
 											  }
 										  } break;
 		case S_SPIELER1HERHOEREN:{
@@ -2224,10 +2227,10 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 											//T_NetzwerkSpielerName.Herhoeren();
 										} break;
 		case S_H_TASTENBELEGUNGEN: {
-									   SetzeMenuZustand(HILFETASTENBELEGUNGEN);
+                                       setMenuState(HILFETASTENBELEGUNGEN);
 								   } break;
 		case S_H_BILLARDREGELN: {
-									SetzeMenuZustand(HILFEREGELN1);
+                                    setMenuState(HILFEREGELN1);
 								} break;
 		case S_H_TUTORIAL: {
 							   Foul=0;
@@ -2235,101 +2238,101 @@ void Menu::SignalAusfuehrung(GLint Signal) {
 							   LageVerbesserung=0;
 							   NeuAufbauenOderWeiterspielen=0;
 							   NeuAufbauenOderAchtEinsetzen=0;
-							   Spieler1Gewonnen=0;
-							   Spieler2Gewonnen=0;
+                               Player1Win=0;
+                               Player2Win=0;
 							   MenuGesperrt=0;
-							   SpielModus=TUTORIAL;
-							   StateMaschin=BETRACHTEN;
+                               GameMode=TUTORIAL;
+                               StateMachine=BETRACHTEN;
 							   Spiel=ACHTBALL;
-							   SpielfeldAufbau();
-							   Schiedsrichter.NeuesSpiel(Spiel);
-							   SchiedsrichterEntscheidung=0;
-							   Kamera.ladePosition(4);
-							   SetzeMenuZustand(SPIEL);
+                               BoardLayout();
+                               Referee.NewGame(Spiel);
+                               RefereeDecision=0;
+                               Camera.loadPosition(4);
+                               setMenuState(SPIEL);
 						   } break;
 		case S_H_ZUHILFE: {
-							  SetzeMenuZustand(HILFE);
+                              setMenuState(HILFE);
 						  } break;
 		case S_H_E1_N: {
-						   SetzeMenuZustand(HILFEEINFUEHRUNG2);
+                           setMenuState(HILFEEINFUEHRUNG2);
 					   } break;
 		case S_H_E2_N: {
-						   SetzeMenuZustand(HILFEEINFUEHRUNG3);
+                           setMenuState(HILFEEINFUEHRUNG3);
 					   } break;
 		case S_H_E2_L: {
-						   SetzeMenuZustand(HILFEEINFUEHRUNG1);
+                           setMenuState(HILFEEINFUEHRUNG1);
 					   } break;
 		case S_H_E3_N: {
-						   SetzeMenuZustand(HILFEEINFUEHRUNG4);
+                           setMenuState(HILFEEINFUEHRUNG4);
 					   } break;
 		case S_H_E3_L: {
-						   SetzeMenuZustand(HILFEEINFUEHRUNG2);
+                           setMenuState(HILFEEINFUEHRUNG2);
 					   } break;
 		case S_H_E4_N: {
-						   SetzeMenuZustand(HILFEEINFUEHRUNG5);
+                           setMenuState(HILFEEINFUEHRUNG5);
 					   } break;
 		case S_H_E4_L: {
-						   SetzeMenuZustand(HILFEEINFUEHRUNG3);
+                           setMenuState(HILFEEINFUEHRUNG3);
 					   } break;
 		case S_H_E5_N: {
-						   SetzeMenuZustand(HILFEEINFUEHRUNG6);
+                           setMenuState(HILFEEINFUEHRUNG6);
 					   } break;
 		case S_H_E5_L: {
-						   SetzeMenuZustand(HILFEEINFUEHRUNG4);
+                           setMenuState(HILFEEINFUEHRUNG4);
 					   } break;
 		case S_H_E6_N: {
-						   SetzeMenuZustand(HILFEEINFUEHRUNG7);
+                           setMenuState(HILFEEINFUEHRUNG7);
 					   } break;
 		case S_H_E6_L: {
-						   SetzeMenuZustand(HILFEEINFUEHRUNG5);
+                           setMenuState(HILFEEINFUEHRUNG5);
 					   } break;
 		case S_H_R1_N: {
-						   SetzeMenuZustand(HILFEREGELN2);
+                           setMenuState(HILFEREGELN2);
 					   } break;
 		case S_H_R2_N: {
-						   SetzeMenuZustand(HILFEREGELN3);
+                           setMenuState(HILFEREGELN3);
 					   } break;
 		case S_H_R2_L: {
-						   SetzeMenuZustand(HILFEREGELN1);
+                           setMenuState(HILFEREGELN1);
 					   } break;
 		case S_H_R3_N: {
-						   SetzeMenuZustand(HILFEREGELN4);
+                           setMenuState(HILFEREGELN4);
 					   } break;
 		case S_H_R3_L: {
-						   SetzeMenuZustand(HILFEREGELN2);
+                           setMenuState(HILFEREGELN2);
 					   } break;
 		case S_H_R4_N: {
-						   SetzeMenuZustand(HILFEREGELN5);
+                           setMenuState(HILFEREGELN5);
 					   } break;
 		case S_H_R4_L: {
-						   SetzeMenuZustand(HILFEREGELN3);
+                           setMenuState(HILFEREGELN3);
 					   } break;
 		case S_H_R5_N: {
-						   SetzeMenuZustand(HILFEREGELN6);
+                           setMenuState(HILFEREGELN6);
 					   } break;
 		case S_H_R5_L: {
-						   SetzeMenuZustand(HILFEREGELN4);
+                           setMenuState(HILFEREGELN4);
 					   } break;
 		case S_H_R6_N: {
-						   SetzeMenuZustand(HILFEREGELN7);
+                           setMenuState(HILFEREGELN7);
 					   } break;
 		case S_H_R6_L: {
-						   SetzeMenuZustand(HILFEREGELN5);
+                           setMenuState(HILFEREGELN5);
 					   } break;
 
 		default:{
 					if (Signal>=900 && Signal<990) {
-						ladeSprache(Signal);
+                        LoadLanguage(Signal);
 						for (GLint dl=0 ; dl < 1000 ; dl++ ) {
 							if (!TextfeldArray[dl]) continue;
-							TextfeldArray[dl]->GeneriereDisplayList();
+                            TextfeldArray[dl]->GenerateDisplayList();
 							printf("."); fflush(stdout);
 						}
-						if (Sprache) SetzeMenuZustand(EINSTELLUNGEN);
-						else SignalAusfuehrung(S_H_TUTORIAL);
+                        if (Language) setMenuState(EINSTELLUNGEN);
+                        else SignalExecution(S_H_TUTORIAL);
 						//SetzeMenuZustand(HAUPTMENU);
-						Sprache=Signal;
-						SchreibeKonfiguration();
+                        Language=Signal;
+						WriteConfig();
 					}
 				} break;
 	}
@@ -2342,7 +2345,7 @@ GLint Menu::KeyboardTaste (unsigned char Taste,int,int){
 
 	while (!Reaktion && TextfeldNr<1000) {
 		if( TextfeldArray[TextfeldNr] ) 
-			Reaktion = TextfeldArray[TextfeldNr]->Zeichen(Taste);
+            Reaktion = TextfeldArray[TextfeldNr]->Scale(Taste);
 
 		//if (Reaktion) {
 		//  printf("\nReaktion von %i\n",TextfeldNr);
@@ -2355,19 +2358,19 @@ GLint Menu::KeyboardTaste (unsigned char Taste,int,int){
 	if (Reaktion) return 1;
 
 	if (MenuGesperrt || 
-			MenuZustand!=SPIEL) {
+            MenuState!=SPIEL) {
 		return 1;
 	}
 
 	//Esc-Sequenzen ;)
 
-	switch (MenuZustand) {
+    switch (MenuState) {
 
 		case STARTBILDSCHIRM: {
 								  switch (Taste) {
 									  case 27: {
-												   MenuZustand=HAUPTMENU;
-												   NeuerMenuZustand();
+                                                   MenuState=HAUPTMENU;
+                                                   NewMenuState();
 												   return 1;
 											   } break;
 								  }
@@ -2376,8 +2379,8 @@ GLint Menu::KeyboardTaste (unsigned char Taste,int,int){
 		case HAUPTMENU:{
 						   switch (Taste) {
 							   case 27: {
-											MenuZustand=BEENDEN;
-											NeuerMenuZustand();
+                                            MenuState=BEENDEN;
+                                            NewMenuState();
 											return 1;
 										} break;
 						   }
@@ -2386,8 +2389,8 @@ GLint Menu::KeyboardTaste (unsigned char Taste,int,int){
 		case TRAINING:{
 						  switch (Taste) {
 							  case 27: {
-										   MenuZustand=HAUPTMENU;
-										   NeuerMenuZustand();
+                                           MenuState=HAUPTMENU;
+                                           NewMenuState();
 										   return 1;
 									   } break;
 						  }
@@ -2396,8 +2399,8 @@ GLint Menu::KeyboardTaste (unsigned char Taste,int,int){
 		case ZWEISPIELER:{
 							 switch (Taste) {
 								 case 27: {
-											  MenuZustand=HAUPTMENU;
-											  NeuerMenuZustand();
+                                              MenuState=HAUPTMENU;
+                                              NewMenuState();
 											  return 1;
 										  } break;
 							 }
@@ -2406,8 +2409,8 @@ GLint Menu::KeyboardTaste (unsigned char Taste,int,int){
 		case NETZWERKHAUPT:{
 							   switch (Taste) {
 								   case 27: {
-												MenuZustand=HAUPTMENU;
-												NeuerMenuZustand();
+                                                MenuState=HAUPTMENU;
+                                                NewMenuState();
 												return 1;
 											} break;
 							   }
@@ -2416,8 +2419,8 @@ GLint Menu::KeyboardTaste (unsigned char Taste,int,int){
 		case NETZWERKNEU:{
 							 switch (Taste) {
 								 case 27: {
-											  MenuZustand=NETZWERKHAUPT;
-											  NeuerMenuZustand();
+                                              MenuState=NETZWERKHAUPT;
+                                              NewMenuState();
 											  return 1;
 										  } break;
 							 }
@@ -2426,8 +2429,8 @@ GLint Menu::KeyboardTaste (unsigned char Taste,int,int){
 		case NETZWERKBEITRETEN:{
 								   switch (Taste) {
 									   case 27: {
-													MenuZustand=NETZWERKHAUPT;
-													NeuerMenuZustand();
+                                                    MenuState=NETZWERKHAUPT;
+                                                    NewMenuState();
 													return 1;
 												} break;
 								   }
@@ -2436,8 +2439,8 @@ GLint Menu::KeyboardTaste (unsigned char Taste,int,int){
 		case BEENDEN:{
 						 switch (Taste) {
 							 case 27: {
-										  MenuZustand=HAUPTMENU;
-										  NeuerMenuZustand();
+                                          MenuState=HAUPTMENU;
+                                          NewMenuState();
 										  return 1;
 									  } break;
 						 }
@@ -2454,7 +2457,7 @@ GLint Menu::KeyboardTaste (unsigned char Taste,int,int){
 	return 0;
 }
 
-void Menu::SetzeFPS(GLint fps) {
+void Menu::SetFPS(GLint fps) {
 	char temp[]={0,0,0,0,0,0,0,0,0,0};
 	sprintf(temp,"%i fps",fps);
 	TextfeldArray[T_FPS]->SetzeText(temp);

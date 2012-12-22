@@ -21,74 +21,76 @@
 
 
 void StartHandling() {
-	Kamera.Rundflug(Faktor);
+    Camera.ScenicFlight(Factor);
 	//Menu.Update(Faktor);
 }
 
-void BetrachtenHandling() {
+void ConsiderHandling() {
 	//Menu.Update(Faktor);
-	if (Taste_Pfeil_Oben)  {Kamera.Beweg_Vor(Faktor);}   
-	if (Taste_Pfeil_Unten) {Kamera.Beweg_Zurueck(Faktor);}
-	if (Taste_Pfeil_Rechts){Kamera.Beweg_Rechts(Faktor);}
-	if (Taste_Pfeil_Links) {Kamera.Beweg_Links(Faktor);}
-	if (Taste_Shift)       {Kamera.Beweg_Hoch(Faktor);}
-	if (Taste_Strg)        {Kamera.Beweg_Runter(Faktor);}
-	if (Taste_Bild_Auf)    {Kamera.Beweg_Rein(Faktor);}
-	if (Taste_Bild_Ab)     {Kamera.Beweg_Raus(Faktor);}
-	if (Taste_Pos1)        {Kamera.Zoom_Rein(Faktor);}
-	if (Taste_Ende)        {Kamera.Zoom_Raus(Faktor);}
+    if (KEY_UP)  {Camera.Move_Front(Factor);}
+    if (KEY_DOWN) {Camera.Move_Back(Factor);}
+    if (KEY_RIGHT){Camera.Move_Right(Factor);}
+    if (KEY_LEFT) {Camera.Move_Left(Factor);}
+    if (KEY_SHIFT)       {Camera.Move_Up(Factor);}
+    if (KEY_CTRL)        {Camera.Move_Down(Factor);}
+    if (KEY_Bild_ON)    {Camera.Move_In(Factor);}
+    if (KEY_Bild_Ab)     {Camera.Move_Out(Factor);}
+    if (KEY_Pos1)        {Camera.Zoom_In(Factor);}
+    if (KEY_END)        {Camera.Zoom_Out(Factor);}
 }
 
-void ZielenHandling() {
-	if (Taste_Pfeil_Oben)  {Kamera.Beweg_Rein(Faktor);}   
-	if (Taste_Pfeil_Unten) {Kamera.Beweg_Raus(Faktor);}
-	if (Taste_Pfeil_Rechts){Kamera.Schwenk_Rechts(2*Faktor,Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());}
-	if (Taste_Pfeil_Links) {Kamera.Schwenk_Links(2*Faktor,Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());}
-	if (Taste_Shift)       {Kamera.Schwenk_Runter(Faktor,Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());}
-	if (Taste_Strg)        {Kamera.Schwenk_Hoch(Faktor,Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());}
-	if (Taste_Bild_Auf)    {Kamera.Beweg_Rein(Faktor);}
-	if (Taste_Bild_Ab)     {Kamera.Beweg_Raus(Faktor);}
-	if (Taste_Pos1)        {Kamera.Vertigo_Rein(Faktor);}
-	if (Taste_Ende)        {Kamera.Vertigo_Raus(Faktor);}
+void AimHandling() {
+    if (KEY_UP)  {Camera.Move_In(Factor);}
+    if (KEY_DOWN) {Camera.Move_Out(Factor);}
+    if (KEY_RIGHT){Camera.SwingRight(2*Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
+    if (KEY_LEFT) {Camera.SwingLeft(2*Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
+    if (KEY_SHIFT)       {Camera.SwingDown(Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
+    if (KEY_CTRL)        {Camera.SwingUp(Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
+    if (KEY_Bild_ON)    {Camera.Move_In(Factor);}
+    if (KEY_Bild_Ab)     {Camera.Move_Out(Factor);}
+    if (KEY_Pos1)        {Camera.Vertigo_In(Factor);}
+    if (KEY_END)        {Camera.Vertigo_Out(Factor);}
 }
 
-void AusholenHandling() {
-	if (Taste_Pfeil_Oben)  {Kamera.Beweg_Rein(Faktor);}   
-	if (Taste_Pfeil_Unten) {Kamera.Beweg_Raus(Faktor);}
-	if (Taste_Pfeil_Rechts){Kamera.Schwenk_Rechts(2*Faktor,Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());}
-	if (Taste_Pfeil_Links) {Kamera.Schwenk_Links(2*Faktor,Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());}
-	if (Taste_Shift)       {Kamera.Schwenk_Runter(Faktor,Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());}
-	if (Taste_Strg)        {Kamera.Schwenk_Hoch(Faktor,Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());}
-	if (Taste_Bild_Auf)    {Kamera.Beweg_Rein(Faktor);}
-	if (Taste_Bild_Ab)     {Kamera.Beweg_Raus(Faktor);}
-	if (Taste_Pos1)        {Kamera.Zoom_Rein(Faktor);}
-	if (Taste_Ende)        {Kamera.Zoom_Raus(Faktor);}
+//后摆处理
+void BackswingHandling() {
+    if (KEY_UP)  {Camera.Move_In(Factor);}
+    if (KEY_DOWN) {Camera.Move_Out(Factor);}
+    if (KEY_RIGHT){Camera.SwingRight(2*Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
+    if (KEY_LEFT) {Camera.SwingLeft(2*Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
+    if (KEY_SHIFT)       {Camera.SwingDown(Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
+    if (KEY_CTRL)        {Camera.SwingUp(Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
+    if (KEY_Bild_ON)    {Camera.Move_In(Factor);}
+    if (KEY_Bild_Ab)     {Camera.Move_Out(Factor);}
+    if (KEY_Pos1)        {Camera.Zoom_In(Factor);}
+    if (KEY_END)        {Camera.Zoom_Out(Factor);}
 
-	AusholStaerke=MaxAusholStaerke*(1-exp((-FrameZeitpunkt+AusholStartzeit)/400.0));
-	Anzeige.setzeStossStaerke(AusholStaerke/3.333);
+	AusholStaerke=MaxAusholStaerke*(1-exp((-FrameTimePoint+AusholStartTime)/400.0));
+    Display.setShockStaerke(AusholStaerke/3.333);
 
 }
 
-void StossHandling() {
+//击球处理
+void ShockHandling() {
 
 	AllerersterStoss=0;
 	//WeisseVersetzbar=0;
 
-	if (Taste_Pfeil_Oben)  {Kamera.Beweg_Vor(Faktor);}   
-	if (Taste_Pfeil_Unten) {Kamera.Beweg_Zurueck(Faktor);}
-	if (Taste_Pfeil_Rechts){Kamera.Beweg_Rechts(Faktor);}
-	if (Taste_Pfeil_Links) {Kamera.Beweg_Links(Faktor);}
-	if (Taste_Shift)       {Kamera.Beweg_Hoch(Faktor);}
-	if (Taste_Strg)        {Kamera.Beweg_Runter(Faktor);}
-	if (Taste_Bild_Auf)    {Kamera.Beweg_Rein(Faktor);}
-	if (Taste_Bild_Ab)     {Kamera.Beweg_Raus(Faktor);}
-	if (Taste_Pos1)        {Kamera.Zoom_Rein(Faktor);}
-	if (Taste_Ende)        {Kamera.Zoom_Raus(Faktor);}
+    if (KEY_UP)  {Camera.Move_Front(Factor);}
+    if (KEY_DOWN) {Camera.Move_Back(Factor);}
+    if (KEY_RIGHT){Camera.Move_Right(Factor);}
+    if (KEY_LEFT) {Camera.Move_Left(Factor);}
+    if (KEY_SHIFT)       {Camera.Move_Up(Factor);}
+    if (KEY_CTRL)        {Camera.Move_Down(Factor);}
+    if (KEY_Bild_ON)    {Camera.Move_In(Factor);}
+    if (KEY_Bild_Ab)     {Camera.Move_Out(Factor);}
+    if (KEY_Pos1)        {Camera.Zoom_In(Factor);}
+    if (KEY_END)        {Camera.Zoom_Out(Factor);}
 
 	//Frames++;                       // F"ur die Frames/sec-Anzeige
 
 	// Zeit seit Stossbeginn
-	GLint Zeit=FrameZeitpunkt-Startzeit;
+    GLint Zeit=FrameTimePoint-StartTime;  //time
 
 	// Letzten Zustand noch zeichnen, wenn Stoss
 	if (Zeit>Stossdauer) {Zeit=Stossdauer;} // eigentlich schon vorbei
@@ -96,32 +98,32 @@ void StossHandling() {
 	//printf("%i-%i=%i: ",FrameZeitpunkt,Startzeit,Zeit);
 
 	for (int Kugelnr=0;Kugelnr<16;Kugelnr++) { // Alle Kugeln neu positionieren
-		if (Bewegungstabelle[Zeit][Kugelnr][2]<=0) {
+		if (LightingTable[Zeit][Kugelnr][2]<=0) {
 			//if (Kugelnr<8)
 			//printf("%i,%i ",(GLint)Bewegungstabelle[Zeit][Kugelnr][0],(GLint)Bewegungstabelle[Zeit][Kugelnr][1]);
-			Kugel[Kugelnr].neuePositionD(Bewegungstabelle[Zeit][Kugelnr]);
+            Ball[Kugelnr].newPositionD(LightingTable[Zeit][Kugelnr]);
 		}
 	}
 	//printf("\n");
 
 	//DelayAusgleich=1;
 
-	Anzeige.setzeStossStaerke(AusholStaerke/3.333-Zeit/3.0);
+    Display.setShockStaerke(AusholStaerke/3.333-Zeit/3.0);
 
 	if (!(Zeit & 31)) {
 		GLint neu=0;
 		for (int i=0;i<16;i++) {
-			if (KugelnImSpiel[i] && !KugelnVersenkt[i] && (Kugel[i].Pos_x()==3000)) {
-				KugelnVersenkt[i]=1;
+			if (BallsInGame[i] && !BallsSunk[i] && (Ball[i].Pos_x()==3000)) {
+				BallsSunk[i]=1;
 				neu=1;
 			}
 		}
-		if (neu) {Menu.NeuerMenuZustand();}
+        if (neu) {Menu.NewMenuState();}
 	}
 
 
 	if (Zeit==Stossdauer &&
-			!(SpielModus == TUTORIAL && FrameZeitpunkt-Startzeit < 1900)) {
+			!(GameMode == TUTORIAL && FrameTimePoint-StartTime < 1900)) {
 		// Animation schon fertig?
 
 		//#ifndef _WIN32 
@@ -129,112 +131,112 @@ void StossHandling() {
 		//#endif    
 
 		for (int i=0;i<16;i++) {
-			if (KugelnImSpiel[i] && !KugelnVersenkt[i] && (Kugel[i].Pos_x()==3000)) {
-				KugelnVersenkt[i]=1;
+			if (BallsInGame[i] && !BallsSunk[i] && (Ball[i].Pos_x()==3000)) {
+				BallsSunk[i]=1;
 			}
 		}
 
-		if (SpielModus == TRAININGSSPIEL||SpielModus == TUTORIAL) {
-			if (Kugel[0].Pos_x()==3000) {
-				StateMaschin=WEISSNEU;
-				Anzeige.setzeStossStaerke(0.0);
+		if (GameMode == TRAININGSSPIEL||GameMode == TUTORIAL) {
+			if (Ball[0].Pos_x()==3000) {
+				StateMachine=WEISSNEU;
+                Display.setShockStaerke(0.0);
 				LageVerbesserung=1;
 				LageVerbesserungKopffeld=1;
 				WeisseEinsetzen();
-				Menu.NeuerMenuZustand();
+                Menu.NewMenuState();
 			} else {
-				StateMaschin=BETRACHTEN;
-				Anzeige.setzeStossStaerke(0.0);
-				Menu.NeuerMenuZustand();
+				StateMachine=BETRACHTEN;
+                Display.setShockStaerke(0.0);
+                Menu.NewMenuState();
 			}
-		} else if (Schiedsrichter.Entscheidung()) {
-			StateMaschin=SCHIEDSRICHTER;
-			Anzeige.setzeStossStaerke(0.0);
+		} else if (Referee.Entscheidung()) {
+			StateMachine=SCHIEDSRICHTER;
+            Display.setShockStaerke(0.0);
 		} else {
-			StateMaschin=BETRACHTEN;
-			Anzeige.setzeStossStaerke(0.0);
-			Menu.NeuerMenuZustand();
+			StateMachine=BETRACHTEN;
+            Display.setShockStaerke(0.0);
+            Menu.NewMenuState();
 		}
 	}
 }
 
 void WeissneuHandling() {
 
-	if (SpielModus==TRAININGSSPIEL) {
+	if (GameMode==TRAININGSSPIEL) {
 		LageVerbesserungKopffeld=0;
 		LageVerbesserung=1;
 	}
 
-	GLfloat x=Kugel[0].Pos_xCM();
-	GLfloat y=Kugel[0].Pos_yCM();
+	GLfloat x=Ball[0].Pos_xCM();
+	GLfloat y=Ball[0].Pos_yCM();
 
-	GLfloat Faktor2=sqrt((Kugel[0].Pos_xCM()-Kamera.Pos_xCM())*
-			(Kugel[0].Pos_xCM()-Kamera.Pos_xCM())+
-			(Kugel[0].Pos_yCM()-Kamera.Pos_yCM())*
-			(Kugel[0].Pos_yCM()-Kamera.Pos_yCM())+
-			Kamera.Pos_zCM()*Kamera.Pos_zCM());
+	GLfloat Faktor2=sqrt((Ball[0].Pos_xCM()-Camera.Pos_xCM())*
+			(Ball[0].Pos_xCM()-Camera.Pos_xCM())+
+			(Ball[0].Pos_yCM()-Camera.Pos_yCM())*
+			(Ball[0].Pos_yCM()-Camera.Pos_yCM())+
+			Camera.Pos_zCM()*Camera.Pos_zCM());
 
 	Faktor2*=.005;
 
-	if (Taste_Pfeil_Oben) {
-		x+=.3*Faktor*Faktor2*sin(Kamera.Beta*M_PI/180.0);
-		y+=.3*Faktor*Faktor2*cos(Kamera.Beta*M_PI/180.0);
+	if (KEY_UP) {
+		x+=.3*Factor*Faktor2*sin(Camera.Beta*M_PI/180.0);
+		y+=.3*Factor*Faktor2*cos(Camera.Beta*M_PI/180.0);
 	}
-	if (Taste_Pfeil_Unten) {
-		x-=.3*Faktor*Faktor2*sin(Kamera.Beta*M_PI/180.0);
-		y-=.3*Faktor*Faktor2*cos(Kamera.Beta*M_PI/180.0);
+	if (KEY_DOWN) {
+		x-=.3*Factor*Faktor2*sin(Camera.Beta*M_PI/180.0);
+		y-=.3*Factor*Faktor2*cos(Camera.Beta*M_PI/180.0);
 	}
-	if (Taste_Pfeil_Links) {
-		x-=.3*Faktor*Faktor2*cos(Kamera.Beta*M_PI/180.0);
-		y+=.3*Faktor*Faktor2*sin(Kamera.Beta*M_PI/180.0);
+	if (KEY_LEFT) {
+		x-=.3*Factor*Faktor2*cos(Camera.Beta*M_PI/180.0);
+		y+=.3*Factor*Faktor2*sin(Camera.Beta*M_PI/180.0);
 	}
-	if (Taste_Pfeil_Rechts) {
-		x+=.3*Faktor*Faktor2*cos(Kamera.Beta*M_PI/180.0);
-		y-=.3*Faktor*Faktor2*sin(Kamera.Beta*M_PI/180.0);
+	if (KEY_RIGHT) {
+		x+=.3*Factor*Faktor2*cos(Camera.Beta*M_PI/180.0);
+		y-=.3*Factor*Faktor2*sin(Camera.Beta*M_PI/180.0);
 	}
 
 	GLint ungueltig=0;
 
 	if (x<-124 || x>124 || (x>-63.5 && LageVerbesserungKopffeld)) {
-		x=Kugel[0].Pos_xCM();
+		x=Ball[0].Pos_xCM();
 	}
 	if (y<-60.5||y>60.5) {
-		y=Kugel[0].Pos_yCM();
+		y=Ball[0].Pos_yCM();
 	}
 
 	for (int nr=1;nr<16;nr++) {
-		if ((Kugel[nr].Pos_xCM()-x)*(Kugel[nr].Pos_xCM()-x)+
-				(Kugel[nr].Pos_yCM()-y)*(Kugel[nr].Pos_yCM()-y)<32.7) {
+		if ((Ball[nr].Pos_xCM()-x)*(Ball[nr].Pos_xCM()-x)+
+				(Ball[nr].Pos_yCM()-y)*(Ball[nr].Pos_yCM()-y)<32.7) {
 			ungueltig=1;
 		}
 	}
 
 	if (!ungueltig) {
-		Kugel[0].neuePositionCM(x,y);
+		Ball[0].newPositionCM(x,y);
 	}
 
-	if (Taste_Shift)       {Kamera.Beweg_Hoch(Faktor);}
-	if (Taste_Strg)        {Kamera.Beweg_Runter(Faktor);}
-	if (Taste_Bild_Auf)    {Kamera.Beweg_Rein(Faktor);}
-	if (Taste_Bild_Ab)     {Kamera.Beweg_Raus(Faktor);}
-	if (Taste_Pos1)        {Kamera.Zoom_Rein(Faktor);}
-	if (Taste_Ende)        {Kamera.Zoom_Raus(Faktor);}
+    if (KEY_SHIFT)       {Camera.Move_Up(Factor);}
+    if (KEY_CTRL)        {Camera.Move_Down(Factor);}
+    if (KEY_Bild_ON)    {Camera.Move_In(Factor);}
+    if (KEY_Bild_Ab)     {Camera.Move_Out(Factor);}
+    if (KEY_Pos1)        {Camera.Zoom_In(Factor);}
+    if (KEY_END)        {Camera.Zoom_Out(Factor);}
 }
 
-void SchiedsrichterHandling() {
-	if (SchiedsrichterEntscheidung == -1) {
-		SchiedsrichterEntscheidung = Schiedsrichter.Entscheidung();
+void RefereeHandling() {
+	if (RefereeDecision == -1) {
+		RefereeDecision = Referee.Entscheidung();
 
-		AufnahmeWechsel = SchiedsrichterEntscheidung & 1;
-		Foul = SchiedsrichterEntscheidung & 2;
-		LageVerbesserungKopffeld = SchiedsrichterEntscheidung & 4;
-		LageVerbesserung = SchiedsrichterEntscheidung & 8;
-		NeuAufbauenOderWeiterspielen = SchiedsrichterEntscheidung & 16;
-		NeuAufbauenOderAchtEinsetzen = SchiedsrichterEntscheidung & 32;
-		Spieler1Gewonnen = SchiedsrichterEntscheidung & 64;
-		Spieler2Gewonnen = SchiedsrichterEntscheidung & 128;
+		RecodingChanges = RefereeDecision & 1;
+		Foul = RefereeDecision & 2;
+		LageVerbesserungKopffeld = RefereeDecision & 4;
+		LageVerbesserung = RefereeDecision & 8;
+		NeuAufbauenOderWeiterspielen = RefereeDecision & 16;
+		NeuAufbauenOderAchtEinsetzen = RefereeDecision & 32;
+		Player1Win = RefereeDecision & 64;
+		Player2Win = RefereeDecision & 128;
 
-		Menu.NeuerMenuZustand();
+        Menu.NewMenuState();
 
 	}
 }

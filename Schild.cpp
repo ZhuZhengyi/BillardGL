@@ -13,10 +13,10 @@
 #endif
 
 
-Schild::Schild() {
+Scale::Scale() {
 	SchildIndex=0;
 	SchildTyp=0;
-	Aspekt=0;
+    Aspect=0;
 	ax=ay=bx=by=0.0;
 	Alpha=0.0;
 	soll_ax=soll_ay=soll_bx=soll_by=0.0;
@@ -30,7 +30,7 @@ Schild::Schild() {
 	//
 }
 
-void Schild::Initialisiere(GLint TexGr,
+void Scale::Initialisiere(GLint TexGr,
 		char Name[],
 		char AlphaName[]){
 	FMatrix texr,texg,texb,texa;     // Matrix-Bilder, in die die Textur kommt
@@ -60,7 +60,7 @@ void Schild::Initialisiere(GLint TexGr,
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
 
-	Aspekt=(texr.nch+1.0)/(texr.nrh+1.0);
+    Aspect=(texr.nch+1.0)/(texr.nrh+1.0);
 
 	texr.free_FMatrix();
 	texg.free_FMatrix();
@@ -79,7 +79,7 @@ void Schild::Initialisiere(GLint TexGr,
 
 }
 
-void Schild::Initialisiere(GLint TexGr,
+void Scale::Initialisiere(GLint TexGr,
 		char Name[]){
 	FMatrix texr,texg,texb;     // Matrix-Bilder, in die die Textur kommt
 	if (!SchildIndex) {
@@ -106,7 +106,7 @@ void Schild::Initialisiere(GLint TexGr,
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
 
-	Aspekt=(texr.nch+1.0)/(texr.nrh+1.0);
+    Aspect=(texr.nch+1.0)/(texr.nrh+1.0);
 
 	texr.free_FMatrix();
 	texg.free_FMatrix();
@@ -123,11 +123,11 @@ void Schild::Initialisiere(GLint TexGr,
 	SchildTyp=1;
 }
 
-void Schild::InitialisiereLogo() {
+void Scale::InitialisiereLogo() {
 	if (!SchildIndex) {
 		SchildIndex=glGenLists(1);
 	}
-	Textur=logotextur;
+	Textur=LogoTexture;
 	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
 	glBindTexture(GL_TEXTURE_2D,Textur);
 	glEnable(GL_TEXTURE_2D);
@@ -141,7 +141,7 @@ void Schild::InitialisiereLogo() {
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
 
-	Aspekt=4;
+    Aspect=4;
 
 	ax=0; alt_ax=0; soll_ax=0;
 	ay=0, alt_ay=0; soll_ay=0;
@@ -154,7 +154,7 @@ void Schild::InitialisiereLogo() {
 	SchildTyp=1;
 }
 
-void Schild::InitialisiereBuchstabe(GLint TexGr,
+void Scale::InitialisiereBuchstabe(GLint TexGr,
 		char Name[]){
 	FMatrix texr,texg,texb;     // Matrix-Bilder, in die die Textur kommt
 	if (!SchildIndex) {
@@ -181,7 +181,7 @@ void Schild::InitialisiereBuchstabe(GLint TexGr,
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
 
-	Aspekt=(texr.nch+1.0)/(texr.nrh+1.0);
+    Aspect=(texr.nch+1.0)/(texr.nrh+1.0);
 
 	texr.free_FMatrix();
 	texg.free_FMatrix();
@@ -198,7 +198,7 @@ void Schild::InitialisiereBuchstabe(GLint TexGr,
 	SchildTyp=1;
 }
 
-void Schild::Initialisiere(GLint TexGr,
+void Scale::Initialisiere(GLint TexGr,
 		char Name[],
 		char Land){
 	Land='c';
@@ -227,7 +227,7 @@ void Schild::Initialisiere(GLint TexGr,
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
 
-	Aspekt=(texr.nch+1.0)/(texr.nrh+1.0);
+    Aspect=(texr.nch+1.0)/(texr.nrh+1.0);
 
 	texr.free_FMatrix();
 	texg.free_FMatrix();
@@ -244,7 +244,7 @@ void Schild::Initialisiere(GLint TexGr,
 	SchildTyp=1;
 }
 
-void Schild::Initialisiere(){
+void Scale::Initialisiere(){
 	if (!SchildIndex) {
 		SchildIndex=glGenLists(1);
 	}
@@ -266,15 +266,15 @@ void Schild::Initialisiere(){
 	//Alpha=alt_Alpha=soll_Alpha=EINGEBLENDET;
 	InAnimation=0; 
 
-	Aspekt=0.0;
+    Aspect=0.0;
 
 	SchildTyp=3;
 }
 
-void Schild::KopieVon(Schild Vorbild) {
+void Scale::CopyFrom(Scale Vorbild) {
 	SchildIndex=Vorbild.SchildIndex;
 	SchildTyp=Vorbild.SchildTyp;
-	Aspekt=Vorbild.Aspekt;
+    Aspect=Vorbild.Aspect;
 	ax=alt_ax=soll_ax=0;
 	ay=alt_ay=soll_ay=0;
 	bx=alt_bx=soll_bx=0;
@@ -284,7 +284,7 @@ void Schild::KopieVon(Schild Vorbild) {
 	Signal=0;
 }
 
-void Schild::male(){
+void Scale::draw(){
 	if (Alpha) {
 		glPushMatrix();
 		glTranslatef(ax,ay,0);
@@ -295,7 +295,7 @@ void Schild::male(){
 	}
 }
 
-void Schild::Positioniere(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
+void Scale::Positioning(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 	// Nur wenn neue Position
 	/*
 	   if (soll_ax != ax_ ||
@@ -308,10 +308,10 @@ void Schild::Positioniere(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 		//ax_,ay_,bx_,by_,soll_ax,soll_ay,soll_bx,soll_by);
 
 		// Korrigiere Aspekt
-		if (Aspekt!=0.0 && Aspekt!=(bx_-ax_)/(by_-ay_)) {
+        if (Aspect!=0.0 && Aspect!=(bx_-ax_)/(by_-ay_)) {
 			GLfloat cx=(ax_+bx_)*.5;
-			ax_=cx-Aspekt*(by_-ay_)*.5;
-			bx_=cx+Aspekt*(by_-ay_)*.5;
+            ax_=cx-Aspect*(by_-ay_)*.5;
+            bx_=cx+Aspect*(by_-ay_)*.5;
 		}
 
 		soll_ax=ax_;
@@ -350,12 +350,12 @@ void Schild::Positioniere(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 	}
 }
 
-void Schild::PositioniereFix(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
+void Scale::PositioniereFix(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 
-	if (Aspekt!=0.0 && Aspekt!=(bx_-ax_)/(by_-ay_)) {
+    if (Aspect!=0.0 && Aspect!=(bx_-ax_)/(by_-ay_)) {
 		GLfloat cx=(ax_+bx_)*.5;
-		ax_=cx-Aspekt*(by_-ay_)*.5;
-		bx_=cx+Aspekt*(by_-ay_)*.5;
+        ax_=cx-Aspect*(by_-ay_)*.5;
+        bx_=cx+Aspect*(by_-ay_)*.5;
 	}
 
 	ax=soll_ax=ax_;
@@ -370,7 +370,8 @@ void Schild::PositioniereFix(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 
 }
 
-void Schild::Desaktiviere() {
+//deactivated
+void Scale::Desaktiviere() {
 	soll_Alpha=AUSGEBLENDET;
 
 	soll_ax=((ax-8)*1.5)+8;
@@ -387,23 +388,26 @@ void Schild::Desaktiviere() {
 	if (soll_Alpha!=Alpha) StarteAnimation();
 }
 
-void Schild::Angewaehlt() {
+//selected
+void Scale::Angewaehlt() {
 	Alpha=ANGEWAEHLT;
 	soll_Alpha=EINGEBLENDET;
 	if (soll_Alpha!=Alpha) StarteAnimation();
 }
 
-void Schild::Eingeblendet() {
+//Superimposed
+void Scale::Eingeblendet() {
 	soll_Alpha=EINGEBLENDET;
 	if (soll_Alpha!=Alpha) StarteAnimation();
 }
 
-void Schild::VollSichtbar() {
+//fully Visible
+void Scale::VollSichtbar() {
 	soll_Alpha=VOLLSICHTBAR;
 	if (soll_Alpha!=Alpha) StarteAnimation();
 }
 
-void Schild::StarteAnimation(){
+void Scale::StarteAnimation(){
 	InAnimation=1;
 	Zeit=0;
 	alt_ax=ax;
@@ -434,7 +438,7 @@ void Schild::StarteAnimation(){
    }
    }
    */
-GLint Schild::Animiere(GLint Faktor){
+GLint Scale::Animate(GLint Faktor){
 	if (!InAnimation) {return 0;}
 	Zeit+=Faktor;
 	if (Zeit>=ANIMATIONSDAUER) {
@@ -458,7 +462,7 @@ GLint Schild::Animiere(GLint Faktor){
 
 
 
-GLint Schild::Maustaste(int Taste,int Richtung,int x,int y) {
+GLint Scale::MouseButton(int Taste,int Richtung,int x,int y) {
 	GLfloat xf=16.0*x/glutGet(GLUT_WINDOW_WIDTH);
 	GLfloat yf=12.0-12.0*y/glutGet(GLUT_WINDOW_HEIGHT);
 
@@ -480,6 +484,6 @@ GLint Schild::Maustaste(int Taste,int Richtung,int x,int y) {
 	}
 }
 
-void Schild::SetzeSignal(GLint NeuesSignal) {
-	Signal=NeuesSignal;
+void Scale::SetSignal(GLint NewSignal) {
+    Signal=NewSignal;
 }

@@ -14,7 +14,6 @@ SOURCES += \
     createTexture.cpp \
     Einsetzen.cpp \
     Handling.cpp \
-    Kamera.cpp \
     KommandoZeilenParameter.cpp \
     Kugel.cpp \
     kugeltabellen.cpp \
@@ -31,7 +30,8 @@ SOURCES += \
     Tisch.cpp \
     Tischfunktionen.cpp \
     viertelLoch.cpp \
-    Zeit.cpp
+    Zeit.cpp \
+    Kamera.cpp
 
 HEADERS += \
     Anzeige.h \
@@ -42,7 +42,6 @@ HEADERS += \
     createTexture.h \
     Einsetzen.h \
     Handling.h \
-    Kamera.h \
     KommandoZeilenParameter.h \
     Kugel.h \
     kugeltabellen.h \
@@ -62,5 +61,6 @@ HEADERS += \
     Tischfunktionen.h \
     Tisch.h \
     viertelLoch.h \
-    Zeit.h
+    Zeit.h \
+    Kamera.h
 

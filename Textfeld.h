@@ -10,7 +10,7 @@ class Textfeld {
 		void PositioniereFix(GLfloat,GLfloat,GLfloat,GLint);
 		void SetzeText(char[]);
 		void SetzeTextKDL(char[]);
-		GLint Zeichen(char);
+		GLint Scale(char);
 		char* Text();
 
 		void Desaktiviere();
@@ -19,16 +19,16 @@ class Textfeld {
 		void VollSichtbar();
 		GLint Animiere(GLint);
 		void SetzeSignal(GLint);
-		GLint Maustaste(int,int,int,int);
+		GLint MouseButton(int,int,int,int);
 
 		void SetzeMaxBreite(GLfloat);
 
 		void Weghoeren();
 		void Herhoeren();
 
-		GLfloat TextfeldHoehe();
+		GLfloat TextboxHeight();
 
-		void GeneriereDisplayList();
+		void GenerateDisplayList();
 
 		GLint dummyDisplayListAnfang();
 

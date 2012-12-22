@@ -5,7 +5,7 @@
 #include "Namen.h"
 #include "KommandoZeilenParameter.h"
 
-void SchreibeKonfiguration(){
+void WriteConfig(){
 	FILE *f;
 #ifndef _WIN32
 	char dateiname[40];
@@ -20,41 +20,41 @@ void SchreibeKonfiguration(){
 		char Spieler2temp[10];
 		char NetzwerkSpielertemp[10];
 		for (int i=0;i<10;i++) {
-			if (Spieler1[i]==' ') {
+			if (Player1[i]==' ') {
 				Spieler1temp[i]='%';
 			} else {
-				Spieler1temp[i]=Spieler1[i];
+				Spieler1temp[i]=Player1[i];
 			}
-			if (Spieler2[i]==' ') {
+			if (Player2[i]==' ') {
 				Spieler2temp[i]='%';
 			} else {
-				Spieler2temp[i]=Spieler2[i];
+				Spieler2temp[i]=Player2[i];
 			}
-			if (NetzwerkSpieler[i]==' ') {
+			if (NetworkPlayer[i]==' ') {
 				NetzwerkSpielertemp[i]='%';
 			} else {
-				NetzwerkSpielertemp[i]=NetzwerkSpieler[i];
+				NetzwerkSpielertemp[i]=NetworkPlayer[i];
 			}
 		}
-		fprintf(f,"%i\n",Texturgroesse);
-		fprintf(f,"%i\n",AnzeigeTexturgroesse);
-		fprintf(f,"%i\n",TischTexturgroesse);
-		fprintf(f,"%i\n",KugelAufloesung);
+		fprintf(f,"%i\n",TextureSize);
+		fprintf(f,"%i\n",DisplayTextureSize);
+		fprintf(f,"%i\n",TableTextureSize);
+		fprintf(f,"%i\n",BallResolution);
 		fprintf(f,"%f\n",MouseSpeed);
 		fprintf(f,"%i\n",InvertX);
 		fprintf(f,"%i\n",InvertY);
-		fprintf(f,"%i\n",BildschirmAufloesung);
-		fprintf(f,"%i\n",Farbtiefe);
-		fprintf(f,"%i\n",Reflektionen);
-		fprintf(f,"%i\n",Schatten);
+		fprintf(f,"%i\n",ScreenResolution);
+		fprintf(f,"%i\n",ColorDepth);
+		fprintf(f,"%i\n",Reflections);
+		fprintf(f,"%i\n",Shadow);
 		fprintf(f,"%i\n",TexMMM);
-		fprintf(f,"%i\n",Sprache);
-		fprintf(f,"%i\n",ZeigeFPS);
-		fprintf(f,"%i\n",AmbientesLicht);
-		fprintf(f,"%i\n",TischLampen);
-		fprintf(f,"%i\n",GrueneLampe);
-		fprintf(f,"%f\n",EffektLautstaerke);
-		fprintf(f,"%f\n",MusikLautstaerke);
+        fprintf(f,"%i\n",Language);
+		fprintf(f,"%i\n",ShowFPS);
+		fprintf(f,"%i\n",AmbientLighting);
+		fprintf(f,"%i\n",TableLamps);
+		fprintf(f,"%i\n",GrueneLamp);
+		fprintf(f,"%f\n",EffectVolumeDown);
+		fprintf(f,"%f\n",MusicVolumeDown);
 		fprintf(f,"%s\n",Spieler1temp);
 		fprintf(f,"%s\n",Spieler2temp);
 		fprintf(f,"%s\n",NetzwerkSpielertemp);
@@ -62,63 +62,63 @@ void SchreibeKonfiguration(){
 	}
 }
 
-void LeseKonfiguration(){
+void LoadConfig(){
 	FILE *f;
 #ifndef _WIN32
-	char dateiname[40];
-	sprintf(dateiname,"%s/.BillardGL.conf.v7",getenv("HOME"));
-	f=fopen(dateiname,"r");
+    char filename[40];  //filename
+    sprintf(filename,"%s/.BillardGL.conf.v7",getenv("HOME"));
+    f=fopen(filename,"r");
 #endif
 #ifdef _WIN32
 	f=fopen("BillardGL.conf.v7","rb");
 #endif
 	if (f) {
-		char Spieler1temp[10];
-		char Spieler2temp[10];
-		char NetzwerkSpielertemp[10];
-		fscanf(f,"%i",&Texturgroesse);
-		fscanf(f,"%i",&AnzeigeTexturgroesse);
-		fscanf(f,"%i",&TischTexturgroesse);
-		fscanf(f,"%i",&KugelAufloesung);
+        char Spieler1temp[10];      //player1temp
+        char Spieler2temp[10];      //player2temp
+        char NetzwerkSpielertemp[10]; //network_player_temp
+		fscanf(f,"%i",&TextureSize);
+		fscanf(f,"%i",&DisplayTextureSize);
+		fscanf(f,"%i",&TableTextureSize);
+		fscanf(f,"%i",&BallResolution);
 		fscanf(f,"%f",&MouseSpeed);
 		fscanf(f,"%i",&InvertX);
 		fscanf(f,"%i",&InvertY);
-		fscanf(f,"%i",&BildschirmAufloesung);
-		fscanf(f,"%i",&Farbtiefe);
-		fscanf(f,"%i",&Reflektionen);
-		fscanf(f,"%i",&Schatten);
+		fscanf(f,"%i",&ScreenResolution);
+		fscanf(f,"%i",&ColorDepth);
+		fscanf(f,"%i",&Reflections);
+		fscanf(f,"%i",&Shadow);
 		fscanf(f,"%i",&TexMMM);
-		fscanf(f,"%i",&Sprache);
-		fscanf(f,"%i",&ZeigeFPS);
-		fscanf(f,"%i",&AmbientesLicht);
-		fscanf(f,"%i",&TischLampen);
-		fscanf(f,"%i",&GrueneLampe);
-		fscanf(f,"%f",&EffektLautstaerke);
-		fscanf(f,"%f",&MusikLautstaerke);
+        fscanf(f,"%i",&Language);
+		fscanf(f,"%i",&ShowFPS);
+		fscanf(f,"%i",&AmbientLighting);
+		fscanf(f,"%i",&TableLamps);
+		fscanf(f,"%i",&GrueneLamp);
+		fscanf(f,"%f",&EffectVolumeDown);
+		fscanf(f,"%f",&MusicVolumeDown);
 		fscanf(f,"%s",Spieler1temp);
 		fscanf(f,"%s",Spieler2temp);
 		fscanf(f,"%s",NetzwerkSpielertemp);
 		for (int i=0;i<10;i++) {
 			if (Spieler1temp[i]=='%') {
-				Spieler1[i]=' ';
+				Player1[i]=' ';
 			} else {
-				Spieler1[i]=Spieler1temp[i];
+				Player1[i]=Spieler1temp[i];
 			}
 			if (Spieler2temp[i]=='%') {
-				Spieler2[i]=' ';
+				Player2[i]=' ';
 			} else {
-				Spieler2[i]=Spieler2temp[i];
+				Player2[i]=Spieler2temp[i];
 			}
-			if (NetzwerkSpieler[i]=='%') {
-				NetzwerkSpieler[i]=' ';
+			if (NetworkPlayer[i]=='%') {
+				NetworkPlayer[i]=' ';
 			} else {
-				NetzwerkSpieler[i]=NetzwerkSpielertemp[i];
+				NetworkPlayer[i]=NetzwerkSpielertemp[i];
 			}
 		}
 	}
 }
 
-void KommandoZeilenParameter(int argc,char **argv) {
+void GetCommandParam(int argc,char **argv) {
 
 	// Titeltext
 	//#ifndef _WIN32
@@ -126,44 +126,44 @@ void KommandoZeilenParameter(int argc,char **argv) {
 	//#endif
 
 	//Defaultwerte
-	Texturgroesse        = 2;
-	AnzeigeTexturgroesse = 1;
-	TischTexturgroesse   = 2;
-	KugelAufloesung      = 7;
+	TextureSize        = 2;
+	DisplayTextureSize = 1;
+	TableTextureSize   = 2;
+	BallResolution      = 7;
 	InvertX              = 0;
 	InvertY              = 0;
 	Spiel                = ACHTBALL;
-	Schatten             = 1;
+	Shadow             = 1;
 
 	TexMMM               = 3;
 
 	Epsilon              = 0.05;
 	MouseSpeed           = 0.4;
-	PhysikFrequenz       = 400;
-	ReibungsFaktor       = 1.2;
-	BandenFaktor         = 0.4;
-	KollisionsFaktor     = 0.95;
-	ZBufferLoeschen      = 1;
-	BildschirmAufloesung = 800;
-	Farbtiefe            = 16;
-	Reflektionen         = 0;
-	Sprache              = 0;
+	PhysicsFrequenz       = 400;
+	FrictionFactor       = 1.2;
+	GangsFactor         = 0.4;
+	CollisionFactor     = 0.95;
+	ZBufferDelete      = 1;
+	ScreenResolution = 800;
+	ColorDepth            = 16;
+	Reflections         = 0;
+    Language              = 0;
 
-	ZeigeFPS             = 0;
-	AmbientesLicht       = 1;
-	TischLampen          = 2;
-	GrueneLampe          = 0;
+	ShowFPS             = 0;
+	AmbientLighting       = 1;
+	TableLamps          = 2;
+	GrueneLamp          = 0;
 
     FullScreen           = 0;
 
-	EffektLautstaerke    = .5;
-	MusikLautstaerke     = .5;
+	EffectVolumeDown    = .5;
+	MusicVolumeDown     = .5;
 
-	sprintf(Spieler1,"Name 1");
-	sprintf(Spieler2,"Name 2");
-	sprintf(NetzwerkSpieler,"Name");
+	sprintf(Player1,"Name 1");
+	sprintf(Player2,"Name 2");
+	sprintf(NetworkPlayer,"Name");
 
-	LeseKonfiguration();
+    LoadConfig();
 
 	// Einlesen der Kommandozeilenparameter
 	int i=1;
@@ -173,57 +173,57 @@ void KommandoZeilenParameter(int argc,char **argv) {
 		} else if (!strcmp(argv[i],"-x")||!strcmp(argv[i],"-invertx")) {
 			InvertX = 1; 
 		} else if (!strcmp(argv[i],"-z")||!strcmp(argv[i],"-zbuffer")) {
-			ZBufferLoeschen = 0; 
+			ZBufferDelete = 0; 
 		} else if (!strcmp(argv[i],"-f")||!strcmp(argv[i],"-fullscreen")) {
 			FullScreen = 1; 
 		} else if (!strcmp(argv[i],"-w")||!strcmp(argv[i],"-windowed")) {
 			FullScreen = 0; 
 		} else if (!strcmp(argv[i],"-hq")||!strcmp(argv[i],"-highquality")) {
-			Texturgroesse=2;
-			AnzeigeTexturgroesse = 2;
-			TischTexturgroesse   = 1;
-			KugelAufloesung      = 9;
-			BildschirmAufloesung = 1024;
-			Farbtiefe            = 32;
-			Reflektionen = 1;
+			TextureSize=2;
+			DisplayTextureSize = 2;
+			TableTextureSize   = 1;
+			BallResolution      = 9;
+			ScreenResolution = 1024;
+			ColorDepth            = 32;
+			Reflections = 1;
 		} else if (!strcmp(argv[i],"-t")||!strcmp(argv[i],"-texturen")) {
 			i++;
 			if (!strcmp(argv[i],"1")||!strcmp(argv[i],"voll")) {
-				Texturgroesse=1;
+				TextureSize=1;
 			} else if (!strcmp(argv[i],"2")||!strcmp(argv[i],"halb")) {
-				Texturgroesse=2;
+				TextureSize=2;
 			} else if (!strcmp(argv[i],"4")||!strcmp(argv[i],"viertel")) {
-				Texturgroesse=4;
+				TextureSize=4;
 			} else if (!strcmp(argv[i],"8")||!strcmp(argv[i],"achtel")) {
-				Texturgroesse=8;
+				TextureSize=8;
 			} else if (!strcmp(argv[i],"0")||!strcmp(argv[i],"aus")) {
-				Texturgroesse=0;
+				TextureSize=0;
 			} 
 		} else if (!strcmp(argv[i],"-at")||!strcmp(argv[i],"-atexturen")) {
 			i++;
 			if (!strcmp(argv[i],"1")||!strcmp(argv[i],"voll")) {
-				AnzeigeTexturgroesse=1;
+				DisplayTextureSize=1;
 			} else if (!strcmp(argv[i],"2")||!strcmp(argv[i],"halb")) {
-				AnzeigeTexturgroesse=2;
+				DisplayTextureSize=2;
 			} else if (!strcmp(argv[i],"4")||!strcmp(argv[i],"viertel")) {
-				AnzeigeTexturgroesse=4;
+				DisplayTextureSize=4;
 			} else if (!strcmp(argv[i],"8")||!strcmp(argv[i],"achtel")) {
-				AnzeigeTexturgroesse=8;
+				DisplayTextureSize=8;
 			} else if (!strcmp(argv[i],"0")||!strcmp(argv[i],"aus")) {
-				AnzeigeTexturgroesse=0;
+				DisplayTextureSize=0;
 			} 
 		} else if (!strcmp(argv[i],"-tt")||!strcmp(argv[i],"-ttexturen")) {
 			i++;
 			if (!strcmp(argv[i],"1")||!strcmp(argv[i],"voll")) {
-				TischTexturgroesse=1;
+				TableTextureSize=1;
 			} else if (!strcmp(argv[i],"2")||!strcmp(argv[i],"halb")) {
-				TischTexturgroesse=2;
+				TableTextureSize=2;
 			} else if (!strcmp(argv[i],"4")||!strcmp(argv[i],"viertel")) {
-				TischTexturgroesse=4;
+				TableTextureSize=4;
 			} else if (!strcmp(argv[i],"8")||!strcmp(argv[i],"achtel")) {
-				TischTexturgroesse=8;
+				TableTextureSize=8;
 			} else if (!strcmp(argv[i],"0")||!strcmp(argv[i],"aus")) {
-				TischTexturgroesse=0;
+				TableTextureSize=0;
 			} 
 		} else if (!strcmp(argv[i],"-a")||!strcmp(argv[i],"-aufstellung")) {
 			i++;
@@ -239,10 +239,10 @@ void KommandoZeilenParameter(int argc,char **argv) {
 				Spiel=ZUFALL;
 			}
 		} else if (!strcmp(argv[i],"-s")||!strcmp(argv[i],"-schatten")) {
-			Schatten=0;
+			Shadow=0;
 		} else if (!strcmp(argv[i],"-g")||!strcmp(argv[i],"-geometrie")) {
 			i++;
-			KugelAufloesung=atoi(argv[i]);
+			BallResolution=atoi(argv[i]);
 		} else if (!strcmp(argv[i],"-ep")||!strcmp(argv[i],"-epsilon")) {
 			i++;
 			Epsilon=atof(argv[i]);
@@ -251,22 +251,22 @@ void KommandoZeilenParameter(int argc,char **argv) {
 			MouseSpeed=atof(argv[i]);
 		} else if (!strcmp(argv[i],"-p")||!strcmp(argv[i],"-physik")) {
 			i++;
-			PhysikFrequenz=atoi(argv[i]);
+			PhysicsFrequenz=atoi(argv[i]);
 		} else if (!strcmp(argv[i],"-r")||!strcmp(argv[i],"-reibung")) {
 			i++;
-			ReibungsFaktor=atof(argv[i]);
+			FrictionFactor=atof(argv[i]);
 		} else if (!strcmp(argv[i],"-k")||!strcmp(argv[i],"-kollision")) {
 			i++;
-			KollisionsFaktor=atof(argv[i]);
+			CollisionFactor=atof(argv[i]);
 		} else if (!strcmp(argv[i],"-b")||!strcmp(argv[i],"-banden")) {
 			i++;
-			BandenFaktor=atof(argv[i]);
+			GangsFactor=atof(argv[i]);
 		} 
 
 		i++;
 	}
 
-	SchreibeKonfiguration();
+    WriteConfig();
 
 
 	//#ifndef _WIN32

@@ -4,40 +4,40 @@
  **
  ****************************************************************************/  
 
-void Maus(int,int,int,int);
-void Bewegung(int,int);
-void Taste(unsigned char,int,int);
-void TasteLos(unsigned char,int,int);
-void Sondertaste(int,int,int);
-void SondertasteLos(int,int,int);
+void MouseClick(int,int,int,int);
+void MouseMove(int,int);
+void KeyPress(unsigned char,int,int);
+void KeyRelease(unsigned char,int,int);
+void SpecialKeyPress(int,int,int);
+void SpecialKeyRelease(int,int,int);
 
-extern class Kugel Kugel[16];
-extern class Kamera Kamera;
-extern class Anzeige Anzeige;
+extern class Ball Ball[16];
+extern class Camera Camera;
+extern class Display Display;
 extern class Menu Menu;
-extern class Schiedsrichter Schiedsrichter;
+extern class Referee Referee;
 
-extern GLint DelayAusgleich;
+extern GLint DelayCompensation;
 extern GLint InvertX;
 extern GLint InvertY;
 extern GLfloat MouseSpeed,AusholStaerke;
-extern GLint   Hintergrundfarbe;
+extern GLint   BackgroundColor;
 extern GLint PolygonMode_mode;
 extern GLint PolygonMode_view;
-extern GLint Startzeit,AusholStartzeit,Stossdauer,Ausholstaerke;
+extern GLint StartTime,AusholStartTime,Stossdauer,Ausholstaerke;
 extern GLint xnor;
-extern int OriginalFenster,AktuellesFenster;
-extern GLint Spiel,StateMaschin, FullScreen;
-extern GLint Taste_Pfeil_Oben,Taste_Pfeil_Unten;
-extern GLint Taste_Pfeil_Rechts,Taste_Pfeil_Links;
-extern GLint Taste_Shift, Taste_Strg;
-extern GLint Taste_Bild_Auf,Taste_Bild_Ab;
-extern GLint Taste_Pos1,Taste_Ende;
+extern int OriginalWindow,CurrentWindow;
+extern GLint Spiel,StateMachine, FullScreen;
+extern GLint KEY_UP,KEY_DOWN;
+extern GLint KEY_RIGHT,KEY_LEFT;
+extern GLint KEY_SHIFT, KEY_CTRL;
+extern GLint KEY_Bild_ON,KEY_Bild_Ab;
+extern GLint KEY_Pos1,KEY_END;
 
 extern GLint MouseLookLast_x,MouseLookLast_y;
-extern GLfloat Bewegungstabelle[2000][16][3];
-extern GLint MausTasteAbgefangen;
+extern GLfloat LightingTable[2000][16][3];
+extern GLint MouseButtonIntercepted;
 
-extern GLint LageVerbesserungKopffeld;
-extern GLint LageVerbesserung;
-extern GLint AllerersterStoss;
+extern GLint LageVerbesserungKopffeld; //Situation improving header
+extern GLint LageVerbesserung; //situation improving
+extern GLint AllerersterStoss; //first stoke/kick

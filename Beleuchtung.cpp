@@ -1,18 +1,25 @@
 #include <GL/glut.h>
 #include "Beleuchtung.h"
 
-Beleuchtung::Beleuchtung() {
-	BeleuchtungIndex=0;
+//lighting
+
+Lighting::Lighting() {
+    LightingIndex=0;
 	/* */
 }
 
 
-void Beleuchtung::Initialisiere(GLint AmbientesLicht, GLint Tischlampen, GLint GrueneLampe, GLint Reflektionen) {
+void Lighting::Initialisiere(GLint AmbientesLicht, //Ambient lighting
+                             GLint Tischlampen, //table lamps
+                             GLint GrueneLampe, //green lamp
+                             GLint Reflektionen //reflections
+                             )
+{
 
-	if (!BeleuchtungIndex) {
-		BeleuchtungIndex=glGenLists(2);      // Display List erzeugen
+    if (!LightingIndex) {
+        LightingIndex=glGenLists(2);      // Display List erzeugen
 	}
-	glNewList(BeleuchtungIndex,GL_COMPILE_AND_EXECUTE);
+    glNewList(LightingIndex,GL_COMPILE_AND_EXECUTE);
 
 	glEnable(GL_LIGHTING);
 
@@ -78,7 +85,7 @@ void Beleuchtung::Initialisiere(GLint AmbientesLicht, GLint Tischlampen, GLint G
 
 }
 
-void Beleuchtung::male() {
-	glCallList(BeleuchtungIndex);
+void Lighting::draw() {
+    glCallList(LightingIndex);
 }
 

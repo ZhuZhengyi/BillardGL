@@ -18,37 +18,38 @@
 
 #include "SchattenKreis.h"   // zeichnet Schatten
 
+//ball
 
 // leerer Konstruktor (OpenGL macht hier dumm)...
-Kugel::Kugel() {
+Ball::Ball() {
 	Position[0]=0;
 	Position[1]=0;
 	Position[2]=0;
-	Nummer=-1;
+    Number=-1;
 	for (GLint i=0;i<30;i++) {
-		sphereIndex[i]=0; 
+        sphereIndex[i]=0;           //ball index
 		sphereIndexStatisch[i]=0; 
-		StatischExistiert[i]=0;
+        StaticExists[i]=0;
 	}
-	schattenIndex=0;
-	schattenIndexStatisch=0;
-	Schatten=0;
+    shadowIndex=0;
+    shadowIndexStatic=0;
+    Shadow=0;
 	InAnimation=0;
-	StatischExistiertSchatten=0;
+    StaticExistShadow=0;
 	//GLfloat DrehMatrix[16];
-	Schatten1_x=0;
-	Schatten1_y=0;
-	Schatten1_scale=0;
-	Schatten1_winkel=0;
-	Schatten2_x=0;
-	Schatten2_y=0;
-	Schatten2_scale=0;
-	Schatten2_winkel=0;
-	Schatten3_x=0;
-	Schatten3_y=0;
-	Schatten3_scale=0;
-	Schatten3_winkel=0;
-	AlteTexturgroesse=1;
+    Shadow1_x=0;
+    Shadow1_y=0;
+    Shadow1_scale=0;
+    Shadow1_angle=0;
+    Shadow2_x=0;
+    Shadow2_y=0;
+    Shadow2_scale=0;
+    Shadow2_angle=0;
+    Shadow3_x=0;
+    Shadow3_y=0;
+    Shadow3_scale=0;
+    Shadow3_angle=0;
+    OldTextureSize=1;
 
 	/* */
 	Texturen[1]=0;
@@ -62,9 +63,9 @@ GLint exp2(GLint a) { //b=2^a
 }
 
 // ... stattdessen kommt hier alles in Initialisiere
-void Kugel::Initialisiere(GLint Nr, GLint Texturgroesse, GLint MaxAufloesung, GLint Schatten_) {
+void Ball::Initialisiere(GLint Nr, GLint Texturgroesse, GLint MaxAufloesung, GLint Schatten_) {
 
-	Schatten=Schatten_;
+    Shadow=Schatten_;
 
 	FMatrix tex_r,tex_g,tex_b;     // Matrix-Bilder, in die die Textur kommt
 
@@ -80,19 +81,20 @@ void Kugel::Initialisiere(GLint Nr, GLint Texturgroesse, GLint MaxAufloesung, GL
 		glPopMatrix();
 	}
 
-	Nummer=Nr;                      // KugelNummer setzen
+    Number=Nr;                      // KugelNummer setzen
 
+    //Display resolution
 	for (int Aufloesung=3; Aufloesung<=MaxAufloesung;Aufloesung+=2) {
 
 		if (!sphereIndex[Aufloesung]||
-				(AlteTexturgroesse!=Texturgroesse)) {
+                (OldTextureSize!=Texturgroesse)) {
 
 			//printf(".");fflush(stdout);
 
 			sphereIndex[Aufloesung]=glGenLists(1); 
 			sphereIndexStatisch[Aufloesung]=glGenLists(1); 
 
-			if ((Texturgroesse==0)||(Nummer==0)) { // Keine Textur?
+            if ((Texturgroesse==0)||(Number==0)) { // Keine Textur?
 
 				glNewList(sphereIndex[Aufloesung],GL_COMPILE_AND_EXECUTE);
 				GLfloat mat_diffuse[]={1.0,1.0,1.0,1.0};
@@ -173,51 +175,51 @@ void Kugel::Initialisiere(GLint Nr, GLint Texturgroesse, GLint MaxAufloesung, GL
 
 			}
 
-			StatischExistiert[Aufloesung]=0;
-			StatischExistiertSchatten=0;
+            StaticExists[Aufloesung]=0;
+            StaticExistShadow=0;
 			InAnimation=1;
 		}
 	}
 
-	if (!schattenIndex) {
-		schattenIndex=glGenLists(1);
-		schattenIndexStatisch=glGenLists(1);
+    if (!shadowIndex) {
+        shadowIndex=glGenLists(1);
+        shadowIndexStatic=glGenLists(1);
 
-		glNewList(schattenIndex,GL_COMPILE_AND_EXECUTE);
-		SchattenKreis(18, .7, 1.2, 0.2, 0.0);
+        glNewList(shadowIndex,GL_COMPILE_AND_EXECUTE);
+        ShadowCircle(18, .7, 1.2, 0.2, 0.0);
 		glEndList();
 
-		Schatten=Schatten_;
+        Shadow=Schatten_;
 
-		Schatten1_x=0;
-		Schatten1_y=0;
-		Schatten1_scale=1;
-		Schatten1_winkel=0;
-		Schatten2_x=0;
-		Schatten2_y=0;
-		Schatten2_scale=1;
-		Schatten2_winkel=0;
-		Schatten3_x=0;
-		Schatten3_y=0;
-		Schatten3_scale=1;
-		Schatten3_winkel=0;
+        Shadow1_x=0;
+        Shadow1_y=0;
+        Shadow1_scale=1;
+        Shadow1_angle=0;
+        Shadow2_x=0;
+        Shadow2_y=0;
+        Shadow2_scale=1;
+        Shadow2_angle=0;
+        Shadow3_x=0;
+        Shadow3_y=0;
+        Shadow3_scale=1;
+        Shadow3_angle=0;
 	}
 
 	if (!schatten2Index) {
 		schatten2Index=glGenLists(1);
 
 		glNewList(schatten2Index,GL_COMPILE_AND_EXECUTE);
-		SchattenKreis(14, 0.1, 0.5, 0.5, 0.0);
+        ShadowCircle(14, 0.1, 0.5, 0.5, 0.0);
 		glEndList();
 	}
 
-	AlteTexturgroesse=Texturgroesse;
+    OldTextureSize=Texturgroesse;
 
 }
 
 
-// Zeichnet die Kugel mit Hilfe der Display List
-void Kugel::male(GLint Aufloesung) {
+// Draws the ball using the Display List
+void Ball::draw(GLint Aufloesung) {
 	if (Position[0]!=3000) {
 
 		if (InAnimation) {
@@ -238,10 +240,10 @@ void Kugel::male(GLint Aufloesung) {
 			InAnimation=0;
 
 			for (int i=0;i<30;i++) {
-				StatischExistiert[i]=0;
+                StaticExists[i]=0;
 			}
 
-		} else if (StatischExistiert[Aufloesung]) {
+        } else if (StaticExists[Aufloesung]) {
 
 			/*
 			   glPushMatrix();
@@ -276,13 +278,14 @@ void Kugel::male(GLint Aufloesung) {
 
 			glEndList();
 
-			StatischExistiert[Aufloesung]=1;
+            StaticExists[Aufloesung]=1;
 		}
 	}
 }
 
-void Kugel::maleSchatten() {
-	if (Schatten&&(Position[0]!=3000)&&(Position[2]>=0)) {
+//shadow
+void Ball::drawShadow() {
+    if (Shadow&&(Position[0]!=3000)&&(Position[2]>=0)) {
 		if (InAnimation) {
 			glPushMatrix();
 			glScalef(2.8575,2.8575,2.8575);// Skalieren auf Zentimetersystem;
@@ -291,36 +294,36 @@ void Kugel::maleSchatten() {
 			glCallList(schatten2Index); //TEST
 
 			glPushMatrix();
-			glTranslatef(Schatten1_x,Schatten1_y,0);
-			glRotatef(Schatten1_winkel,0,0,1);
-			glScalef(Schatten1_scale,1,1);
-			glCallList(schattenIndex);
+            glTranslatef(Shadow1_x,Shadow1_y,0);
+            glRotatef(Shadow1_angle,0,0,1);
+            glScalef(Shadow1_scale,1,1);
+            glCallList(shadowIndex);
 			glPopMatrix();
 
 			glPushMatrix();
-			glTranslatef(Schatten2_x,Schatten2_y,0);
-			glRotatef(Schatten2_winkel,0,0,1);
-			glScalef(Schatten2_scale,1,1);
-			glCallList(schattenIndex);
+            glTranslatef(Shadow2_x,Shadow2_y,0);
+            glRotatef(Shadow2_angle,0,0,1);
+            glScalef(Shadow2_scale,1,1);
+            glCallList(shadowIndex);
 			glPopMatrix();
 
 			glPushMatrix();
-			glTranslatef(Schatten3_x,Schatten3_y,0);
-			glRotatef(Schatten3_winkel,0,0,1);
-			glScalef(Schatten3_scale,1,1);
-			glCallList(schattenIndex);
+            glTranslatef(Shadow3_x,Shadow3_y,0);
+            glRotatef(Shadow3_angle,0,0,1);
+            glScalef(Shadow3_scale,1,1);
+            glCallList(shadowIndex);
 			glPopMatrix();
 			glPopMatrix();
 
-			StatischExistiertSchatten=0;
+            StaticExistShadow=0;
 
-		} else if (StatischExistiertSchatten) {
+        } else if (StaticExistShadow) {
 
-			glCallList(schattenIndexStatisch);
+            glCallList(shadowIndexStatic);
 
 		} else {
 
-			glNewList(schattenIndexStatisch,GL_COMPILE_AND_EXECUTE);
+            glNewList(shadowIndexStatic,GL_COMPILE_AND_EXECUTE);
 			glPushMatrix();
 			glScalef(2.8575,2.8575,2.8575);// Skalieren auf Zentimetersystem;
 			glTranslatef(Position[0],Position[1],Position[2]-1);
@@ -328,35 +331,35 @@ void Kugel::maleSchatten() {
 			glCallList(schatten2Index); //TEST
 
 			glPushMatrix();
-			glTranslatef(Schatten1_x,Schatten1_y,0);
-			glRotatef(Schatten1_winkel,0,0,1);
-			glScalef(Schatten1_scale,1,1);
-			glCallList(schattenIndex);
+            glTranslatef(Shadow1_x,Shadow1_y,0);
+            glRotatef(Shadow1_angle,0,0,1);
+            glScalef(Shadow1_scale,1,1);
+            glCallList(shadowIndex);
 			glPopMatrix();
 
 			glPushMatrix();
-			glTranslatef(Schatten2_x,Schatten2_y,0);
-			glRotatef(Schatten2_winkel,0,0,1);
-			glScalef(Schatten2_scale,1,1);
-			glCallList(schattenIndex);
+            glTranslatef(Shadow2_x,Shadow2_y,0);
+            glRotatef(Shadow2_angle,0,0,1);
+            glScalef(Shadow2_scale,1,1);
+            glCallList(shadowIndex);
 			glPopMatrix();
 
 			glPushMatrix();
-			glTranslatef(Schatten3_x,Schatten3_y,0);
-			glRotatef(Schatten3_winkel,0,0,1);
-			glScalef(Schatten3_scale,1,1);
-			glCallList(schattenIndex);
+            glTranslatef(Shadow3_x,Shadow3_y,0);
+            glRotatef(Shadow3_angle,0,0,1);
+            glScalef(Shadow3_scale,1,1);
+            glCallList(shadowIndex);
 			glPopMatrix();
 			glPopMatrix();
 			glEndList();
 
-			StatischExistiertSchatten=1;
+            StaticExistShadow=1;
 		}
 	}
 }
 
 
-void Kugel::neuePosition(GLfloat neuPos[]) {
+void Ball::newPosition(GLfloat neuPos[]) {
 
 	GLfloat dx=neuPos[0]-Position[0]; // Differenzvektor bestimmen
 	GLfloat dy=neuPos[1]-Position[1];
@@ -384,112 +387,113 @@ void Kugel::neuePosition(GLfloat neuPos[]) {
 		Position[1]=neuPos[1];
 		Position[2]=(neuPos[2]>0)?0:neuPos[2];
 
-		if (Schatten) {
-			Schatten1_x=neuPos[0]/34;
-			Schatten1_x=(Schatten1_x)?Schatten1_x:.0001;
-			Schatten1_y=neuPos[1]/34;
-			Schatten1_scale=sqrt(Schatten1_x*Schatten1_x+Schatten1_y*Schatten1_y+1);
-			Schatten1_winkel=57.3*atan(Schatten1_y/Schatten1_x);
+        if (Shadow) {
+            Shadow1_x=neuPos[0]/34;
+            Shadow1_x=(Shadow1_x)?Shadow1_x:.0001;
+            Shadow1_y=neuPos[1]/34;
+            Shadow1_scale=sqrt(Shadow1_x*Shadow1_x+Shadow1_y*Shadow1_y+1);
+            Shadow1_angle=57.3*atan(Shadow1_y/Shadow1_x);
 
-			Schatten2_x=(neuPos[0]-22.22)/34;
-			Schatten2_x=(Schatten2_x)?Schatten2_x:.0001;
-			Schatten2_y=Schatten1_y;
-			Schatten2_scale=sqrt(Schatten2_x*Schatten2_x+Schatten2_y*Schatten2_y+1);
-			Schatten2_winkel=57.3*atan(Schatten2_y/Schatten2_x);
+            Shadow2_x=(neuPos[0]-22.22)/34;
+            Shadow2_x=(Shadow2_x)?Shadow2_x:.0001;
+            Shadow2_y=Shadow1_y;
+            Shadow2_scale=sqrt(Shadow2_x*Shadow2_x+Shadow2_y*Shadow2_y+1);
+            Shadow2_angle=57.3*atan(Shadow2_y/Shadow2_x);
 
-			Schatten3_x=(neuPos[0]+22.22)/34;
-			Schatten3_x=(Schatten3_x)?Schatten3_x:.0001;
-			Schatten3_y=Schatten1_y;
-			Schatten3_scale=sqrt(Schatten3_x*Schatten3_x+Schatten3_y*Schatten3_y+1);
-			Schatten3_winkel=57.3*atan(Schatten3_y/Schatten3_x);
+            Shadow3_x=(neuPos[0]+22.22)/34;
+            Shadow3_x=(Shadow3_x)?Shadow3_x:.0001;
+            Shadow3_y=Shadow1_y;
+            Shadow3_scale=sqrt(Shadow3_x*Shadow3_x+Shadow3_y*Shadow3_y+1);
+            Shadow3_angle=57.3*atan(Shadow3_y/Shadow3_x);
 		}
 	}
 	InAnimation=1;
 }
 
 /* Das gleiche noch viele hundert Mal (in verschiedenen Masseinheiten etc.)*/
-void Kugel::neuePosition(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
+void Ball::newPosition(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
 	GLfloat Pos[]={neuPos_x,neuPos_y,neuPos_z};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
-void Kugel::neuePosition(GLfloat neuPos_x,GLfloat neuPos_y) {
+void Ball::newPosition(GLfloat neuPos_x,GLfloat neuPos_y) {
 	GLfloat Pos[]={neuPos_x,neuPos_y,0.0};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
-void Kugel::neuePositionCM(GLfloat neuPos[]) {
+void Ball::newPositionCM(GLfloat neuPos[]) {
 	GLfloat Pos[]={neuPos[0]/2.8575,neuPos[1]/2.8575,neuPos[2]/2.8575};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
-void Kugel::neuePositionCM(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
+void Ball::newPositionCM(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
 	GLfloat Pos[]={neuPos_x/2.8575,neuPos_y/2.8575,neuPos_z/2.8575};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
-void Kugel::neuePositionCM(GLfloat neuPos_x,GLfloat neuPos_y) {
+void Ball::newPositionCM(GLfloat neuPos_x,GLfloat neuPos_y) {
 	GLfloat Pos[]={neuPos_x/2.8575,neuPos_y/2.8575,0.0};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
-void Kugel::neuePositionD(GLfloat neuPos[]) {
+void Ball::newPositionD(GLfloat neuPos[]) {
 	GLfloat Pos[]={neuPos[0]*2,neuPos[1]*2,neuPos[2]*2};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
-void Kugel::neuePositionD(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
+void Ball::newPositionD(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
 	GLfloat Pos[]={neuPos_x*2,neuPos_y*2,neuPos_z*2};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
-void Kugel::neuePositionD(GLfloat neuPos_x,GLfloat neuPos_y) {
+void Ball::newPositionD(GLfloat neuPos_x,GLfloat neuPos_y) {
 	GLfloat Pos[]={neuPos_x*2,neuPos_y*2,0.0};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
-void Kugel::neuePositionINCH(GLfloat neuPos[]) {
+void Ball::newPositionINCH(GLfloat neuPos[]) {
 	GLfloat Pos[]={neuPos[0]/1.125,neuPos[1]/1.125,neuPos[2]/1.125};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
-void Kugel::neuePositionINCH(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
+void Ball::newPositionINCH(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
 	GLfloat Pos[]={neuPos_x/1.125,neuPos_y/1.125,neuPos_z/1.125};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
-void Kugel::neuePositionINCH(GLfloat neuPos_x,GLfloat neuPos_y) {
+void Ball::newPositionINCH(GLfloat neuPos_x,GLfloat neuPos_y) {
 	GLfloat Pos[]={neuPos_x/1.125,neuPos_y/1.125,0.0};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
-// l"a"st die Kugel verschwinden
-void Kugel::ausblenden() {
+//fade out
+// l"a"st die Kugel verschwinden disappear
+void Ball::disappear() {
 	GLfloat Pos[]={3000.0,3000.0,0.0};
-	neuePosition(Pos);
+    newPosition(Pos);
 }
 
 // Liefert die Kugelposition in verschiedenen Ma"seinheiten zur"uck
-GLfloat Kugel::Pos_x() {
+GLfloat Ball::Pos_x() {
 	return Position[0];
 }
 
-GLfloat Kugel::Pos_y() {
+GLfloat Ball::Pos_y() {
 	return Position[1];
 }
 
-GLfloat Kugel::Pos_xD() {
+GLfloat Ball::Pos_xD() {
 	return Position[0]*.5;
 }
 
-GLfloat Kugel::Pos_yD() {
+GLfloat Ball::Pos_yD() {
 	return Position[1]*.5;
 }
 
-GLfloat Kugel::Pos_xCM() {
+GLfloat Ball::Pos_xCM() {
 	return Position[0]*2.8575;
 }
 
-GLfloat Kugel::Pos_yCM() {
+GLfloat Ball::Pos_yCM() {
 	return Position[1]*2.8575;
 }

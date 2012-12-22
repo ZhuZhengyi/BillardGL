@@ -23,8 +23,8 @@
 FMatrix woodtex_r,woodtex_g,woodtex_b;     // Matrix-Bilder, in die die Textur kommt
 
 
-Tisch::Tisch() {
-	TischFlaechenTextur=0;
+Table::Table() {
+    TableAreaTexture=0;
 	HolzBandenTextur=0;
 
 	/* */
@@ -34,11 +34,11 @@ Tisch::Tisch() {
    Tisch initialisieren
    ---------------------- */
 
-void Tisch::Initialisiere(GLint Texturgroesse) {
-	if (!LinienIndex) {
-		LinienIndex=glGenLists(1);      // Display List erzeugen
+void Table::Initialisiere(GLint Texturgroesse) {
+    if (!LinesIndex) {
+        LinesIndex=glGenLists(1);      // Display List erzeugen
 	}
-	glNewList(LinienIndex,GL_COMPILE_AND_EXECUTE);
+    glNewList(LinesIndex,GL_COMPILE_AND_EXECUTE);
 	glDisable(GL_LIGHTING);
 	glBegin(GL_QUADS);
 
@@ -311,7 +311,7 @@ void Tisch::Initialisiere(GLint Texturgroesse) {
 	glVertex3f(-2.47,-1.43,-2.8575);
 	glVertex3f(-2.86,0.0,-2.8575);
 
-	//innen
+    //inside
 
 	glColor4f(1.0,1.0,1.0,0);
 	glVertex3f(-2.36,0.0,-2.8575);
@@ -523,8 +523,8 @@ void Tisch::Initialisiere(GLint Texturgroesse) {
 	glEnable(GL_LIGHTING);
 	glEndList();
 
-	if (!TischFlaechenTextur) 
-		glGenTextures(1,&TischFlaechenTextur);
+    if (!TableAreaTexture)
+        glGenTextures(1,&TableAreaTexture);
 
 	if (Texturgroesse && Texturgroesse<8) {
 		GLint T=Texturgroesse;
@@ -532,15 +532,15 @@ void Tisch::Initialisiere(GLint Texturgroesse) {
 		char Name[40];
 		sprintf(Name,"Texturen/%i/filzkachel.bmp",T); 
 		loadBMP(woodtex_r,woodtex_g,woodtex_b,Name);
-		glBindTexture(GL_TEXTURE_2D,TischFlaechenTextur);
+        glBindTexture(GL_TEXTURE_2D,TableAreaTexture);
 		createTextureMipmap(woodtex_r,woodtex_g,woodtex_b);
 	}
 
 
-	if (!TischFlaecheIndex) {
-		TischFlaecheIndex=glGenLists(1);      // Display List erzeugen
+    if (!TableAreaIndex) {
+        TableAreaIndex=glGenLists(1);      // Display List erzeugen
 	}
-	glNewList(TischFlaecheIndex,GL_COMPILE_AND_EXECUTE);
+    glNewList(TableAreaIndex,GL_COMPILE_AND_EXECUTE);
 	glPushMatrix();
 
 	glTranslatef(0,0,-2.8575);     // Tisch um Kugelradius nach unten schieben
@@ -579,7 +579,7 @@ void Tisch::Initialisiere(GLint Texturgroesse) {
 		glMaterialfv(GL_FRONT, GL_DIFFUSE,mat_diffuse);
 		glMaterialfv(GL_FRONT, GL_SPECULAR,mat_specular);
 		glMaterialf(GL_FRONT, GL_SHININESS,mat_shininess);
-		glBindTexture(GL_TEXTURE_2D,TischFlaechenTextur);
+        glBindTexture(GL_TEXTURE_2D,TableAreaTexture);
 		glEnable(GL_TEXTURE_2D);
 		TischflaechemitTextur();
 		/* -------------
@@ -872,36 +872,36 @@ void Tisch::Initialisiere(GLint Texturgroesse) {
 
 			glPushMatrix();
 			glTranslatef(7.5,68.5,0);
-			Holzbande(115.5,8,1,1);
+            WoodBand(115.5,8,1,1);
 			glPopMatrix();
 
 			glPushMatrix();
 			glRotatef(180,0,0,1);
 			glTranslatef(7.5,68.5,0);
-			Holzbande(115.5,8,1,1);
+            WoodBand(115.5,8,1,1);
 			glPopMatrix();
 
 			glPushMatrix();
 			glTranslatef(-123,68.5,0);
-			Holzbande(115.5,8,1,1);
+            WoodBand(115.5,8,1,1);
 			glPopMatrix();
 
 			glPushMatrix();
 			glRotatef(180,0,0,1);
 			glTranslatef(-123,68.5,0);
-			Holzbande(115.5,8,1,1);
+            WoodBand(115.5,8,1,1);
 			glPopMatrix();
 
 			glPushMatrix();
 			glTranslatef(-132,-59.5,0);
 			glRotatef(90,0,0,1);
-			Holzbande(119,8,1,1);
+            WoodBand(119,8,1,1);
 			glPopMatrix();
 
 			glPushMatrix();
 			glTranslatef(132,59.5,0);
 			glRotatef(-90,0,0,1);
-			Holzbande(119,8,1,1);
+            WoodBand(119,8,1,1);
 			glPopMatrix();
 
 			glDisable(GL_TEXTURE_2D);
@@ -909,36 +909,36 @@ void Tisch::Initialisiere(GLint Texturgroesse) {
 		} else {
 			glPushMatrix();
 			glTranslatef(7.5,68.5,0);
-			HolzbandeOT(115.5,8);
+            WoodBandOT(115.5,8);
 			glPopMatrix();
 
 			glPushMatrix();
 			glRotatef(180,0,0,1);
 			glTranslatef(7.5,68.5,0);
-			HolzbandeOT(115.5,8);
+            WoodBandOT(115.5,8);
 			glPopMatrix();
 
 			glPushMatrix();
 			glTranslatef(-123,68.5,0);
-			HolzbandeOT(115.5,8);
+            WoodBandOT(115.5,8);
 			glPopMatrix();
 
 			glPushMatrix();
 			glRotatef(180,0,0,1);
 			glTranslatef(-123,68.5,0);
-			HolzbandeOT(115.5,8);
+            WoodBandOT(115.5,8);
 			glPopMatrix();
 
 			glPushMatrix();
 			glTranslatef(-132,-59.5,0);
 			glRotatef(90,0,0,1);
-			HolzbandeOT(119,8);
+            WoodBandOT(119,8);
 			glPopMatrix();
 
 			glPushMatrix();
 			glTranslatef(132,59.5,0);
 			glRotatef(-90,0,0,1);
-			HolzbandeOT(119,8);
+            WoodBandOT(119,8);
 			glPopMatrix();
 
 			GLfloat mat_diffuse[]={1.0,1.0,1.0,1.0};
@@ -971,14 +971,14 @@ void Tisch::Initialisiere(GLint Texturgroesse) {
    Tisch malen
    ----------------- */
 
-void Tisch::maleFlaeche() { 
-	glCallList(TischFlaecheIndex);       // Tischflaeche zeichnen
+void Table::maleArea() {
+    glCallList(TableAreaIndex);       // Tischflaeche zeichnen-draw
 }
 
-void Tisch::maleBanden() { 
+void Table::maleBanden() { 
 	glCallList(BandenIndex);       // Banden zeichnen
 }
 
-void Tisch::maleLinien() {
-	glCallList(LinienIndex);
+void Table::maleLinien() {
+    glCallList(LinesIndex);
 }

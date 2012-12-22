@@ -26,17 +26,19 @@
 
 #include "Benutzerschnittstelle.h"
 
-GLint Maustaste=0;
+GLint MouseButton=0;
+
+//mouse
 
 //Callback Funktion: Reaktion auf Mausclicks
-void Maus(int button, int state, int x, int y)
+void MouseClick(int button, int state, int x, int y)
 {
 
-	if (Menu.Maustaste(button,state,x,y)!=0) {
-		MausTasteAbgefangen=1;
+    if (Menu.MouseClick(button,state,x,y)!=0) {
+        MouseButtonIntercepted=1;
 		//printf("Abgefangen\n");
 	} else {
-		MausTasteAbgefangen=0;
+        MouseButtonIntercepted=0;
 		//printf("AbgefangenAus\n");
 		MouseLookLast_x=x;
 		MouseLookLast_y=y;
@@ -82,123 +84,126 @@ void Maus(int button, int state, int x, int y)
 		   }
 		   */
 
-		if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) Maustaste=GLUT_LEFT_BUTTON;
-		if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) Maustaste=GLUT_RIGHT_BUTTON;
+        if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) MouseButton=GLUT_LEFT_BUTTON;
+        if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) MouseButton=GLUT_RIGHT_BUTTON;
 
 		if (button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN) {
-			Maustaste=GLUT_LEFT_BUTTON;
-			switch (StateMaschin) {
+            MouseButton=GLUT_LEFT_BUTTON;
+            switch (StateMachine) {
 				case BETRACHTEN: {  
-									 StateMaschin=ZIELEN; 
-									 Menu.NeuerMenuZustand();
-									 Kamera.BlickeAuf(Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+                                     StateMachine=ZIELEN;
+									 Menu.NewMenuState();
+                                     Camera.EyesOn(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 								 } break;
 				case ZIELEN: {
-								 AusholStartzeit=Zeit();
-								 StateMaschin=AUSHOLEN; 
-								 Menu.NeuerMenuZustand();
+                                 AusholStartTime=ElapsedTime();
+                                 StateMachine=AUSHOLEN;
+								 Menu.NewMenuState();
 							 } break;      
 				case STOSS: {
 								if (xnor) {
 									for (int Kugelnr=0;Kugelnr<16;Kugelnr++) { // Alle Kugeln ans Ziel
-										Kugel[Kugelnr].neuePositionD(Bewegungstabelle[Stossdauer][Kugelnr]);
-										if (KugelnImSpiel[Kugelnr] && !KugelnVersenkt[Kugelnr] && (Kugel[Kugelnr].Pos_x()==3000)) {
-											KugelnVersenkt[Kugelnr]=1;
+                                        Ball[Kugelnr].newPositionD(LightingTable[Stossdauer][Kugelnr]);
+                                        if (BallsInGame[Kugelnr] && !BallsSunk[Kugelnr] && (Ball[Kugelnr].Pos_x()==3000)) {
+                                            BallsSunk[Kugelnr]=1;
 										}
-										Menu.NeuerMenuZustand();
+										Menu.NewMenuState();
 									}
-									if (Kugel[0].Pos_x()==3000) {
-										StateMaschin=WEISSNEU;
+                                    if (Ball[0].Pos_x()==3000) {
+                                        StateMachine=WEISSNEU;
 										WeisseEinsetzen();
 									} else {
-										StateMaschin=BETRACHTEN;      
-										Menu.NeuerMenuZustand();
+                                        StateMachine=BETRACHTEN;
+										Menu.NewMenuState();
 									}
-									Anzeige.setzeStossStaerke(0);
+                                    Display.setShockStaerke(0);
 								}
 							} break;
 				case WEISSNEU: {
-								   StateMaschin=BETRACHTEN; 
-								   Menu.NeuerMenuZustand();	
+                                   StateMachine=BETRACHTEN;
+								   Menu.NewMenuState();	
 							   } break;
 				case SCHIEDSRICHTER: {
 										 if (LageVerbesserungKopffeld|LageVerbesserung) {
 											 WeisseEinsetzen();
-											 StateMaschin=WEISSNEU;
-											 Menu.NeuerMenuZustand();
+                                             StateMachine=WEISSNEU;
+											 Menu.NewMenuState();
 										 } else {
-											 StateMaschin=BETRACHTEN;
-											 Menu.NeuerMenuZustand();
+                                             StateMachine=BETRACHTEN;
+											 Menu.NewMenuState();
 										 }
 									 } break;
 			}
 		}
 
-		if (button == GLUT_MIDDLE_BUTTON && state == GLUT_UP && StateMaschin==AUSHOLEN) {
-			GLfloat dx=Kugel[0].Pos_xCM()-Kamera.Pos_xCM();
-			GLfloat dy=Kugel[0].Pos_yCM()-Kamera.Pos_yCM();
+        if (button == GLUT_MIDDLE_BUTTON && state == GLUT_UP && StateMachine==AUSHOLEN) {
+            GLfloat dx=Ball[0].Pos_xCM()-Camera.Pos_xCM();
+            GLfloat dy=Ball[0].Pos_yCM()-Camera.Pos_yCM();
 			GLfloat Abstand=sqrt(dx*dx+dy*dy);
-			Stoss(dx*AusholStaerke/Abstand,dy*AusholStaerke/Abstand);
-			StateMaschin=STOSS; 
-			Menu.NeuerMenuZustand();
+            Stoke(dx*AusholStaerke/Abstand,dy*AusholStaerke/Abstand);
+            StateMachine=STOSS;
+			Menu.NewMenuState();
 			//Kamera.Verfolge(0);
-			Kamera.BlickeAuf2(Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+            Camera.EyesOn2(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 			//    Kamera.FahrtEin();
-			DelayAusgleich=1;
+            DelayCompensation=1;
 		} 
 
 	}
 }
+
+//Bewegung -> movement
+
 //Callback Funktion: Reaktion auf Mausbewegung
-void Bewegung(int x, int y) {
-	if (MausTasteAbgefangen) return;
-	if (StateMaschin==START) return;
-	if (Maustaste==GLUT_LEFT_BUTTON) {
-		if ((StateMaschin==ZIELEN)||(StateMaschin==AUSHOLEN)) {
+void MouseMove(int x, int y) {
+    if (MouseButtonIntercepted) return;
+    if (StateMachine==START) return;
+    if (MouseButton==GLUT_LEFT_BUTTON) {
+        if ((StateMachine==ZIELEN)||(StateMachine==AUSHOLEN)) {
 			if (InvertX) {
-				Kamera.Schwenk_Rechts(MouseSpeed*(x-MouseLookLast_x),Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+                Camera.SwingRight(MouseSpeed*(x-MouseLookLast_x),Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 			} else {
-				Kamera.Schwenk_Links(MouseSpeed*(x-MouseLookLast_x),Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+                Camera.SwingLeft(MouseSpeed*(x-MouseLookLast_x),Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 			}
 			if (InvertY) {
-				Kamera.Schwenk_Hoch(MouseSpeed*(y-MouseLookLast_y),Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+                Camera.SwingUp(MouseSpeed*(y-MouseLookLast_y),Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 			} else {
-				Kamera.Schwenk_Runter(MouseSpeed*(y-MouseLookLast_y),Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+                Camera.SwingDown(MouseSpeed*(y-MouseLookLast_y),Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 			}
 		} else {
 			if (InvertX) {
-				Kamera.Dreh_Links(MouseSpeed*(x-MouseLookLast_x));
+                Camera.TurnLeft(MouseSpeed*(x-MouseLookLast_x));
 			} else {
-				Kamera.Dreh_Rechts(MouseSpeed*(x-MouseLookLast_x));
+                Camera.TurnRight(MouseSpeed*(x-MouseLookLast_x));
 			}
 			if (InvertY) {
-				Kamera.Dreh_Hoch(MouseSpeed*(y-MouseLookLast_y));
+                Camera.TurnUp(MouseSpeed*(y-MouseLookLast_y));
 			} else {
-				Kamera.Dreh_Runter(MouseSpeed*(y-MouseLookLast_y));
+                Camera.TurnDown(MouseSpeed*(y-MouseLookLast_y));
 			}
 		}
-	} else if (Maustaste==GLUT_RIGHT_BUTTON) {
-		if ((StateMaschin==ZIELEN)||(StateMaschin==AUSHOLEN)) {
+    } else if (MouseButton==GLUT_RIGHT_BUTTON) {
+        if ((StateMachine==ZIELEN)||(StateMachine==AUSHOLEN)) {
 			if (InvertX) {
-				Kamera.Schwenk_Rechts(MouseSpeed*(x-MouseLookLast_x),Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+                Camera.SwingRight(MouseSpeed*(x-MouseLookLast_x),Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 			} else {
-				Kamera.Schwenk_Links(MouseSpeed*(x-MouseLookLast_x),Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+                Camera.SwingLeft(MouseSpeed*(x-MouseLookLast_x),Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 			}
 			if (InvertY) {
-				Kamera.Beweg_Rein(MouseSpeed*(y-MouseLookLast_y));
+                Camera.Move_In(MouseSpeed*(y-MouseLookLast_y));
 			} else {
-				Kamera.Beweg_Raus(MouseSpeed*(y-MouseLookLast_y));
+                Camera.Move_Out(MouseSpeed*(y-MouseLookLast_y));
 			}
 		} else {
 			if (InvertX) {
-				Kamera.Beweg_Links(MouseSpeed*(x-MouseLookLast_x));
+                Camera.Move_Left(MouseSpeed*(x-MouseLookLast_x));
 			} else {
-				Kamera.Beweg_Rechts(MouseSpeed*(x-MouseLookLast_x));
+                Camera.Move_Right(MouseSpeed*(x-MouseLookLast_x));
 			}
 			if (InvertY) {
-				Kamera.Beweg_Rein(MouseSpeed*(y-MouseLookLast_y));
+                Camera.Move_In(MouseSpeed*(y-MouseLookLast_y));
 			} else {
-				Kamera.Beweg_Raus(MouseSpeed*(y-MouseLookLast_y));
+                Camera.Move_Out(MouseSpeed*(y-MouseLookLast_y));
 			}
 		}
 	}
@@ -207,8 +212,9 @@ void Bewegung(int x, int y) {
 	MouseLookLast_y=y;
 }
 
+//Taste
 //Callback Funktion: Reaktion auf Tastendruck
-void Taste( unsigned char keyPressed, int x, int y )
+void KeyPress( unsigned char keyPressed, int x, int y )
 {
 	//printf("%c: %i\n",keyPressed,keyPressed);
 
@@ -216,8 +222,8 @@ void Taste( unsigned char keyPressed, int x, int y )
 		switch( keyPressed ) {
 			case 'h': {
 						  if (xnor==4) {
-							  Hintergrundfarbe=1-Hintergrundfarbe;
-							  glClearColor(Hintergrundfarbe,Hintergrundfarbe,Hintergrundfarbe,0);
+                              BackgroundColor=1-BackgroundColor;
+                              glClearColor(BackgroundColor,BackgroundColor,BackgroundColor,0);
 						  }
 					  } break;                           //h: Hintergrundfarbe invertieren
 			case 'v': {
@@ -247,47 +253,47 @@ void Taste( unsigned char keyPressed, int x, int y )
 						  }
 					  } break;
 
-			case '1': Kamera.speicherePosition(0);break; //1
-			case '2': Kamera.speicherePosition(1);break; //2
-			case '3': Kamera.speicherePosition(2);break; //3
-			case '4': Kamera.speicherePosition(3);break; //4
-			case '5': Kamera.speicherePosition(4);break; //5
-			case '6': Kamera.speicherePosition(5);break; //6
-			case '7': Kamera.speicherePosition(6);break; //7
-			case '8': Kamera.speicherePosition(7);break; //8
+            case '1': Camera.savePosition(0);break; //1
+            case '2': Camera.savePosition(1);break; //2
+            case '3': Camera.savePosition(2);break; //3
+            case '4': Camera.savePosition(3);break; //4
+            case '5': Camera.savePosition(4);break; //5
+            case '6': Camera.savePosition(5);break; //6
+            case '7': Camera.savePosition(6);break; //7
+            case '8': Camera.savePosition(7);break; //8
 
 			case '\b': {
-						   switch (StateMaschin) {
+                           switch (StateMachine) {
 							   case START:        
-								   StateMaschin=BETRACHTEN;
-								   Menu.NeuerMenuZustand();
+                                   StateMachine=BETRACHTEN;
+								   Menu.NewMenuState();
 								   break; 
 							   case BETRACHTEN: {
 													if (LageVerbesserungKopffeld|LageVerbesserung) {
-														StateMaschin=WEISSNEU;
-														Menu.NeuerMenuZustand();
+                                                        StateMachine=WEISSNEU;
+														Menu.NewMenuState();
 													}
 												} break; 
 							   case ZIELEN:       
-												StateMaschin=BETRACHTEN; 
-												Menu.NeuerMenuZustand();
+                                                StateMachine=BETRACHTEN;
+												Menu.NewMenuState();
 												break;
 							   case AUSHOLEN:        
-												StateMaschin=ZIELEN; 
-												Menu.NeuerMenuZustand();
-												Anzeige.setzeStossStaerke(0);
+                                                StateMachine=ZIELEN;
+												Menu.NewMenuState();
+                                                Display.setShockStaerke(0);
 												break;
 							   case STOSS: {
 											   if (xnor) {
-												   StateMaschin=BETRACHTEN; 
-												   Menu.NeuerMenuZustand();
+                                                   StateMachine=BETRACHTEN;
+												   Menu.NewMenuState();
 												   for (int i=1;i<16;i++) {
-													   if (KugelnImSpiel[i] && !KugelnVersenkt[i] && (Kugel[i].Pos_x()==3000)) {
-														   KugelnVersenkt[i]=1;
+                                                       if (BallsInGame[i] && !BallsSunk[i] && (Ball[i].Pos_x()==3000)) {
+                                                           BallsSunk[i]=1;
 													   }
 												   }
-												   Menu.NeuerMenuZustand();
-												   Anzeige.setzeStossStaerke(0);
+												   Menu.NewMenuState();
+                                                   Display.setShockStaerke(0);
 											   }
 										   } break;
 						   }
@@ -297,12 +303,12 @@ void Taste( unsigned char keyPressed, int x, int y )
 						  if (xnor==3) {
 							  xnor=4;
 						  } else if (!AllerersterStoss) {
-							  Startzeit=Zeit();
+                              StartTime=ElapsedTime();
 							  //Frames=0;
-							  StateMaschin=STOSS;
-							  Menu.NeuerMenuZustand();
+                              StateMachine=STOSS;
+							  Menu.NewMenuState();
 							  for (int Kugelnr=0;Kugelnr<16;Kugelnr++) {
-								  Kugel[Kugelnr].neuePositionD(Bewegungstabelle[0][Kugelnr]);
+                                  Ball[Kugelnr].newPositionD(LightingTable[0][Kugelnr]);
 							  }
 							  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 						  }
@@ -316,13 +322,13 @@ void Taste( unsigned char keyPressed, int x, int y )
 					  } break; //c
 
 			case 27 : {
-						  Menu.SetzeMenuZustand(AUSSPIEL);
+                          Menu.setMenuState(AUSSPIEL);
 					  } break;
 
 			case 'q': {
 						  if (xnor==4) {
-							  StateMaschin=START;
-							  Menu.SetzeMenuZustand(STARTBILDSCHIRM);
+                              StateMachine=START;
+                              Menu.setMenuState(STARTBILDSCHIRM);
 						  }
 					  } break; 
 
@@ -366,7 +372,7 @@ void Taste( unsigned char keyPressed, int x, int y )
 					  } break;
 					  */
 		case 127: {
-					  Taste_Strg=1;
+                      KEY_CTRL=1;
 				  } break;
 		case 'x': {
 					  if (xnor==0) {
@@ -381,14 +387,14 @@ void Taste( unsigned char keyPressed, int x, int y )
 		case 'z': {
 					  if (xnor==4) {
 						  Spiel=ZUFALL;  
-						  SpielfeldAufbau();
+						  BoardLayout();
 					  }
 				  } break;//z
 		case 'a': {
 					  if (xnor==4) {
 						  Spiel=ACHTBALL;
-						  SpielfeldAufbau();
-						  Schiedsrichter.NeuesSpiel(Spiel);
+						  BoardLayout();
+                          Referee.NewGame(Spiel);
 					  }
 				  } break;//a
 		case 'n': {
@@ -397,89 +403,89 @@ void Taste( unsigned char keyPressed, int x, int y )
 					  }
 					  if (xnor==4) {
 						  Spiel=NEUNBALL;
-						  SpielfeldAufbau();
-						  Schiedsrichter.NeuesSpiel(Spiel);
+						  BoardLayout();
+                          Referee.NewGame(Spiel);
 					  } 
 				  } break;//n
 		case '9': {
 					  if (xnor==4) {
 						  Spiel=NEUNBALL;
-						  SpielfeldAufbau();
-						  Schiedsrichter.NeuesSpiel(Spiel);
+						  BoardLayout();
+                          Referee.NewGame(Spiel);
 					  }
 				  } break;//9
 		case 's': {
 					  if (xnor==4) {
 						  Spiel=ZWEIBAELLE;
-						  SpielfeldAufbau();
+						  BoardLayout();
 					  }
 				  } break;//s
 		case 'l': {
 					  if (xnor==4) {
 						  Spiel=LEER;
-						  SpielfeldAufbau();
+						  BoardLayout();
 					  }
 				  } break;//l
 		case 'd': {    
 					  if (xnor==4) {
-						  GLfloat dx=Kugel[0].Pos_xCM()-Kamera.Pos_xCM();
-						  GLfloat dy=Kugel[0].Pos_yCM()-Kamera.Pos_yCM();
+                          GLfloat dx=Ball[0].Pos_xCM()-Camera.Pos_xCM();
+                          GLfloat dy=Ball[0].Pos_yCM()-Camera.Pos_yCM();
 						  GLfloat Abstand=sqrt(dx*dx+dy*dy);
-						  Stoss(dx*80.0/Abstand,dy*80.0/Abstand);
+                          Stoke(dx*80.0/Abstand,dy*80.0/Abstand);
 					  }
 				  } break;//d
 		case 'e': {    
 					  if (xnor==4) {
-						  GLfloat dx=Kugel[0].Pos_xCM()-Kamera.Pos_xCM();
-						  GLfloat dy=Kugel[0].Pos_yCM()-Kamera.Pos_yCM();
+                          GLfloat dx=Ball[0].Pos_xCM()-Camera.Pos_xCM();
+                          GLfloat dy=Ball[0].Pos_yCM()-Camera.Pos_yCM();
 						  GLfloat Abstand=sqrt(dx*dx+dy*dy);
-						  Stoss(dx*80.0/Abstand,dy*80.0/Abstand);
-						  StateMaschin=STOSS; 
-						  Menu.NeuerMenuZustand();
-						  Kamera.BlickeAuf2(Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+                          Stoke(dx*80.0/Abstand,dy*80.0/Abstand);
+                          StateMachine=STOSS;
+						  Menu.NewMenuState();
+                          Camera.EyesOn2(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 						  //Kamera.Verfolge(0);
-						  DelayAusgleich=1;
+                          DelayCompensation=1;
 					  }
 				  } break;//e
 		case ' ': {  
-					  switch (StateMaschin) {
+                      switch (StateMachine) {
 						  case BETRACHTEN:   
-							  StateMaschin=ZIELEN; 
-							  Menu.NeuerMenuZustand();
-							  Kamera.BlickeAuf(Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+                              StateMachine=ZIELEN;
+							  Menu.NewMenuState();
+                              Camera.EyesOn(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 							  break;
 						  case ZIELEN:       
-							  AusholStartzeit=Zeit();
-							  StateMaschin=AUSHOLEN; 
-							  Menu.NeuerMenuZustand();
+                              AusholStartTime=ElapsedTime();
+                              StateMachine=AUSHOLEN;
+							  Menu.NewMenuState();
 							  break;      
 						  case STOSS: {
 										  if (xnor) {
 											  for (int Kugelnr=0;Kugelnr<16;Kugelnr++) { // Alle Kugeln ans Ziel
-												  Kugel[Kugelnr].neuePositionD(Bewegungstabelle[Stossdauer][Kugelnr]);
+                                                  Ball[Kugelnr].newPositionD(LightingTable[Stossdauer][Kugelnr]);
 											  }
-											  if (Kugel[0].Pos_x()==3000) {
-												  StateMaschin=WEISSNEU;
+                                              if (Ball[0].Pos_x()==3000) {
+                                                  StateMachine=WEISSNEU;
 												  WeisseEinsetzen();
-												  Menu.NeuerMenuZustand();
+												  Menu.NewMenuState();
 											  } else {
-												  StateMaschin=BETRACHTEN;      
-												  Menu.NeuerMenuZustand();
+                                                  StateMachine=BETRACHTEN;
+												  Menu.NewMenuState();
 											  } 
 										  }
 									  } break;
 						  case WEISSNEU: {    
-											 StateMaschin=BETRACHTEN; 
-											 Menu.NeuerMenuZustand();
+                                             StateMachine=BETRACHTEN;
+											 Menu.NewMenuState();
 										 } break;
 						  case SCHIEDSRICHTER: {
 												   if (LageVerbesserungKopffeld|LageVerbesserung) {
 													   WeisseEinsetzen();
-													   StateMaschin=WEISSNEU;
-													   Menu.NeuerMenuZustand();
+                                                       StateMachine=WEISSNEU;
+													   Menu.NewMenuState();
 												   } else {
-													   StateMaschin=BETRACHTEN;
-													   Menu.NeuerMenuZustand();
+                                                       StateMachine=BETRACHTEN;
+													   Menu.NewMenuState();
 												   }
 											   } break;
 					  }
@@ -488,29 +494,29 @@ void Taste( unsigned char keyPressed, int x, int y )
 }
 }
 
-
-void TasteLos( unsigned char keyPressed, int,int) {
+//KeyRelease
+void KeyRelease( unsigned char keyPressed, int,int) {
 
 	if ((keyPressed==' ')&&
-			(StateMaschin==AUSHOLEN)) {
-		GLfloat dx=Kugel[0].Pos_xCM()-Kamera.Pos_xCM();
-		GLfloat dy=Kugel[0].Pos_yCM()-Kamera.Pos_yCM();
+            (StateMachine==AUSHOLEN)) {
+        GLfloat dx=Ball[0].Pos_xCM()-Camera.Pos_xCM();
+        GLfloat dy=Ball[0].Pos_yCM()-Camera.Pos_yCM();
 		GLfloat Abstand=sqrt(dx*dx+dy*dy);
-		Stoss(dx*AusholStaerke/Abstand,dy*AusholStaerke/Abstand);
-		StateMaschin=STOSS; 
-		Menu.NeuerMenuZustand();
-		Kamera.BlickeAuf2(Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+        Stoke(dx*AusholStaerke/Abstand,dy*AusholStaerke/Abstand);
+        StateMachine=STOSS;
+		Menu.NewMenuState();
+        Camera.EyesOn2(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 		//Kamera.Verfolge(0);
-		DelayAusgleich=1;
+        DelayCompensation=1;
 	} 
 	if (keyPressed==127) {
-		Taste_Strg=0;
+        KEY_CTRL=0;
 	}
 
 }
 
-
-void Sondertaste(int Taste,int x, int y) {
+//Special key
+void SpecialKeyPress(int Taste,int x, int y) {
 
 	x=y;
 
@@ -518,147 +524,147 @@ void Sondertaste(int Taste,int x, int y) {
 
 	//  Kamera.FahrtAus();
 
-	if (StateMaschin!=START) {
+    if (StateMachine!=START) {
 
 		switch (Taste) {
 			case GLUT_KEY_F1:    
-				if (StateMaschin!=AUSHOLEN) {
-					if (StateMaschin!=STOSS && StateMaschin!=WEISSNEU && StateMaschin!=SCHIEDSRICHTER) {
-						StateMaschin=BETRACHTEN;
-						Menu.NeuerMenuZustand();
+                if (StateMachine!=AUSHOLEN) {
+                    if (StateMachine!=STOSS && StateMachine!=WEISSNEU && StateMachine!=SCHIEDSRICHTER) {
+                        StateMachine=BETRACHTEN;
+						Menu.NewMenuState();
 					}
-					Kamera.ladePosition(0);
+                    Camera.loadPosition(0);
 				}
 				break;
 			case GLUT_KEY_F2:    
-				if (StateMaschin!=AUSHOLEN) {
-					if (StateMaschin!=STOSS && StateMaschin!=WEISSNEU && StateMaschin!=SCHIEDSRICHTER) {
-						StateMaschin=BETRACHTEN;
-						Menu.NeuerMenuZustand();
+                if (StateMachine!=AUSHOLEN) {
+                    if (StateMachine!=STOSS && StateMachine!=WEISSNEU && StateMachine!=SCHIEDSRICHTER) {
+                        StateMachine=BETRACHTEN;
+						Menu.NewMenuState();
 					}
-					Kamera.ladePosition(1);
+                    Camera.loadPosition(1);
 				}
 				break;
 			case GLUT_KEY_F3:    
-				if (StateMaschin!=AUSHOLEN) {
-					if (StateMaschin!=STOSS && StateMaschin!=WEISSNEU && StateMaschin!=SCHIEDSRICHTER) {
-						StateMaschin=BETRACHTEN;
-						Menu.NeuerMenuZustand();
+                if (StateMachine!=AUSHOLEN) {
+                    if (StateMachine!=STOSS && StateMachine!=WEISSNEU && StateMachine!=SCHIEDSRICHTER) {
+                        StateMachine=BETRACHTEN;
+						Menu.NewMenuState();
 					}
-					Kamera.ladePosition(2);
+                    Camera.loadPosition(2);
 				}
 				break;
 			case GLUT_KEY_F4:    
-				if (StateMaschin!=AUSHOLEN) {
-					if (StateMaschin!=STOSS && StateMaschin!=WEISSNEU && StateMaschin!=SCHIEDSRICHTER) {
-						StateMaschin=BETRACHTEN;
-						Menu.NeuerMenuZustand();
+                if (StateMachine!=AUSHOLEN) {
+                    if (StateMachine!=STOSS && StateMachine!=WEISSNEU && StateMachine!=SCHIEDSRICHTER) {
+                        StateMachine=BETRACHTEN;
+						Menu.NewMenuState();
 					}
-					Kamera.ladePosition(3);
+                    Camera.loadPosition(3);
 				}
 				break;
 			case GLUT_KEY_F5:    
-				if (StateMaschin!=AUSHOLEN) {
-					if (StateMaschin!=STOSS && StateMaschin!=WEISSNEU && StateMaschin!=SCHIEDSRICHTER) {
-						StateMaschin=BETRACHTEN;
-						Menu.NeuerMenuZustand();
+                if (StateMachine!=AUSHOLEN) {
+                    if (StateMachine!=STOSS && StateMachine!=WEISSNEU && StateMachine!=SCHIEDSRICHTER) {
+                        StateMachine=BETRACHTEN;
+						Menu.NewMenuState();
 					}
-					Kamera.ladePosition(4);
+                    Camera.loadPosition(4);
 				}
 				break;
 			case GLUT_KEY_F6:    
-				if (StateMaschin!=AUSHOLEN) {
-					if (StateMaschin!=STOSS && StateMaschin!=WEISSNEU && StateMaschin!=SCHIEDSRICHTER) {
-						StateMaschin=BETRACHTEN;
-						Menu.NeuerMenuZustand();
+                if (StateMachine!=AUSHOLEN) {
+                    if (StateMachine!=STOSS && StateMachine!=WEISSNEU && StateMachine!=SCHIEDSRICHTER) {
+                        StateMachine=BETRACHTEN;
+						Menu.NewMenuState();
 					}
-					Kamera.ladePosition(5);
+                    Camera.loadPosition(5);
 				}
 				break;
 			case GLUT_KEY_F7:    
-				if (StateMaschin!=AUSHOLEN) {
-					if (StateMaschin!=STOSS && StateMaschin!=WEISSNEU && StateMaschin!=SCHIEDSRICHTER) {
-						StateMaschin=BETRACHTEN;
-						Menu.NeuerMenuZustand();
+                if (StateMachine!=AUSHOLEN) {
+                    if (StateMachine!=STOSS && StateMachine!=WEISSNEU && StateMachine!=SCHIEDSRICHTER) {
+                        StateMachine=BETRACHTEN;
+						Menu.NewMenuState();
 					}
-					Kamera.ladePosition(6);
+                    Camera.loadPosition(6);
 				}
 				break;
 			case GLUT_KEY_F8:    
-				if (StateMaschin!=AUSHOLEN) {
-					if (StateMaschin!=STOSS && StateMaschin!=WEISSNEU && StateMaschin!=SCHIEDSRICHTER) {
-						StateMaschin=BETRACHTEN;
-						Menu.NeuerMenuZustand();
+                if (StateMachine!=AUSHOLEN) {
+                    if (StateMachine!=STOSS && StateMachine!=WEISSNEU && StateMachine!=SCHIEDSRICHTER) {
+                        StateMachine=BETRACHTEN;
+						Menu.NewMenuState();
 					}
-					Kamera.ladePosition(7);
+                    Camera.loadPosition(7);
 				}
 				break;
 
 			case 108: {
-						  Taste_Shift=1;
+                          KEY_SHIFT=1;
 					  } break;
 			case GLUT_KEY_UP: 
-					  Taste_Pfeil_Oben=1; 
+                      KEY_UP=1;
 					  break;
 			case GLUT_KEY_DOWN: 
-					  Taste_Pfeil_Unten=1; 
+                      KEY_DOWN=1;
 					  break;
 			case GLUT_KEY_RIGHT:
-					  Taste_Pfeil_Rechts=1; 
+                      KEY_RIGHT=1;
 					  break;
 			case GLUT_KEY_LEFT: 
-					  Taste_Pfeil_Links=1; 
+                      KEY_LEFT=1;
 					  break;
 			case GLUT_KEY_PAGE_UP:
-					  Taste_Bild_Auf=1; 
+                      KEY_Bild_ON=1;
 					  break;
 			case GLUT_KEY_PAGE_DOWN:
-					  Taste_Bild_Ab=1; 
+                      KEY_Bild_Ab=1;
 					  break;
 			case GLUT_KEY_HOME: 
-					  if (xnor) Taste_Pos1=1; 
+                      if (xnor) KEY_Pos1=1;
 					  break;
 			case GLUT_KEY_END: 
-					  if (xnor) Taste_Ende=1; 
+                      if (xnor) KEY_END=1;
 					  break;
 		}
 	}
 }
 
-
-void SondertasteLos(int Taste,int x, int y) {
+//Special release key
+void SpecialKeyRelease(int Taste,int x, int y) {
 
 	x=y;
 
-	if (StateMaschin!=START) {
+    if (StateMachine!=START) {
 
 		switch (Taste) {
 			case 108: {
-						  Taste_Shift=0;
+                          KEY_SHIFT=0;
 					  } break;
 			case GLUT_KEY_UP: 
-					  Taste_Pfeil_Oben=0; 
+                      KEY_UP=0;
 					  break;
 			case GLUT_KEY_DOWN: 
-					  Taste_Pfeil_Unten=0; 
+                      KEY_DOWN=0;
 					  break;
 			case GLUT_KEY_RIGHT:
-					  Taste_Pfeil_Rechts=0; 
+                      KEY_RIGHT=0;
 					  break;
 			case GLUT_KEY_LEFT: 
-					  Taste_Pfeil_Links=0; 
+                      KEY_LEFT=0;
 					  break;
 			case GLUT_KEY_PAGE_UP:
-					  Taste_Bild_Auf=0; 
+                      KEY_Bild_ON=0;
 					  break;
 			case GLUT_KEY_PAGE_DOWN:
-					  Taste_Bild_Ab=0; 
+                      KEY_Bild_Ab=0;
 					  break;
 			case GLUT_KEY_HOME: 
-					  Taste_Pos1=0; 
+                      KEY_Pos1=0;
 					  break;
 			case GLUT_KEY_END: 
-					  Taste_Ende=0; 
+                      KEY_END=0;
 					  break;
 		}
 	}

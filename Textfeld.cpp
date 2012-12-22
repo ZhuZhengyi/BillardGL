@@ -252,7 +252,7 @@ void Textfeld::SetzeText(char TextZ[]){
 		i++;
 	}
 	Zeichenkette[i]=0;
-	GeneriereDisplayList();
+    GenerateDisplayList();
 }
 
 void Textfeld::SetzeTextKDL(char TextZ[]){
@@ -264,7 +264,7 @@ void Textfeld::SetzeTextKDL(char TextZ[]){
 	Zeichenkette[i]=0;
 }
 
-GLint Textfeld::Zeichen(char Taste){
+GLint Textfeld::Scale(char Taste){
 	if (Horchen) {
 		if (Taste>=32 &&
 				Taste!=8 && Taste!=127 &&
@@ -272,12 +272,12 @@ GLint Textfeld::Zeichen(char Taste){
 			GLint i;
 			for (i=0;i<9 && Zeichenkette[i];i++) {}
 			if (i<9) sprintf(Zeichenkette,"%s%c",Zeichenkette,Taste);
-			GeneriereDisplayList();
+            GenerateDisplayList();
 			return 1;
 		} else if (Taste==8 || Taste==127) { // loeschen
 			for (GLint i=0;i<9;i++) 
 				if (!Zeichenkette[i+1]) Zeichenkette[i]='\0';
-			GeneriereDisplayList();
+            GenerateDisplayList();
 			return 1;
 		} else if (Taste==13 || Taste==10) { // enter
 			soll_Alpha=EINGEBLENDET;
@@ -292,6 +292,7 @@ GLint Textfeld::Zeichen(char Taste){
 
 char* Textfeld::Text(){return Zeichenkette;}
 
+//deactivated
 void Textfeld::Desaktiviere(){
 	soll_Alpha=AUSGEBLENDET;
 
@@ -309,22 +310,26 @@ void Textfeld::Weghoeren(){
 	Horchen = 0;
 }
 
+//Listen up
 void Textfeld::Herhoeren(){
 	VollSichtbar();
 	Horchen = 1;
 }
 
+//In chooses
 void Textfeld::Angewaehlt(){
 	Alpha=ANGEWAEHLT;
 	soll_Alpha=EINGEBLENDET;
 	if (soll_Alpha!=Alpha) StarteAnimation();
 }
 
+//Superimposed
 void Textfeld::Eingeblendet(){
 	soll_Alpha=EINGEBLENDET;
 	if (soll_Alpha!=Alpha) StarteAnimation();
 }
 
+//fully Visible
 void Textfeld::VollSichtbar(){
 	soll_Alpha=VOLLSICHTBAR;
 	if (soll_Alpha!=Alpha) StarteAnimation();
@@ -364,7 +369,7 @@ void Textfeld::StarteAnimation(){
 	alt_Alpha=Alpha;
 }
 
-void Textfeld::GeneriereDisplayList(){
+void Textfeld::GenerateDisplayList(){
 	if (!TextfeldIndex) {
 		TextfeldIndex=glGenLists(1);
 	}
@@ -501,7 +506,7 @@ void Textfeld::GeneriereDisplayList(){
 
 }
 
-GLint Textfeld::Maustaste(int Taste,int Richtung,int x_,int y_) {
+GLint Textfeld::MouseButton(int Taste,int Richtung,int x_,int y_) {
 	GLfloat xf=16.0*x_/glutGet(GLUT_WINDOW_WIDTH);
 	GLfloat yf=12.0-12.0*y_/glutGet(GLUT_WINDOW_HEIGHT);
 	if (soll_Alpha>0.0 &&
@@ -522,7 +527,7 @@ GLint Textfeld::Maustaste(int Taste,int Richtung,int x_,int y_) {
 	}
 }
 
-GLfloat Textfeld::TextfeldHoehe() {
+GLfloat Textfeld::TextboxHeight() {
 	return .7*Zeilen;
 }
 

@@ -4,13 +4,14 @@
 #include "Kamera.h"
 #include "Einsetzen.h"
 
+//white insert
 void WeisseEinsetzen() {
-	if (LageVerbesserungKopffeld) {
+    if (LageVerbesserungKopffeld) {  //Situation improving header
 		GLfloat x=-63.2,y=0.0;
 		GLfloat mabs=100,abs;
 		for (int nr=1;nr<16;nr++) {
-			abs=(Kugel[nr].Pos_xCM()-x)*(Kugel[nr].Pos_xCM()-x)+
-				(Kugel[nr].Pos_yCM()-y)*(Kugel[nr].Pos_yCM()-y);
+			abs=(Ball[nr].Pos_xCM()-x)*(Ball[nr].Pos_xCM()-x)+
+				(Ball[nr].Pos_yCM()-y)*(Ball[nr].Pos_yCM()-y);
 			if (abs<mabs) {mabs=abs;}
 		}
 		if (mabs<=32.7) {
@@ -19,21 +20,21 @@ void WeisseEinsetzen() {
 				x=(rand()*60.5/RAND_MAX)-124;
 				y=(rand()*121.0/RAND_MAX)-60.5;
 				for (int nr=1;nr<16;nr++) {
-					abs=(Kugel[nr].Pos_xCM()-x)*(Kugel[nr].Pos_xCM()-x)+
-						(Kugel[nr].Pos_yCM()-y)*(Kugel[nr].Pos_yCM()-y);
+					abs=(Ball[nr].Pos_xCM()-x)*(Ball[nr].Pos_xCM()-x)+
+						(Ball[nr].Pos_yCM()-y)*(Ball[nr].Pos_yCM()-y);
 					if (abs<mabs) {mabs=abs;}
 				}
 			}
 		}
-		Kugel[0].neuePositionCM(x,y);	 
-		KugelnVersenkt[0]=0;
-		Kamera.BlickeAuf2(Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+        Ball[0].newPositionCM(x,y);
+		BallsSunk[0]=0;
+		Camera.EyesOn2(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 	} else {
 		GLfloat x=0.0,y=0.0;
 		GLfloat mabs=100,abs;
 		for (int nr=1;nr<16;nr++) {
-			abs=(Kugel[nr].Pos_xCM()-x)*(Kugel[nr].Pos_xCM()-x)+
-				(Kugel[nr].Pos_yCM()-y)*(Kugel[nr].Pos_yCM()-y);
+			abs=(Ball[nr].Pos_xCM()-x)*(Ball[nr].Pos_xCM()-x)+
+				(Ball[nr].Pos_yCM()-y)*(Ball[nr].Pos_yCM()-y);
 			if (abs<mabs) {mabs=abs;}
 		}
 		if (mabs<=32.7) {
@@ -42,26 +43,29 @@ void WeisseEinsetzen() {
 				x=(rand()*248/RAND_MAX)-124;
 				y=(rand()*121.0/RAND_MAX)-60.5;
 				for (int nr=1;nr<16;nr++) {
-					abs=(Kugel[nr].Pos_xCM()-x)*(Kugel[nr].Pos_xCM()-x)+
-						(Kugel[nr].Pos_yCM()-y)*(Kugel[nr].Pos_yCM()-y);
+					abs=(Ball[nr].Pos_xCM()-x)*(Ball[nr].Pos_xCM()-x)+
+						(Ball[nr].Pos_yCM()-y)*(Ball[nr].Pos_yCM()-y);
 					if (abs<mabs) {mabs=abs;}
 				}
 			}
 		}
-		Kugel[0].neuePositionCM(x,y);	 
-		KugelnVersenkt[0]=0;
-		Kamera.BlickeAuf2(Kugel[0].Pos_xCM(),Kugel[0].Pos_yCM());
+        Ball[0].newPositionCM(x,y);
+		BallsSunk[0]=0;
+		Camera.EyesOn2(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
 	}
 }
 
+/*
+ * eight insertion
+ */
 void AchtEinsetzen() {
-	Kugel[8].neuePositionCM(3000,3000);	 
+    Ball[8].newPositionCM(3000,3000);
 	GLfloat x=63.5,y=0.0;
 	GLfloat mabs=100,abs;  
 
 	for (int nr=1;nr<16;nr++) {
-		abs=(Kugel[nr].Pos_xCM()-x)*(Kugel[nr].Pos_xCM()-x)+
-			(Kugel[nr].Pos_yCM()-y)*(Kugel[nr].Pos_yCM()-y);
+		abs=(Ball[nr].Pos_xCM()-x)*(Ball[nr].Pos_xCM()-x)+
+			(Ball[nr].Pos_yCM()-y)*(Ball[nr].Pos_yCM()-y);
 		if (abs<mabs) {mabs=abs;}
 	}
 	if (mabs<=32.7) {
@@ -69,24 +73,26 @@ void AchtEinsetzen() {
 			mabs=100;
 			x+=.1;
 			for (int nr=0;nr<16;nr++) {
-				abs=(Kugel[nr].Pos_xCM()-x)*(Kugel[nr].Pos_xCM()-x)+
-					(Kugel[nr].Pos_yCM()-y)*(Kugel[nr].Pos_yCM()-y);
+				abs=(Ball[nr].Pos_xCM()-x)*(Ball[nr].Pos_xCM()-x)+
+					(Ball[nr].Pos_yCM()-y)*(Ball[nr].Pos_yCM()-y);
 				if (abs<mabs) {mabs=abs;}
 			}
 		}
 	}
-	Kugel[8].neuePositionCM(x,y);	 
-	KugelnVersenkt[8]=0;
+    Ball[8].newPositionCM(x,y);
+	BallsSunk[8]=0;
 }
 
+//
+//nine insertion
 void NeunEinsetzen() {
-	Kugel[9].neuePositionCM(3000,3000);	 
+    Ball[9].newPositionCM(3000,3000);
 	GLfloat x=63.5,y=0.0;
 	GLfloat mabs=100,abs;  
 
 	for (int nr=1;nr<16;nr++) {
-		abs=(Kugel[nr].Pos_xCM()-x)*(Kugel[nr].Pos_xCM()-x)+
-			(Kugel[nr].Pos_yCM()-y)*(Kugel[nr].Pos_yCM()-y);
+		abs=(Ball[nr].Pos_xCM()-x)*(Ball[nr].Pos_xCM()-x)+
+			(Ball[nr].Pos_yCM()-y)*(Ball[nr].Pos_yCM()-y);
 		if (abs<mabs) {mabs=abs;}
 	}
 	if (mabs<=32.7) {
@@ -94,12 +100,12 @@ void NeunEinsetzen() {
 			mabs=100;
 			x+=.1;
 			for (int nr=0;nr<16;nr++) {
-				abs=(Kugel[nr].Pos_xCM()-x)*(Kugel[nr].Pos_xCM()-x)+
-					(Kugel[nr].Pos_yCM()-y)*(Kugel[nr].Pos_yCM()-y);
+				abs=(Ball[nr].Pos_xCM()-x)*(Ball[nr].Pos_xCM()-x)+
+					(Ball[nr].Pos_yCM()-y)*(Ball[nr].Pos_yCM()-y);
 				if (abs<mabs) {mabs=abs;}
 			}
 		}
 	}
-	Kugel[9].neuePositionCM(x,y);	 
-	KugelnVersenkt[9]=0;
+    Ball[9].newPositionCM(x,y);
+	BallsSunk[9]=0;
 }

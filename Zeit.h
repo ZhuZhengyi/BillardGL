@@ -1,2 +1,2 @@
-GLint Zeit();
+GLint ElapsedTime();
 

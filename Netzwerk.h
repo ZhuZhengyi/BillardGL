@@ -1,12 +1,12 @@
-class Netzwerk {
+class Network {
 	public:
-		Netzwerk();
+        Network();
 		void Initialisiere();
 
-		GLint TypNeueNachricht(); // 0, wenn keine  Nachricht da, sonst Typ
+        GLint TypeNewMSG(); // 0, wenn keine  Nachricht da, sonst Typ
 
-		GLint NeueId(char Empfaenger[200]);  //liefert Empfaenger-Id zurueck
-		void NachrichtPartnersuche(GLint EmpfaengerId, GLint Spiel, char Name[10]);
+        GLint NewID(char Empfaenger[200]);  //liefert Empfaenger-Id zurueck
+        void NachrichtPartnersuche(GLint EmpfaengerId, GLint Spiel, char Name[10]); //Message Dating
 		void NachrichtPartnerschaft(GLint EmpfaengerId, char Name[10]);
 		void NachrichtKeinePartnerschaft(GLint EmpfaengerId, GLint Zuschauen, GLint Gegner);
 		void NachrichtAnfaenger(GLint EmpfaengerId, GLint Wer); //Wer?Ich:Du
@@ -18,15 +18,15 @@ class Netzwerk {
 		void NachrichtKugelPositionen(GLint EmpfaengerId, GLfloat Pos[16][3]);
 
 		GLint SenderId;
-		GLint Spiel;
-		char GegnerName[10];
-		GLint Zuschauen;
-		GLint ZuschauenGegnerId;
-		GLint Anfaenger;
-		GLfloat KameraPos[6];
-		GLfloat Stoss[2];
-		char ZuschauerName[10];
-		GLfloat KugelPos[16][3];
+        GLint Spiel;            //game;
+        char GegnerName[10];    //opponents Name
+        GLint Zuschauen;        //watch
+        GLint ZuschauenGegnerId;    // Watch opponents Id;
+        GLint Anfaenger;        //beginners
+        GLfloat KameraPos[6];   //camera Position
+        GLfloat Stoss[2];       //shock
+        char ZuschauerName[10]; //Viewers Name
+        GLfloat KugelPos[16][3];    //ball Position
 
 	private:
 };

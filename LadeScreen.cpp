@@ -41,7 +41,7 @@ void LSupdateGL() {
 
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glBindTexture(GL_TEXTURE_2D,dreizehntextur);
+	glBindTexture(GL_TEXTURE_2D,ThirteenTexture);
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
 	glColor4f(1.0,1.0,1.0,1);
@@ -56,7 +56,7 @@ void LSupdateGL() {
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 
-	GLfloat Winkel=(1-(LadeFortschritt/29.0))*6.2832;
+	GLfloat Winkel=(1-(LoadingProgress/29.0))*6.2832;
 
 	glColor4f(0.0,0.0,0.0,0.2);
 	glBegin(GL_TRIANGLE_FAN);
@@ -68,7 +68,7 @@ void LSupdateGL() {
 	glVertex2f( 0.0, 2.0-.5);
 	glEnd();
 
-	glBindTexture(GL_TEXTURE_2D,logotextur);
+	glBindTexture(GL_TEXTURE_2D,LogoTexture);
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
 	glColor4f(1.0,1.0,1.0,.7);
@@ -88,59 +88,59 @@ void LSupdateGL() {
 
 void LSidle() {
 
-	switch (LadeFortschritt++) {
+	switch (LoadingProgress++) {
 		case 0: {
 					glEnable(GL_BLEND);
 					glDisable(GL_LIGHTING);
 					glClear(GL_COLOR_BUFFER_BIT);
 					FMatrix r,g,b;
 					loadBMP(r,g,b,"Texturen/1/dreizehn.bmp");
-					glGenTextures(1,&dreizehntextur);
-					glBindTexture(GL_TEXTURE_2D,dreizehntextur);
+					glGenTextures(1,&ThirteenTexture);
+					glBindTexture(GL_TEXTURE_2D,ThirteenTexture);
 					createTexture(r,g,b);
 					r.free_FMatrix();
 					g.free_FMatrix();
 					b.free_FMatrix();
 					loadBMP(r,g,b,"Texturen/1/logo.bmp");
-					glGenTextures(1,&logotextur);
-					glBindTexture(GL_TEXTURE_2D,logotextur);
+					glGenTextures(1,&LogoTexture);
+					glBindTexture(GL_TEXTURE_2D,LogoTexture);
 					createTextureAlpha(r,g,b);
 					r.free_FMatrix();
 					g.free_FMatrix();
 					b.free_FMatrix();
 				}break;
-		case 1: initialisiereKugelTabellen(KugelAufloesung); break;
-		case 2: Kugel[0].Initialisiere(0,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 3: Kugel[1].Initialisiere(1,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 4: Kugel[2].Initialisiere(2,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 5: Kugel[3].Initialisiere(3,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 6: Kugel[4].Initialisiere(4,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 7: Kugel[5].Initialisiere(5,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 8: Kugel[6].Initialisiere(6,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 9: Kugel[7].Initialisiere(7,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 10: Kugel[8].Initialisiere(8,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 11: Kugel[9].Initialisiere(9,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 12: Kugel[10].Initialisiere(10,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 13: Kugel[11].Initialisiere(11,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 14: Kugel[12].Initialisiere(12,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 15: Kugel[13].Initialisiere(13,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 16: Kugel[14].Initialisiere(14,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 17: Kugel[15].Initialisiere(15,Texturgroesse,KugelAufloesung,Schatten); break;
-		case 18: Tisch.Initialisiere(TischTexturgroesse); break;
-		case 19: Beleuchtung.Initialisiere(AmbientesLicht,TischLampen,GrueneLampe,Reflektionen); break;
-		case 20: Anzeige.Initialisiere(); break;
-		case 21: Menu.Initialisiere(AnzeigeTexturgroesse); break;
-		case 22: Menu.ladeSprache(900); break;
-		case 23: Menu.ladeSprache(901); break;
-		case 24: Menu.ladeSprache(999); break;
-		case 25: Menu.Initialisiere(AnzeigeTexturgroesse); break;
-		case 26: SpielfeldAufbau(); break;
-		case 27: Schiedsrichter.NeuesSpiel(Spiel); break;
+        case 1: initializeBallTables(BallResolution); break;
+		case 2: Ball[0].Initialisiere(0,TextureSize,BallResolution,Shadow); break;
+		case 3: Ball[1].Initialisiere(1,TextureSize,BallResolution,Shadow); break;
+		case 4: Ball[2].Initialisiere(2,TextureSize,BallResolution,Shadow); break;
+		case 5: Ball[3].Initialisiere(3,TextureSize,BallResolution,Shadow); break;
+		case 6: Ball[4].Initialisiere(4,TextureSize,BallResolution,Shadow); break;
+		case 7: Ball[5].Initialisiere(5,TextureSize,BallResolution,Shadow); break;
+		case 8: Ball[6].Initialisiere(6,TextureSize,BallResolution,Shadow); break;
+		case 9: Ball[7].Initialisiere(7,TextureSize,BallResolution,Shadow); break;
+		case 10: Ball[8].Initialisiere(8,TextureSize,BallResolution,Shadow); break;
+		case 11: Ball[9].Initialisiere(9,TextureSize,BallResolution,Shadow); break;
+		case 12: Ball[10].Initialisiere(10,TextureSize,BallResolution,Shadow); break;
+		case 13: Ball[11].Initialisiere(11,TextureSize,BallResolution,Shadow); break;
+		case 14: Ball[12].Initialisiere(12,TextureSize,BallResolution,Shadow); break;
+		case 15: Ball[13].Initialisiere(13,TextureSize,BallResolution,Shadow); break;
+		case 16: Ball[14].Initialisiere(14,TextureSize,BallResolution,Shadow); break;
+		case 17: Ball[15].Initialisiere(15,TextureSize,BallResolution,Shadow); break;
+		case 18: Table.Initialisiere(TableTextureSize); break;
+		case 19: Lighting.Initialisiere(AmbientLighting,TableLamps,GrueneLamp,Reflections); break;
+		case 20: Display.Initialisiere(); break;
+		case 21: Menu.Initialisiere(DisplayTextureSize); break;
+        case 22: Menu.LoadLanguage(900); break;
+        case 23: Menu.LoadLanguage(901); break;
+        case 24: Menu.LoadLanguage(999); break;
+		case 25: Menu.Initialisiere(DisplayTextureSize); break;
+        case 26: BoardLayout(); break;
+        case 27: Referee.NewGame(Spiel); break;
 		case 28: {
 
-					 glDeleteTextures(1,&dreizehntextur);
+					 glDeleteTextures(1,&ThirteenTexture);
 
-					 DelayAusgleich=1;
+					 DelayCompensation=1;
 
 					 glutIgnoreKeyRepeat(1);
 					 glEnable(GL_DEPTH_TEST);
@@ -152,17 +152,17 @@ void LSidle() {
 					 glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 					 //Callbacks setzen: Reaktion auf Mausklicks und -bewegungen, Tastaturaktivit鋞en
-					 glutMouseFunc(Maus);
-					 glutMotionFunc(Bewegung);
-					 glutKeyboardFunc(Taste);
-					 glutKeyboardUpFunc(TasteLos);
-					 glutSpecialFunc(Sondertaste);
-					 glutSpecialUpFunc(SondertasteLos);
+                     glutMouseFunc(MouseClick);
+                     glutMotionFunc(MouseMove);
+                     glutKeyboardFunc(KeyPress);
+                     glutKeyboardUpFunc(KeyRelease);
+                     glutSpecialFunc(SpecialKeyPress);
+                     glutSpecialUpFunc(SpecialKeyRelease);
 
-					 glutVisibilityFunc(Sichtbar);        
+					 glutVisibilityFunc(Visible);        
 					 glutIdleFunc(timerEvent);
 					 glutDisplayFunc(updateGL);
 				 } break;
 	}
-	glutPostWindowRedisplay(AktuellesFenster);
+	glutPostWindowRedisplay(CurrentWindow);
 }

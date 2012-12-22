@@ -4,15 +4,15 @@
 #include "Einsetzen.h"
 #include "Schiedsrichter.h"
 
-Schiedsrichter::Schiedsrichter() {
+Referee::Referee() {
 	//
-	Begruendung=0;
+    Substantiation=0;
 }
 
-void Schiedsrichter::NeuesSpiel(GLint _Spiel){
+void Referee::NewGame(GLint _Spiel){
 	//printf(" Schiedsrichter: NeuesSpiel %i\n",_Spiel);
 
-	Spiel=_Spiel;
+    Game=_Spiel;
 
 	Eroeffnungsstoss=JA;
 	AusKopffeld=JA;
@@ -29,14 +29,14 @@ void Schiedsrichter::NeuesSpiel(GLint _Spiel){
 	Spieler1Gewonnen=NEIN;
 	Spieler2Gewonnen=NEIN;
 
-	SpielerAmStoss=((rand()/(RAND_MAX+0.0))>.5)?1:0;
+    PlayerToStock=((rand()/(RAND_MAX+0.0))>.5)?1:0;
 
-	if (Spiel==ACHTBALL) {
+    if (Game==ACHTBALL) {
 		for (GLint i=0;i<16;i++) {
 			KugelnImSpiel[i]=JA;
 		}
 	} 
-	if (Spiel==NEUNBALL) {
+    if (Game==NEUNBALL) {
 		for (GLint i=0;i<10;i++) {
 			KugelnImSpiel[i]=JA;
 		}
@@ -46,19 +46,19 @@ void Schiedsrichter::NeuesSpiel(GLint _Spiel){
 	} 
 }
 
-void Schiedsrichter::NeuerStoss(){
+void Referee::NewStoke(){
 	//printf(" Schiedsrichter: NeuerStoss\n");
 
 	SchiedsrichterEntscheidung=-1;
 
-	ErsteBeruehrteKugel=0;
+    FirstTouchedBall =0;
 	ErsteBeruehrteBande=0;
 	ErsteVersenkteKugel=0;
 	ErsteBeruehrung=0;
 	ErsteBeruehrteKugelImKopffeld=NEIN;
 	ErsteBeruehrungImKopffeld=NEIN;
 
-	Begruendung = 0;
+    Substantiation = 0;
 
 	BandeAusserhalbKopffeldvorKugelBeruehrt = NEIN;
 
@@ -69,7 +69,7 @@ void Schiedsrichter::NeuerStoss(){
 	}
 
 	if (AufnahmeWechsel) {
-		SpielerAmStoss=1-SpielerAmStoss;
+        PlayerToStock=1-PlayerToStock;
 	}
 
 	AufnahmeWechsel=NEIN;
@@ -83,7 +83,7 @@ void Schiedsrichter::NeuerStoss(){
 	Spieler1Gewonnen=NEIN;
 	Spieler2Gewonnen=NEIN;
 
-	if (Spiel==NEUNBALL) {
+    if (Game==NEUNBALL) {
 		for (GLint i2=9;i2>0;i2--) {
 			if (KugelnImSpiel[i2]) {
 				NiedrigsteKugel=i2;
@@ -100,28 +100,28 @@ void Schiedsrichter::NeuerStoss(){
 
 }
 
-void Schiedsrichter::KugelKugel(GLint,GLfloat,
+void Referee::KugelKugel(GLint,GLfloat,
 		GLint Kugel2,GLfloat Kugel2x){
-	if (!ErsteBeruehrteKugel) {
-		ErsteBeruehrteKugel=Kugel2;
+    if (!FirstTouchedBall ) {
+        FirstTouchedBall =Kugel2;
 		if (Kugel2x<-63.5) {
 			ErsteBeruehrteKugelImKopffeld=JA;
 		}
 	}
 }
 
-void Schiedsrichter::KugelBande(GLint Kugel,GLfloat Kugelx,
+void Referee::BallBand(GLint Kugel,GLfloat Kugelx,
 		GLint Bande){
 	KugelnAnBande[Kugel]=JA;
 
-	if (!ErsteBeruehrteKugel && ((Bande==20) ||
+    if (!FirstTouchedBall  && ((Bande==20) ||
 				(Bande==21) && (Kugelx<-63.5) ||
 				(Bande==23) && (Kugelx<-63.5))) {
 		BandeAusserhalbKopffeldvorKugelBeruehrt = JA;
 	}
 }
 
-void Schiedsrichter::KugelLoch(GLint Kugel,GLint){
+void Referee::BallHole(GLint Kugel,GLint){
 	KugelnVersenkt[Kugel]=JA;
 
 	if (!ErsteVersenkteKugel) {
@@ -130,51 +130,51 @@ void Schiedsrichter::KugelLoch(GLint Kugel,GLint){
 }
 
 
-GLint Schiedsrichter::Entscheidung(){
+GLint Referee::Entscheidung(){
 
 	if (SchiedsrichterEntscheidung==-1) {
 
 		if (Eroeffnungsstoss) {
 			//printf("check %i %i\n",FarbigeKugelDabei(KugelnVersenkt),FarbigeKugelSumme(KugelnAnBande));
-			if (!FarbigeKugelDabei(KugelnVersenkt) &&
-					FarbigeKugelSumme(KugelnAnBande)<4) {
+            if (!ColoredBallHere(KugelnVersenkt) &&
+                    ColoredBallSum(KugelnAnBande)<4) {
 				Foul = JA; 
-				Begruendung=450;
+                Substantiation=450;
 				//printf("Foul kein gescheiter eroeff\n");
 				NeuAufbauenOderWeiterspielen = JA;
 				//printf("NeuAufbauenOderWeiterspielen kein gescheiter eroeff\n");
 			}
-			if ((FarbigeKugelDabei(KugelnVersenkt) ||
-						(FarbigeKugelSumme(KugelnAnBande)>=4)) &&
+            if ((ColoredBallHere(KugelnVersenkt) ||
+                        (ColoredBallSum(KugelnAnBande)>=4)) &&
 					KugelnVersenkt[0]) {
 				Foul = JA;
-				if (!Begruendung) Begruendung=451;
+                if (!Substantiation) Substantiation=451;
 				//printf("Foul weiss bei eroff versenkt\n");
-				if (Spiel==ACHTBALL) {
+                if (Game==ACHTBALL) {
 					LageVerbesserungKopffeld = JA;
 					//printf("LageVerbesserungKopffeld weiss bei eroff versenkt\n");
 				}
 			}
 		}
 
-		if (!ErsteBeruehrteKugel) {
+        if (!FirstTouchedBall ) {
 			Foul=JA;
-			if (!Begruendung) Begruendung=452;
+            if (!Substantiation) Substantiation=452;
 		}
 
-		if (!KorrekteKugelAngespielt(ErsteBeruehrteKugel)) {
+        if (!CorrectBallWithPlay(FirstTouchedBall )) {
 			Foul = JA;
-			if (!Begruendung) Begruendung=453;
+            if (!Substantiation) Substantiation=453;
 			//printf("Foul keine korrekte kugel angespielt\n");
 		}
 
-		if (KorrekteKugelAngespielt(ErsteBeruehrteKugel) && 
-				!KorrekteKugelVersenktDabei(KugelnVersenkt)) {
+        if (CorrectBallWithPlay(FirstTouchedBall ) &&
+                !CorrectBallSunkHere(KugelnVersenkt)) {
 			AufnahmeWechsel = JA;
 			//printf("AufnahmeWechsel nix gescheites versenkt\n");
-			if (!Summe(KugelnAnBande)) {
+            if (!Sum(KugelnAnBande)) {
 				Foul = JA;
-				if (!Begruendung) Begruendung=454;
+                if (!Substantiation) Substantiation=454;
 				//printf("Foul nix gescheites versenkt, keine Bande\n");
 			}
 		} 
@@ -183,14 +183,14 @@ GLint Schiedsrichter::Entscheidung(){
 				ErsteBeruehrteKugelImKopffeld &&
 				!BandeAusserhalbKopffeldvorKugelBeruehrt) {
 			Foul = JA;
-			if (!Begruendung) Begruendung=455;
+            if (!Substantiation) Substantiation=455;
 			//printf("Foul im kopff angespielt\n");
 		}
 
 		if (! Eroeffnungsstoss && KugelnVersenkt[0]) {
 			Foul = JA;
 			//printf("Foul weiss versenkt\n");
-			if (!Begruendung) Begruendung=456;
+            if (!Substantiation) Substantiation=456;
 			LageVerbesserung = JA;
 			//printf("LageVerbesserung weiss bei eroeff1\n");
 		}
@@ -203,7 +203,7 @@ GLint Schiedsrichter::Entscheidung(){
 			//printf("AufnahmeWechsel wegen Foul\n");
 		}
 
-		if (Spiel==ACHTBALL) {
+        if (Game==ACHTBALL) {
 
 			if (Eroeffnungsstoss && KugelnVersenkt[8]) {
 				NeuAufbauenOderAchtEinsetzen = JA;
@@ -216,16 +216,16 @@ GLint Schiedsrichter::Entscheidung(){
 				NeuAufbauenOderWeiterspielen=NEIN;
 			}
 
-			if (KugelnVersenkt[8] && !KorrekteKugelVersenkt(8) && !Eroeffnungsstoss) {
+            if (KugelnVersenkt[8] && !CorrectBallSunk(8) && !Eroeffnungsstoss) {
 				Verloren = JA;
 				//printf("Verloren 8\n");
 			}
 
-			if (ErsteBeruehrteKugel==8 && !KorrekteKugelAngespielt(8)){
+            if (FirstTouchedBall ==8 && !CorrectBallWithPlay(8)){
 				LageVerbesserung = JA;
 			}
 
-			if (KugelnVersenkt[8] && KorrekteKugelVersenkt(8) && !Foul) {
+            if (KugelnVersenkt[8] && CorrectBallSunk(8) && !Foul) {
 				Gewonnen = JA;
 				//printf("Gewonnen\n");
 			}
@@ -234,18 +234,18 @@ GLint Schiedsrichter::Entscheidung(){
 					!GruppenVerteilung && 
 					!Eroeffnungsstoss && 
 					ErsteVersenkteKugel &&
-					ErsteBeruehrteKugel != 8 &&
+                    FirstTouchedBall  != 8 &&
 					ErsteVersenkteKugel != 8) {
-				if ((SpielerAmStoss == SPIELER1) &&
+                if ((PlayerToStock == SPIELER1) &&
 						(ErsteVersenkteKugel < 8) ||
-						(SpielerAmStoss == SPIELER2) &&
+                        (PlayerToStock == SPIELER2) &&
 						(ErsteVersenkteKugel > 8)) {
 					GruppenVerteilung = S1_GANZE_S2_HALBE;
 					//printf("Gruppenverteilung:  S1_GANZE_S2_HALBE\n");
 				}
-				if ((SpielerAmStoss == SPIELER1) &&
+                if ((PlayerToStock == SPIELER1) &&
 						(ErsteVersenkteKugel > 8) ||
-						(SpielerAmStoss == SPIELER2) &&
+                        (PlayerToStock == SPIELER2) &&
 						(ErsteVersenkteKugel < 8)) {
 					GruppenVerteilung = S1_HALBE_S2_GANZE;
 					//printf("Gruppenverteilung:  S1_HALBE_S2_GANZE\n");
@@ -253,7 +253,7 @@ GLint Schiedsrichter::Entscheidung(){
 			}
 		}
 
-		if (Spiel==NEUNBALL) {
+        if (Game==NEUNBALL) {
 			if (Foul && KugelnVersenkt[9]) {
 				NeunEinsetzen();
 				KugelnVersenkt[9]=NEIN;
@@ -261,22 +261,22 @@ GLint Schiedsrichter::Entscheidung(){
 			}
 
 			if (Foul) {
-				if (SpielerAmStoss==SPIELER1) {
+                if (PlayerToStock==SPIELER1) {
 					FoulsHintereinanderSpieler1+=1;
 				} else {
 					FoulsHintereinanderSpieler2+=1;
 				}
 			} else {
-				if (SpielerAmStoss==SPIELER1) {
+                if (PlayerToStock==SPIELER1) {
 					FoulsHintereinanderSpieler1=0;
 				} else {
 					FoulsHintereinanderSpieler2=0;
 				}
 			}
 
-			if ((SpielerAmStoss==SPIELER1) &&
+            if ((PlayerToStock==SPIELER1) &&
 					(FoulsHintereinanderSpieler1 == 3) ||
-					(SpielerAmStoss==SPIELER2) &&
+                    (PlayerToStock==SPIELER2) &&
 					(FoulsHintereinanderSpieler2 == 3)) {
 				Verloren = JA;
 				//printf("Verloren durch drei Fouls hintereinander\n");
@@ -292,14 +292,14 @@ GLint Schiedsrichter::Entscheidung(){
 		AusKopffeld = NEIN;
 
 		if (Gewonnen) {
-			if (SpielerAmStoss==SPIELER1) {
+            if (PlayerToStock==SPIELER1) {
 				Spieler1Gewonnen=JA;
 			} else {
 				Spieler2Gewonnen=JA;
 			}
 		} 
 		if (Verloren){
-			if (SpielerAmStoss==SPIELER1) {
+            if (PlayerToStock==SPIELER1) {
 				Spieler2Gewonnen=JA;
 			} else {
 				Spieler1Gewonnen=JA;
@@ -331,14 +331,14 @@ GLint Schiedsrichter::Entscheidung(){
 
 }
 
-GLint Schiedsrichter::KorrekteKugelAngespielt(GLint Kugel){
-	switch (Spiel) {
+GLint Referee::CorrectBallWithPlay(GLint Kugel){
+    switch (Game) {
 		case ACHTBALL: {
 						   if (GruppenVerteilung == KEINE && Kugel != 8 ) {
 							   return JA;
 						   }
 						   if (GruppenVerteilung == S1_GANZE_S2_HALBE) {
-							   if (SpielerAmStoss == SPIELER1) {
+                               if (PlayerToStock == SPIELER1) {
 								   if ((Kugel) < 8 ||
 										   (!KugelnImSpiel[1] &&
 											!KugelnImSpiel[2] &&
@@ -351,7 +351,7 @@ GLint Schiedsrichter::KorrekteKugelAngespielt(GLint Kugel){
 									   return JA;
 								   }
 							   }
-							   if (SpielerAmStoss == SPIELER2) {
+                               if (PlayerToStock == SPIELER2) {
 								   if (Kugel > 8 ||
 										   (!KugelnImSpiel[9] &&
 											!KugelnImSpiel[10] &&
@@ -366,7 +366,7 @@ GLint Schiedsrichter::KorrekteKugelAngespielt(GLint Kugel){
 							   }
 						   }
 						   if (GruppenVerteilung == S1_HALBE_S2_GANZE) {
-							   if (SpielerAmStoss == SPIELER2) {
+                               if (PlayerToStock == SPIELER2) {
 								   if (Kugel < 8 ||
 										   (!KugelnImSpiel[1] &&
 											!KugelnImSpiel[2] &&
@@ -379,7 +379,7 @@ GLint Schiedsrichter::KorrekteKugelAngespielt(GLint Kugel){
 									   return JA;
 								   }
 							   }
-							   if (SpielerAmStoss == SPIELER1) {
+                               if (PlayerToStock == SPIELER1) {
 								   if (Kugel > 8 ||
 										   (!KugelnImSpiel[9] &&
 											!KugelnImSpiel[10] &&
@@ -403,14 +403,14 @@ GLint Schiedsrichter::KorrekteKugelAngespielt(GLint Kugel){
 	return NEIN;
 }
 
-GLint Schiedsrichter::KorrekteKugelVersenkt(GLint Kugel){
-	switch (Spiel) {
+GLint Referee::CorrectBallSunk(GLint Kugel){
+    switch (Game) {
 		case ACHTBALL: {
 						   if (GruppenVerteilung == KEINE && Kugel != 8 ) {
 							   return JA;
 						   }
 						   if (GruppenVerteilung == S1_GANZE_S2_HALBE) {
-							   if (SpielerAmStoss == SPIELER1) {
+                               if (PlayerToStock == SPIELER1) {
 								   if (Kugel < 8 ||
 										   (!KugelnImSpiel[1] &&
 											!KugelnImSpiel[2] &&
@@ -423,7 +423,7 @@ GLint Schiedsrichter::KorrekteKugelVersenkt(GLint Kugel){
 									   return JA;
 								   }
 							   }
-							   if (SpielerAmStoss == SPIELER2) {
+                               if (PlayerToStock == SPIELER2) {
 								   if (Kugel > 8 ||
 										   (!KugelnImSpiel[9] &&
 											!KugelnImSpiel[10] &&
@@ -438,7 +438,7 @@ GLint Schiedsrichter::KorrekteKugelVersenkt(GLint Kugel){
 							   }
 						   }
 						   if (GruppenVerteilung == S1_HALBE_S2_GANZE) {
-							   if (SpielerAmStoss == SPIELER2) {
+                               if (PlayerToStock == SPIELER2) {
 								   if (Kugel < 8 || 
 										   (!KugelnImSpiel[1] &&
 											!KugelnImSpiel[2] &&
@@ -451,7 +451,7 @@ GLint Schiedsrichter::KorrekteKugelVersenkt(GLint Kugel){
 									   return JA;
 								   }
 							   }
-							   if (SpielerAmStoss == SPIELER1) {
+                               if (PlayerToStock == SPIELER1) {
 								   if (Kugel > 8 || 
 										   (!KugelnImSpiel[9] &&
 											!KugelnImSpiel[10] &&
@@ -473,23 +473,23 @@ GLint Schiedsrichter::KorrekteKugelVersenkt(GLint Kugel){
 	return NEIN;
 }
 
-GLint Schiedsrichter::KorrekteKugelVersenktDabei(GLint Kugel[16]){
+GLint Referee::CorrectBallSunkHere(GLint Kugel[16]){
 	GLint Dabei=NEIN;
 	for (GLint i=0;i<16;i++) {
 		if (Kugel[i]) {
-			Dabei|=KorrekteKugelVersenkt(i);
+            Dabei|=CorrectBallSunk(i);
 		}
 	}
 	return Dabei;
 }
 
-GLint Schiedsrichter::FarbigeKugel(GLint Kugel){
-	if (Spiel==ACHTBALL) {
+GLint Referee::ColoredBall(GLint Kugel){
+    if (Game==ACHTBALL) {
 		if (0<Kugel && Kugel<8 || 8<Kugel && Kugel<16) {
 			return JA;
 		}
 	}
-	if (Spiel==NEUNBALL) {
+    if (Game==NEUNBALL) {
 		if (0<Kugel && Kugel<10){
 			return JA;
 		}
@@ -497,27 +497,27 @@ GLint Schiedsrichter::FarbigeKugel(GLint Kugel){
 	return NEIN;
 }
 
-GLint Schiedsrichter::FarbigeKugelDabei(GLint Kugel[16]){
+GLint Referee::ColoredBallHere(GLint Kugel[16]){
 	GLint Dabei=NEIN;
 	for (GLint i=0;i<16;i++) {
 		if (Kugel[i]) {
-			Dabei|=FarbigeKugel(i);
+            Dabei|=ColoredBall(i);
 		}
 	}
 	return Dabei;
 }
 
-GLint Schiedsrichter::FarbigeKugelSumme(GLint Kugel[16]){
+GLint Referee::ColoredBallSum(GLint Kugel[16]){
 	GLint S=NEIN;
 	for (GLint i=0;i<16;i++) {
 		if (Kugel[i]) {
-			S+=FarbigeKugel(i);
+            S+=ColoredBall(i);
 		}
 	}
 	return S;
 }
 
-GLint Schiedsrichter::Summe(GLint Kugel[16]){
+GLint Referee::Sum(GLint Kugel[16]){
 	GLint S=0;
 	for (GLint i=0;i<16;i++) {
 		S+=Kugel[i];
@@ -525,22 +525,26 @@ GLint Schiedsrichter::Summe(GLint Kugel[16]){
 	return S;
 }
 
-GLint Schiedsrichter::FrageNachSpielerAmStoss(){
-	if (AufnahmeWechsel) {
-		return 1-SpielerAmStoss;
+//Question After players at kick
+GLint Referee::FrageNachSpielerAmStoss(){
+    if (AufnahmeWechsel) { //To measure change
+        return 1-PlayerToStock;
 	}
-	return SpielerAmStoss;
+    return PlayerToStock;
 }
 
-GLint Schiedsrichter::FrageNachGruppenVerteilung(){
+//Question After distribution groups
+GLint Referee::FrageNachGruppenVerteilung(){
 	return GruppenVerteilung;
 }
 
-GLint Schiedsrichter::FrageNachBegruendung(){
-	return Begruendung;
+//Question After Substantiation
+GLint Referee::FrageNachBegruendung(){
+    return Substantiation;
 }
 
-GLint Schiedsrichter::FrageNachFouls(GLint Spieler){
+//Question After Fouls
+GLint Referee::FrageNachFouls(GLint Spieler){
 	if (Spieler==SPIELER1) {
 		return FoulsHintereinanderSpieler1;
 	}
@@ -550,11 +554,11 @@ GLint Schiedsrichter::FrageNachFouls(GLint Spieler){
 	return 0;
 }
 
-void Schiedsrichter::SetzeSpielerAmStoss(GLint Spieler) {
-	SpielerAmStoss=Spieler;
+void Referee::SetPlayerToStock(GLint Spieler) {
+    PlayerToStock=Spieler;
 }
 
-void Schiedsrichter::SetzeFouls(GLint Spieler,GLint Fouls) {
+void Referee::SetzeFouls(GLint Spieler,GLint Fouls) {
 	if (Spieler==SPIELER1) {
 		FoulsHintereinanderSpieler1=Fouls;
 	} else {

@@ -1,11 +1,11 @@
 
 //void Beleuchtung(GLint,GLint,GLint,GLint,GLint,GLint);
 
-class Beleuchtung {
+class Lighting {
 	public:
-		Beleuchtung();
+		Lighting();
 		void Initialisiere(GLint,GLint,GLint,GLint);
-		void male();
+        void draw();
 	private:
-		GLint BeleuchtungIndex;
+		GLint LightingIndex;
 };

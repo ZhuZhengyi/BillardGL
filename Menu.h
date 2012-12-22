@@ -170,37 +170,37 @@ class Menu {
 	public:
 		Menu();
 		void Initialisiere(GLint);
-		void male();
+		void draw();
 		void Update(GLint);
 
-		GLint Maustaste(int,int,int,int);
+        GLint MouseClick(int,int,int,int);
 		GLint KeyboardTaste (unsigned char,int,int);
-		void NeuerMenuZustand();
-		void SignalAusfuehrung(GLint);
-		void SetzeMenuZustand(GLint); 
-		void SetzeFPS(GLint);
-		void ladeSprache(GLint);
+		void NewMenuState();
+		void SignalExecution(GLint);
+		void setMenuState(GLint); 
+		void SetFPS(GLint);
+        void LoadLanguage(GLint);
 	private:
 		void StarteAnimation();
-		GLint Animationszeit;
+        GLint AnimationsTime;
 		GLint InAnimation;
 
-		GLint MenuZustand;
-		GLint AusSpiel;
+        GLint MenuState;
+        GLint AusSpiel; //fromGame
 
-		Schild menuhintergrund;
+        Scale MenuBackground;
 
-		Schild logo;
-		Schild namen;
+        Scale logo;
+        Scale namen;
 
-		Schild halbe;
-		Schild volle;
+        Scale halbe;
+        Scale volle;
 
-		Schild ball[16];
+        Scale ball[16];
 
-		Schild GameStar;
+        Scale GameStar;
 
-		Schild* SchildArray[300];
+        Scale* SchildArray[300];
 		Textfeld* TextfeldArray[1000];
 
 		Textfeld dummyTextfeld;
@@ -235,52 +235,52 @@ class Menu {
 };
 
 
-extern GLint StateMaschin;
+extern GLint StateMachine;
 extern GLint Spiel;
-extern class Kamera Kamera;
+extern class Camera Camera;
 
-extern GLint Texturgroesse,
-	   AnzeigeTexturgroesse,
-	   TischTexturgroesse,
-	   KugelAufloesung,
+extern GLint TextureSize,
+	   DisplayTextureSize,
+	   TableTextureSize,
+	   BallResolution,
 	   InvertX,
 	   InvertY,
-	   Schatten,
-	   SpielModus,
+	   Shadow,
+	   GameMode,
 	   SpielerAmStoss;
 
 extern GLfloat MouseSpeed;
-extern GLint   KugelnVersenkt[16];
-extern GLint   KugelnImSpiel[16];
+extern GLint   BallsSunk[16];
+extern GLint   BallsInGame[16];
 
-extern class Kugel Kugel[16];  
-extern class Tisch Tisch;
-extern class Anzeige Anzeige;
-extern class Schiedsrichter Schiedsrichter;
-extern class Beleuchtung Beleuchtung;
+extern class Ball Ball[16];  
+extern class Table Table;
+extern class Display Display;
+extern class Referee Referee;
+extern class Lighting Lighting;
 
-extern GLint SchiedsrichterEntscheidung;
+extern GLint RefereeDecision;
 extern GLint SpielerAmStoss;
-extern GLint AufnahmeWechsel;
+extern GLint RecodingChanges;
 extern GLint Foul;
 extern GLint LageVerbesserungKopffeld;
 extern GLint LageVerbesserung;
 extern GLint NeuAufbauenOderWeiterspielen;
 extern GLint NeuAufbauenOderAchtEinsetzen;
-extern GLint Spieler1Gewonnen;
-extern GLint Spieler2Gewonnen;
+extern GLint Player1Win;
+extern GLint Player2Win;
 extern GLint AllerersterStoss;
 
-extern GLint ZeigeFPS,TischLampen,GrueneLampe;
-extern GLfloat EffektLautstaerke,MusikLautstaerke;
+extern GLint ShowFPS,TableLamps,GrueneLamp;
+extern GLfloat EffectVolumeDown,MusicVolumeDown;
 
 extern GLint TexMMM;
 
-extern GLint DelayAusgleich;
+extern GLint DelayCompensation;
 
 extern GLint xnor;
 
-extern char Spieler1[10],Spieler2[10],NetzwerkSpieler[10],NetzwerkGegner[10];
+extern char Player1[10],Player2[10],NetworkPlayer[10],NetworkTeam[10];
 
 
 

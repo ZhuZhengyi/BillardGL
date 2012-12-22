@@ -38,74 +38,74 @@
 #pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 
 //Tabellen
-GLfloat Bewegungstabelle[2000][16][3];
-GLint   Soundtabelle[1000];
+GLfloat LightingTable[2000][16][3];
+GLint   SoundTable[1000];
 
 //Objekte
-class Kugel   Kugel[16];
-class Tisch   Tisch;
-class Anzeige Anzeige;
-class Kamera  Kamera;
-class Menu Menu;
-class Schiedsrichter Schiedsrichter;
-class Beleuchtung Beleuchtung;
+class Ball   Ball[16];      //球
+class Table   Table;        //球台
+class Display Display;      //显示
+class Camera  Camera;       //相机
+class Menu Menu;            //菜单
+class Referee Referee;      //裁判
+class Lighting Lighting;    //光照
 
 //Sonstige Variablen
 GLint   MouseLookLast_x;
 GLint   MouseLookLast_y;
 
-GLint   Stossdauer=1999;
-GLint   Startzeit;
+GLint   Stossdauer=1999;  //shock duartion
+GLint   StartTime;
 GLint   Frames=0;
-GLint   FrameZeitpunkt;
-GLint   LetztesFrameZeitpunkt=-1;
+GLint   FrameTimePoint;
+GLint   LastFrameTimePoint=-1;  //Last Frame
 
-GLint   AusholStartzeit;
-GLfloat AusholStaerke=0;
-GLfloat MaxAusholStaerke=100;
+GLint   AusholStartTime;        //aushol start time
+GLfloat AusholStaerke=0;        //aushol Thickness
+GLfloat MaxAusholStaerke=100;   //max aushol Thickness
 
-GLint   DelayAusgleich;
-GLint   Faktor;
+GLint   DelayCompensation;     //Delay compensation
+GLint   Factor;
 
-GLint   AllerersterStoss=1;
+GLint   AllerersterStoss=1;  //kick
 
 GLint   FullScreen;
-GLint   Hintergrundfarbe=0;
+GLint   BackgroundColor=0;
 
-GLint   KugelnVersenkt[16];
-GLint   KugelnImSpiel[16];
+GLint   BallsSunk[16];     //ballsunk
+GLint   BallsInGame[16];
 
 GLint   xnor=0;
-GLint   MausTasteAbgefangen=0;
+GLint   MouseButtonIntercepted=0; //click intercept
 
 //State-Maschin'
-GLint   StateMaschin=START;
-GLint   Spiel=ACHTBALL;
-GLint   SpielModus=TRAININGSSPIEL;
+GLint   StateMachine=START;
+GLint   Spiel=ACHTBALL;         //Game
+GLint   GameMode=TRAININGSSPIEL;  //Game
 
 // Schiedsrichter
-GLint SchiedsrichterEntscheidung=0;
-GLint AufnahmeWechsel=0;
+GLint RefereeDecision=0; //referee decision
+GLint RecodingChanges=0;   //recording changes
 //GLint SpielerAmStoss=0;
-GLint Foul=0;
-GLint LageVerbesserungKopffeld=1;
+GLint Foul=0;           //犯规
+GLint LageVerbesserungKopffeld=1;       //Situation improving header
 GLint LageVerbesserung=0;
-GLint NeuAufbauenOderWeiterspielen=0;
-GLint NeuAufbauenOderAchtEinsetzen=0;
-GLint Spieler1Gewonnen=0;
-GLint Spieler2Gewonnen=0;
+GLint NeuAufbauenOderWeiterspielen=0;       //Rebuild Or Next play
+GLint NeuAufbauenOderAchtEinsetzen=0;       //
+GLint Player1Win=0;
+GLint Player2Win=0;
 
 //Tasten
-GLint Taste_Pfeil_Oben=0;
-GLint Taste_Pfeil_Unten=0;
-GLint Taste_Pfeil_Rechts=0;
-GLint Taste_Pfeil_Links=0;
-GLint Taste_Shift=0;
-GLint Taste_Strg=0;
-GLint Taste_Bild_Auf=0;
-GLint Taste_Bild_Ab=0;
-GLint Taste_Pos1=0;
-GLint Taste_Ende=0;
+GLint KEY_UP=0;  //up_arrow_key
+GLint KEY_DOWN=0;  //down_arrow_key
+GLint KEY_RIGHT=0; //right
+GLint KEY_LEFT=0;  //left
+GLint KEY_SHIFT=0;        //shift
+GLint KEY_CTRL=0;         //ctrl
+GLint KEY_Bild_ON=0;     //
+GLint KEY_Bild_Ab=0;      //
+GLint KEY_Pos1=0;         //pos1
+GLint KEY_END=0;         //end
 
 
 //GLint   KameraFahrt=0;
@@ -117,87 +117,87 @@ GLint PolygonMode_view=GL_FRONT;
 
 int value;
 
-GLint Texturgroesse,AnzeigeTexturgroesse,TischTexturgroesse;
-GLint KugelAufloesung;
-GLint InvertX,InvertY,Schatten,ZBufferLoeschen;
+GLint TextureSize,DisplayTextureSize,TableTextureSize;
+GLint BallResolution;  //Ball 分辨率
+GLint InvertX,InvertY,Shadow,ZBufferDelete;
 GLint TexMMM;
-GLfloat MouseSpeed,Epsilon;
-GLint PhysikFrequenz=400;
-GLfloat ReibungsFaktor,BandenFaktor,KollisionsFaktor;
-GLint Farbtiefe, Reflektionen;
-GLint BildschirmAufloesung;
-GLint Sprache;
+GLfloat MouseSpeed,Epsilon;   //鼠标速率,
+GLint PhysicsFrequenz=400;      //物理频率
+GLfloat FrictionFactor,GangsFactor,CollisionFactor; //摩擦系数,混乱系数,碰撞系数
+GLint ColorDepth, Reflections; //色深,
+GLint ScreenResolution;         //屏幕分辨率
+GLint Language;                 //语言
 
-GLint LadeFortschritt=0;
-GLuint dreizehntextur;
-GLuint logotextur;
+GLint LoadingProgress=0;    //载入进度
+GLuint ThirteenTexture;      //13号球纹理
+GLuint LogoTexture;          //logo纹理
 
-char Spieler1[10];
-char Spieler2[10];
-char NetzwerkSpieler[10];
-char NetzwerkGegner[10];
+char Player1[10];          //Player1
+char Player2[10];          //Player2
+char NetworkPlayer[10];   //NetworkPlayer1
+char NetworkTeam[10];    //NetworkPlayer2
 
-int OriginalFenster=0,AktuellesFenster=0;
+int OriginalWindow=0,CurrentWindow=0;
 
-GLint ZeigeFPS;
-GLint AmbientesLicht;
-GLint TischLampen;
-GLint GrueneLampe;
+GLint ShowFPS;              //显示FPS
+GLint AmbientLighting;      //环境光
+GLint TableLamps;           //球台灯
+GLint GrueneLamp;            //
 
-GLfloat EffektLautstaerke=.5;
-GLfloat MusikLautstaerke=.5;
+GLfloat EffectVolumeDown=.5;     //效果音量减小量
+GLfloat MusicVolumeDown=.5;      //音乐音量减小量
 
 //KugelTabellen
 
-GLfloat *ball_vertices[30];
+GLfloat *ball_vertices[30];     //球顶点
 GLfloat *ball_texcoord[30];
 GLint *ball_indices[30];
 
 void updateGL()
 {
-	if (ZBufferLoeschen) {glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);}
+    if (ZBufferDelete) {glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);}
 
-	Kamera.male();                        // Kamera-Postion und -Parameter setzen
+    Camera.draw();                        // Kamera-Postion und -Parameter setzen
 
-	Beleuchtung.male();
+    Lighting.draw();
 
-	Tisch.maleFlaeche();                  // Tischflaeche zeichen
+    Table.maleArea();                  // Tischflaeche zeichen
 
 	glDisable(GL_DEPTH_TEST);
 
-	Tisch.maleLinien();
+    Table.maleLinien();
 
-	for (int Kugelnr=0;Kugelnr<16;Kugelnr++) {
-		Kugel[Kugelnr].maleSchatten();      // Schatten zeichen 
+    for (int BallIndex=0;BallIndex<16;BallIndex++) {
+        Ball[BallIndex].drawShadow();      // Schatten zeichen
 	}
 
 	glEnable(GL_DEPTH_TEST);
 
-	Tisch.maleBanden();
+    Table.maleBanden();
 
-	GLfloat Abstand=0;
-	GLint Aufloesung=1;
+    GLfloat Abstand=0;  //distance
+    GLint Aufloesung=1; //Display resolution
 
 	for (int Kugelnr2=0;Kugelnr2<16;Kugelnr2++) {
-		GLfloat x=Kugel[Kugelnr2].Pos_xCM()-Kamera.Pos_x;
-		GLfloat y=Kugel[Kugelnr2].Pos_yCM()-Kamera.Pos_y;
-		GLfloat z=Kamera.Pos_z;
+        GLfloat x=Ball[Kugelnr2].Pos_xCM()-Camera.Pos_x;
+        GLfloat y=Ball[Kugelnr2].Pos_yCM()-Camera.Pos_y;
+		GLfloat z=Camera.Pos_z;
 		Abstand=sqrt(x*x+y*y+z*z);
 		Aufloesung=(GLint(400/Abstand));//300
 		if (Aufloesung<3) Aufloesung=3;
-		Aufloesung=(Aufloesung/2)*2+1;
-		if (Aufloesung>KugelAufloesung) Aufloesung=KugelAufloesung;
-		Kugel[Kugelnr2].male(Aufloesung);              // Kugeln zeichen 
+        Aufloesung=(Aufloesung/2)*2+1;
+        if (Aufloesung>BallResolution) Aufloesung=BallResolution;
+        Ball[Kugelnr2].draw(Aufloesung);              // Kugeln zeichen
 	}
 
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_LIGHTING);
 
-	Menu.male();
+    Menu.draw();
 
-	if (StateMaschin!=START) {
-		Anzeige.male();                       // Anzeige zeichnen
+    if (StateMachine!=START) {
+        Display.draw();                       // Anzeige zeichnen
 	}
 	glEnable(GL_DEPTH_TEST);
 
@@ -205,57 +205,58 @@ void updateGL()
 }
 
 /* -------------------- timerEvent -------------------- */
-void timerEvent() {
+void timerEvent()
+{
 
 	//egal+=egal;
 
 	//glutTimerFunc(20,timerEvent,0);
 
-	FrameZeitpunkt=Zeit();              // Framezeit bestimmen
+    FrameTimePoint=ElapsedTime();              // Framezeit bestimmen
 
 	// Faktor= Zeit seit letztem Frame
-	Faktor=FrameZeitpunkt-LetztesFrameZeitpunkt; 
+    Factor=FrameTimePoint-LastFrameTimePoint;
 
 
-	if (DelayAusgleich) {
-		Faktor=1;
-		DelayAusgleich=0;
+    if (DelayCompensation) {
+        Factor=1;
+        DelayCompensation=0;
 	}
 
-	if (Faktor) {
+    if (Factor) {
 
-		if (ZeigeFPS) {
-			if ((FrameZeitpunkt%200)<(LetztesFrameZeitpunkt%200)) {
-				Menu.SetzeFPS(Frames/2);
+        if (ShowFPS) {
+            if ((FrameTimePoint%200)<(LastFrameTimePoint%200)) {
+                Menu.SetFPS(Frames/2);
 				Frames=0;
 			} else Frames++;
 		} 
 
-		Menu.Update(Faktor);
+        Menu.Update(Factor);
 
-		switch (StateMaschin) {
+        switch (StateMachine) {
 
 			case START: StartHandling();break;
 
-			case BETRACHTEN: BetrachtenHandling();break;
+            case BETRACHTEN: ConsiderHandling();break;
 
-			case ZIELEN: ZielenHandling();break;
+            case ZIELEN: AimHandling();break;
 
-			case AUSHOLEN: AusholenHandling();break;
+            case AUSHOLEN: BackswingHandling();break;
 
-			case STOSS: StossHandling();break;
+            case STOSS: ShockHandling();break;
 
-			case WEISSNEU: WeissneuHandling();break;
+            case WEISSNEU: WeissneuHandling();break;
 
-			case SCHIEDSRICHTER: SchiedsrichterHandling();break;
+            case SCHIEDSRICHTER: RefereeHandling();break;
 
 		}
 
-		Kamera.Fahrt(Faktor);
+        Camera.Ride(Factor);
 
-		LetztesFrameZeitpunkt=FrameZeitpunkt; 
+        LastFrameTimePoint=FrameTimePoint;
 
-		glutPostWindowRedisplay(AktuellesFenster);
+        glutPostWindowRedisplay(CurrentWindow);
 	}  
 } 
 
@@ -264,27 +265,27 @@ int main(int argc, char **argv)
 { 
 	//char string[10];  
 
-	KommandoZeilenParameter(argc,argv);
+    GetCommandParam(argc,argv);
 
 	for (int i=0;i<16;i++) {
-		KugelnImSpiel[i]=1;
-		KugelnVersenkt[i]=0;
+        BallsInGame[i]=1;
+        BallsSunk[i]=0;
 	}
-	KugelnImSpiel[0]=0;
+    BallsInGame[0]=0;
 
 	//GLUT initialisieren, Fenster setzen
 	glutInit(&argc, argv);	
 	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	if (FullScreen) {
 		char temp[20];
-		sprintf(temp,"%ix%i:%i",BildschirmAufloesung,(BildschirmAufloesung*3)/4,Farbtiefe);
+        sprintf(temp,"%ix%i:%i",ScreenResolution,(ScreenResolution*3)/4,ColorDepth);
 		glutGameModeString(temp);
 		if (!glutGameModeGet(GLUT_GAME_MODE_POSSIBLE))
 			printf ("  No Game Mode possible!\n\n");
 		glutEnterGameMode();
 		glutFullScreen();
 	} else {
-		glutInitWindowSize (BildschirmAufloesung,(BildschirmAufloesung*3)/4);
+        glutInitWindowSize (ScreenResolution,(ScreenResolution*3)/4);
 		glutInitWindowPosition (0, 0);
 		glutCreateWindow ("BillardGL 1.7");
 	}
@@ -297,7 +298,7 @@ int main(int argc, char **argv)
 	//Callback zum Zeichnen der GL-Funktion
 	glutDisplayFunc(LSupdateGL);
 
-	AktuellesFenster=glutGetWindow();
+    CurrentWindow=glutGetWindow();
 
 	//  CreateMenu();
 
@@ -309,18 +310,18 @@ int main(int argc, char **argv)
 }
 
 /* -------------------- Stoss -------------------- */
-void Stoss(GLfloat Stoss_x, GLfloat Stoss_y) {
+void Stoke(GLfloat Stoss_x, GLfloat Stoss_y) {
 
-	Schiedsrichter.NeuerStoss();
-	SchiedsrichterEntscheidung=-1;
+    Referee.NewStoke();
+    RefereeDecision=-1;
 
 	Physik(Stoss_x, Stoss_y);               // Physik-Simulation
 
-	Startzeit=Zeit();                       // Startzeit bestimmen
+    StartTime=ElapsedTime();               // Startzeit bestimmen
 
 }
 
-void Sichtbar (int vis) {
+void Visible (int vis) {
 	if (vis == GLUT_VISIBLE) {
 		glutIdleFunc(timerEvent);
 	}

@@ -1,37 +1,37 @@
 void StartHandling();
-void BetrachtenHandling();
-void ZielenHandling();
-void AusholenHandling();
-void StossHandling();
+void ConsiderHandling();
+void AimHandling();
+void BackswingHandling();
+void ShockHandling();
 void WeissneuHandling();
 void MenuHandling();
-void SchiedsrichterHandling();
+void RefereeHandling();
 
-extern GLint Taste_Pfeil_Oben,Taste_Pfeil_Unten,
-	   Taste_Pfeil_Rechts,Taste_Pfeil_Links,Taste_Shift,
-	   Taste_Strg,Taste_Bild_Auf,Taste_Bild_Ab,Taste_Pos1,
-	   Taste_Ende,Faktor,AusholStartzeit,Startzeit,
-	   Stossdauer,StateMaschin,FrameZeitpunkt,Anfangsstoss,
+extern GLint KEY_UP,KEY_DOWN,
+	   KEY_RIGHT,KEY_LEFT,KEY_SHIFT,
+	   KEY_CTRL,KEY_Bild_ON,KEY_Bild_Ab,KEY_Pos1,
+	   KEY_END,Factor,AusholStartTime,StartTime,
+	   Stossdauer,StateMachine,FrameTimePoint,Anfangsstoss,
 	   WeisseVersetzbar;
 extern GLfloat MaxAusholStaerke,AusholStaerke;
-extern GLint   KugelnVersenkt[16];
-extern GLint   KugelnImSpiel[16];
-extern GLfloat Bewegungstabelle[2000][16][3];
+extern GLint   BallsSunk[16];
+extern GLint   BallsInGame[16];
+extern GLfloat LightingTable[2000][16][3];
 
-extern class Kamera Kamera;
-extern class Kugel Kugel[16];
-extern class Anzeige Anzeige;
+extern class Camera Camera;
+extern class Ball Ball[16];
+extern class Display Display;
 extern class Menu Menu;
-extern class Schiedsrichter Schiedsrichter;
+extern class Referee Referee;
 
-extern GLint SchiedsrichterEntscheidung;
+extern GLint RefereeDecision;
 extern GLint SpielerAmStoss;
-extern GLint AufnahmeWechsel;
+extern GLint RecodingChanges;
 extern GLint Foul;
 extern GLint LageVerbesserungKopffeld;
 extern GLint LageVerbesserung;
 extern GLint NeuAufbauenOderWeiterspielen;
 extern GLint NeuAufbauenOderAchtEinsetzen;
-extern GLint Spieler1Gewonnen;
-extern GLint Spieler2Gewonnen;
+extern GLint Player1Win;
+extern GLint Player2Win;
 extern GLint AllerersterStoss;

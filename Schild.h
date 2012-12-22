@@ -1,29 +1,29 @@
 
-class Schild {
+class Scale {
 	public:
-		Schild();
+		Scale();
 		void Initialisiere();
 		void InitialisiereLogo();
 		void Initialisiere(GLint,char[]);
 		void InitialisiereBuchstabe(GLint,char[]);
 		void Initialisiere(GLint,char[],char);
 		void Initialisiere(GLint,char[],char[]);
-		void male();
-		void Positioniere(GLfloat,GLfloat,GLfloat,GLfloat);
+		void draw();
+		void Positioning(GLfloat,GLfloat,GLfloat,GLfloat);
 		void PositioniereFix(GLfloat,GLfloat,GLfloat,GLfloat);
 		void Desaktiviere();
 		void Angewaehlt();
 		void Eingeblendet();
 		void VollSichtbar();
 		void StarteAnimation();
-		GLint Animiere(GLint);
-		GLint Maustaste(int,int,int,int);
+		GLint Animate(GLint);
+		GLint MouseButton(int,int,int,int);
 		void SetzeZielZustand(GLint);
-		void SetzeSignal(GLint);
-		void KopieVon(Schild);
+		void SetSignal(GLint);
+		void CopyFrom(Scale);
 		GLint SchildIndex;
 		GLint SchildTyp;
-		GLfloat Aspekt;
+		GLfloat Aspect;
 	private:
 		GLfloat ax,ay,bx,by;
 		GLfloat Alpha;
@@ -45,4 +45,4 @@ class Schild {
 
 #define ANIMATIONSDAUER 100
 
-extern GLuint logotextur;
+extern GLuint LogoTexture;

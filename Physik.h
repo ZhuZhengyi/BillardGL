@@ -5,12 +5,12 @@
  ****************************************************************************/  
 
 void Physik(GLfloat,GLfloat);
-void Kollision(GLfloat[],GLfloat[],GLint,GLint);
+void Collision(GLfloat[],GLfloat[],GLint,GLint);
 
-extern GLfloat KollisionsFaktor,ReibungsFaktor,BandenFaktor;
-extern GLint PhysikFrequenz, Stossdauer;
+extern GLfloat CollisionFactor,FrictionFactor,GangsFactor;
+extern GLint PhysicsFrequenz, Stossdauer;
 
-extern class Kugel Kugel[16];
-extern class Schiedsrichter Schiedsrichter;
+extern class Ball Ball[16];
+extern class Referee Referee;
 
-extern GLfloat Bewegungstabelle[2000][16][3];
+extern GLfloat LightingTable[2000][16][3];
