@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Kamera.h   Stefan Disch, Tobias Nopper, Martina Welte 2001
+** Camera.h   Stefan Disch, Tobias Nopper, Martina Welte 2001
 **
 ****************************************************************************/  
 

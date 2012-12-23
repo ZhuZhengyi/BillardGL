@@ -1,6 +1,6 @@
 /****************************************************************************
  **
- ** Tisch.h   Stefan Disch, Tobias Nopper, Martina Welte 2001
+ ** Table.h   Stefan Disch, Tobias Nopper, Martina Welte 2001
  **
  ****************************************************************************/  
 

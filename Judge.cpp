@@ -1,15 +1,15 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "Einsetzen.h"
-#include "Schiedsrichter.h"
+#include "Chosen.h"
+#include "Judge.h"
 
-Referee::Referee() {
+Judge::Judge() {
 	//
     Substantiation=0;
 }
 
-void Referee::NewGame(GLint _Spiel){
+void Judge::NewGame(GLint _Spiel){
 	//printf(" Schiedsrichter: NeuesSpiel %i\n",_Spiel);
 
     Game=_Spiel;
@@ -46,7 +46,7 @@ void Referee::NewGame(GLint _Spiel){
 	} 
 }
 
-void Referee::NewStoke(){
+void Judge::NewStoke(){
 	//printf(" Schiedsrichter: NeuerStoss\n");
 
 	SchiedsrichterEntscheidung=-1;
@@ -100,7 +100,7 @@ void Referee::NewStoke(){
 
 }
 
-void Referee::KugelKugel(GLint,GLfloat,
+void Judge::KugelKugel(GLint,GLfloat,
 		GLint Kugel2,GLfloat Kugel2x){
     if (!FirstTouchedBall ) {
         FirstTouchedBall =Kugel2;
@@ -110,7 +110,7 @@ void Referee::KugelKugel(GLint,GLfloat,
 	}
 }
 
-void Referee::BallBand(GLint Kugel,GLfloat Kugelx,
+void Judge::BallBand(GLint Kugel,GLfloat Kugelx,
 		GLint Bande){
 	KugelnAnBande[Kugel]=JA;
 
@@ -121,7 +121,7 @@ void Referee::BallBand(GLint Kugel,GLfloat Kugelx,
 	}
 }
 
-void Referee::BallHole(GLint Kugel,GLint){
+void Judge::BallHole(GLint Kugel,GLint){
 	KugelnVersenkt[Kugel]=JA;
 
 	if (!ErsteVersenkteKugel) {
@@ -130,7 +130,7 @@ void Referee::BallHole(GLint Kugel,GLint){
 }
 
 
-GLint Referee::Entscheidung(){
+GLint Judge::Entscheidung(){
 
 	if (SchiedsrichterEntscheidung==-1) {
 
@@ -255,7 +255,7 @@ GLint Referee::Entscheidung(){
 
         if (Game==NEUNBALL) {
 			if (Foul && KugelnVersenkt[9]) {
-				NeunEinsetzen();
+                NineChosen();
 				KugelnVersenkt[9]=NEIN;
 				KugelnImSpiel[9]=JA;
 			}
@@ -331,7 +331,7 @@ GLint Referee::Entscheidung(){
 
 }
 
-GLint Referee::CorrectBallWithPlay(GLint Kugel){
+GLint Judge::CorrectBallWithPlay(GLint Kugel){
     switch (Game) {
 		case ACHTBALL: {
 						   if (GruppenVerteilung == KEINE && Kugel != 8 ) {
@@ -403,7 +403,7 @@ GLint Referee::CorrectBallWithPlay(GLint Kugel){
 	return NEIN;
 }
 
-GLint Referee::CorrectBallSunk(GLint Kugel){
+GLint Judge::CorrectBallSunk(GLint Kugel){
     switch (Game) {
 		case ACHTBALL: {
 						   if (GruppenVerteilung == KEINE && Kugel != 8 ) {
@@ -473,7 +473,7 @@ GLint Referee::CorrectBallSunk(GLint Kugel){
 	return NEIN;
 }
 
-GLint Referee::CorrectBallSunkHere(GLint Kugel[16]){
+GLint Judge::CorrectBallSunkHere(GLint Kugel[16]){
 	GLint Dabei=NEIN;
 	for (GLint i=0;i<16;i++) {
 		if (Kugel[i]) {
@@ -483,7 +483,7 @@ GLint Referee::CorrectBallSunkHere(GLint Kugel[16]){
 	return Dabei;
 }
 
-GLint Referee::ColoredBall(GLint Kugel){
+GLint Judge::ColoredBall(GLint Kugel){
     if (Game==ACHTBALL) {
 		if (0<Kugel && Kugel<8 || 8<Kugel && Kugel<16) {
 			return JA;
@@ -497,7 +497,7 @@ GLint Referee::ColoredBall(GLint Kugel){
 	return NEIN;
 }
 
-GLint Referee::ColoredBallHere(GLint Kugel[16]){
+GLint Judge::ColoredBallHere(GLint Kugel[16]){
 	GLint Dabei=NEIN;
 	for (GLint i=0;i<16;i++) {
 		if (Kugel[i]) {
@@ -507,7 +507,7 @@ GLint Referee::ColoredBallHere(GLint Kugel[16]){
 	return Dabei;
 }
 
-GLint Referee::ColoredBallSum(GLint Kugel[16]){
+GLint Judge::ColoredBallSum(GLint Kugel[16]){
 	GLint S=NEIN;
 	for (GLint i=0;i<16;i++) {
 		if (Kugel[i]) {
@@ -517,7 +517,7 @@ GLint Referee::ColoredBallSum(GLint Kugel[16]){
 	return S;
 }
 
-GLint Referee::Sum(GLint Kugel[16]){
+GLint Judge::Sum(GLint Kugel[16]){
 	GLint S=0;
 	for (GLint i=0;i<16;i++) {
 		S+=Kugel[i];
@@ -526,7 +526,7 @@ GLint Referee::Sum(GLint Kugel[16]){
 }
 
 //Question After players at kick
-GLint Referee::FrageNachSpielerAmStoss(){
+GLint Judge::FrageNachSpielerAmStoss(){
     if (AufnahmeWechsel) { //To measure change
         return 1-PlayerToStock;
 	}
@@ -534,17 +534,17 @@ GLint Referee::FrageNachSpielerAmStoss(){
 }
 
 //Question After distribution groups
-GLint Referee::FrageNachGruppenVerteilung(){
+GLint Judge::FrageNachGruppenVerteilung(){
 	return GruppenVerteilung;
 }
 
 //Question After Substantiation
-GLint Referee::FrageNachBegruendung(){
+GLint Judge::FrageNachBegruendung(){
     return Substantiation;
 }
 
 //Question After Fouls
-GLint Referee::FrageNachFouls(GLint Spieler){
+GLint Judge::FrageNachFouls(GLint Spieler){
 	if (Spieler==SPIELER1) {
 		return FoulsHintereinanderSpieler1;
 	}
@@ -554,11 +554,11 @@ GLint Referee::FrageNachFouls(GLint Spieler){
 	return 0;
 }
 
-void Referee::SetPlayerToStock(GLint Spieler) {
+void Judge::SetPlayerToStock(GLint Spieler) {
     PlayerToStock=Spieler;
 }
 
-void Referee::SetzeFouls(GLint Spieler,GLint Fouls) {
+void Judge::SetzeFouls(GLint Spieler,GLint Fouls) {
 	if (Spieler==SPIELER1) {
 		FoulsHintereinanderSpieler1=Fouls;
 	} else {

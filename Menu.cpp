@@ -11,20 +11,20 @@
 
 #include "LA.h"                // Zum Handling von .bmp-Files bzw. Matrix-Bildern
 #include "bmp.h"
-#include "Kamera.h"
-#include "Kugel.h"
-#include "Tisch.h"
-#include "Anzeige.h"
-#include "Schiedsrichter.h"
+#include "Camera.h"
+#include "Ball.h"
+#include "Table.h"
+#include "Display.h"
+#include "Judge.h"
 #include "Schild.h"
 #include "Textfeld.h"
-#include "Beleuchtung.h"
+#include "Lighting.h"
 
-#include "SpielfeldAufbau.h"
-#include "KommandoZeilenParameter.h"
-#include "Einsetzen.h"
-#include "kugeltabellen.h"
-#include "Benutzerschnittstelle.h"
+#include "BoardLayout.h"
+#include "ParamConfig.h"
+#include "Chosen.h"
+#include "balltable.h"
+#include "MouseKey.h"
 #include "BillardGL.h"
 
 #include "Menu.h"
@@ -1248,41 +1248,41 @@ void Menu::NewMenuState(){
 												 } break;
 							case ZWEISPIELERSPIEL: {
 													   TextfeldArray[T_ZWEISPIELER]->Positioniere(15.75,0,1,A_RECHTS);//12,11,16,12);
-                                                       if (Referee.FrageNachSpielerAmStoss()==0) {
+                                                       if (Judge.FrageNachSpielerAmStoss()==0) {
 														   TextfeldArray[T_SPIELER1NAME]->Positioniere(0.2,11,1,A_LINKS);
 														   TextfeldArray[T_SPIELER2NAME]->Positioniere(15.9,11.5,.5,A_RECHTS);
 														   if (Spiel==ACHTBALL) {
-                                                               if (Referee.FrageNachGruppenVerteilung()==1) {
+                                                               if (Judge.FrageNachGruppenVerteilung()==1) {
                                                                    volle.Positioning(0.2,10,1.2,11);
                                                                    halbe.Positioning(15.4,11,15.9,11.5);
 															   }
-                                                               if (Referee.FrageNachGruppenVerteilung()==2) {
+                                                               if (Judge.FrageNachGruppenVerteilung()==2) {
                                                                    halbe.Positioning(0.2,10,1.2,11);
                                                                    volle.Positioning(15.4,11,15.9,11.5);
 															   }
 														   }
 														   if (Spiel==NEUNBALL) {
-                                                               if (Referee.FrageNachFouls(0)==1) {
+                                                               if (Judge.FrageNachFouls(0)==1) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("1 Foul");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
 															   }
-                                                               if (Referee.FrageNachFouls(0)==2) {
+                                                               if (Judge.FrageNachFouls(0)==2) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("2 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
 															   }
-                                                               if (Referee.FrageNachFouls(0)==3) {
+                                                               if (Judge.FrageNachFouls(0)==3) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("3 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
 															   }
-                                                               if (Referee.FrageNachFouls(1)==1) {
+                                                               if (Judge.FrageNachFouls(1)==1) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("1 Foul");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
 															   }
-                                                               if (Referee.FrageNachFouls(1)==2) {
+                                                               if (Judge.FrageNachFouls(1)==2) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("2 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
 															   }
-                                                               if (Referee.FrageNachFouls(1)==3) {
+                                                               if (Judge.FrageNachFouls(1)==3) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("3 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
 															   }
@@ -1291,37 +1291,37 @@ void Menu::NewMenuState(){
 														   TextfeldArray[T_SPIELER1NAME]->Positioniere(0.1,11.5,.5,A_LINKS);
 														   TextfeldArray[T_SPIELER2NAME]->Positioniere(15.8,11,1,A_RECHTS);
 														   if (Spiel==ACHTBALL) {
-                                                               if (Referee.FrageNachGruppenVerteilung()==1) {
+                                                               if (Judge.FrageNachGruppenVerteilung()==1) {
                                                                    volle.Positioning(0.1,11,.5,11.5);
                                                                    halbe.Positioning(14.8,10,15.8,11);
 															   }
-                                                               if (Referee.FrageNachGruppenVerteilung()==2) {
+                                                               if (Judge.FrageNachGruppenVerteilung()==2) {
                                                                    halbe.Positioning(0.1,11,.5,11.5);
                                                                    volle.Positioning(14.8,10,15.8,11);
 															   }
 														   }
 														   if (Spiel==NEUNBALL) {
-                                                               if (Referee.FrageNachFouls(0)==1) {
+                                                               if (Judge.FrageNachFouls(0)==1) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("1 Foul");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
 															   }
-                                                               if (Referee.FrageNachFouls(0)==2) {
+                                                               if (Judge.FrageNachFouls(0)==2) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("2 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
 															   }
-                                                               if (Referee.FrageNachFouls(0)==3) {
+                                                               if (Judge.FrageNachFouls(0)==3) {
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("3 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
 															   }
-                                                               if (Referee.FrageNachFouls(1)==1) {
+                                                               if (Judge.FrageNachFouls(1)==1) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("1 Foul");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
 															   }
-                                                               if (Referee.FrageNachFouls(1)==2) {
+                                                               if (Judge.FrageNachFouls(1)==2) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("2 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
 															   }
-                                                               if (Referee.FrageNachFouls(1)==3) {
+                                                               if (Judge.FrageNachFouls(1)==3) {
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("3 Fouls");
 																   TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
 															   }
@@ -1364,12 +1364,12 @@ void Menu::NewMenuState(){
 													 TextfeldArray[T_STOSS]->Positioniere(0.25,0,1,A_LINKS);
 													 if (Foul) {
 														 TextfeldArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE); 
-                                                         if (Referee.FrageNachBegruendung())
-                                                             TextfeldArray[Referee.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
+                                                         if (Judge.FrageNachBegruendung())
+                                                             TextfeldArray[Judge.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
 													 }
                                                      if (!Player1Win && !Player2Win) {
 														 TextfeldArray[T_ISTAMTISCH]->Positioniere(8,5,1,A_MITTE);      
-                                                         if (Referee.FrageNachSpielerAmStoss()==0) {
+                                                         if (Judge.FrageNachSpielerAmStoss()==0) {
 															 TextfeldArray[T_SPIELER1NAME]->Positioniere(8,6,1.5,A_MITTE);
 															 TextfeldArray[T_SPIELER1NAME]->VollSichtbar();
 														 } else {
@@ -1388,11 +1388,11 @@ void Menu::NewMenuState(){
 															 MenuGesperrt=1;
 															 if (Foul) {
 																 TextfeldArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);      
-                                                                 if (Referee.FrageNachBegruendung())
-                                                                     TextfeldArray[Referee.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
+                                                                 if (Judge.FrageNachBegruendung())
+                                                                     TextfeldArray[Judge.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
 															 }
 															 TextfeldArray[T_ISTAMTISCH]->Positioniere(8,6,1,A_MITTE);  
-                                                             if (Referee.FrageNachSpielerAmStoss()==0) {
+                                                             if (Judge.FrageNachSpielerAmStoss()==0) {
 																 TextfeldArray[T_SPIELER1NAME]->Positioniere(8,7,1.5,A_MITTE);
 																 TextfeldArray[T_SPIELER1NAME]->VollSichtbar();
 															 } else {
@@ -1408,11 +1408,11 @@ void Menu::NewMenuState(){
 															 MenuGesperrt=1;
 															 if (Foul) {
 																 TextfeldArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);      
-                                                                 if (Referee.FrageNachBegruendung())
-                                                                     TextfeldArray[Referee.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
+                                                                 if (Judge.FrageNachBegruendung())
+                                                                     TextfeldArray[Judge.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
 															 }
 															 TextfeldArray[T_ISTAMTISCH]->Positioniere(8,6,1,A_MITTE);  
-                                                             if (Referee.FrageNachSpielerAmStoss()==0) {
+                                                             if (Judge.FrageNachSpielerAmStoss()==0) {
 																 TextfeldArray[T_SPIELER1NAME]->Positioniere(8,7,1.5,A_MITTE);
 																 TextfeldArray[T_SPIELER1NAME]->VollSichtbar();
 															 } else {
@@ -1521,8 +1521,8 @@ void Menu::SignalExecution(GLint Signal) {
                                 StateMachine=WEISSNEU;
 								Spiel=ACHTBALL;
                                 BoardLayout();
-                                Referee.NewGame(Spiel);
-                                RefereeDecision=0;
+                                Judge.NewGame(Spiel);
+                                JudgeDecision=0;
                                 Camera.loadPosition(4);
                                 setMenuState(SPIEL);
 							} break;
@@ -1539,8 +1539,8 @@ void Menu::SignalExecution(GLint Signal) {
                                 StateMachine=WEISSNEU;
 								Spiel=NEUNBALL;
                                 BoardLayout();
-                                Referee.NewGame(Spiel);
-                                RefereeDecision=0;
+                                Judge.NewGame(Spiel);
+                                JudgeDecision=0;
                                 Camera.loadPosition(4);
                                 setMenuState(SPIEL);
 							} break;
@@ -1565,8 +1565,8 @@ void Menu::SignalExecution(GLint Signal) {
                                 StateMachine=SCHIEDSRICHTER;
 								Spiel=ACHTBALL;
                                 BoardLayout();
-                                Referee.NewGame(Spiel);
-                                RefereeDecision=0;
+                                Judge.NewGame(Spiel);
+                                JudgeDecision=0;
                                 Camera.loadPosition(4);
                                 setMenuState(SPIEL);
 							} break;
@@ -1586,8 +1586,8 @@ void Menu::SignalExecution(GLint Signal) {
                                 StateMachine=SCHIEDSRICHTER;
 								Spiel=NEUNBALL;
                                 BoardLayout();
-                                Referee.NewGame(Spiel);
-                                RefereeDecision=0;
+                                Judge.NewGame(Spiel);
+                                JudgeDecision=0;
                                 Camera.loadPosition(4);
                                 setMenuState(SPIEL);
 							} break;
@@ -2142,7 +2142,7 @@ void Menu::SignalExecution(GLint Signal) {
 									 NeuAufbauenOderWeiterspielen=0;
 									 NeuAufbauenOderAchtEinsetzen=0;
 									 MenuGesperrt=0;
-									 AchtEinsetzen();
+									 EightChosen();
                                      NewMenuState();
 								 } break;
 		case S_SP_NEUAUFBAUEN: {
@@ -2155,14 +2155,14 @@ void Menu::SignalExecution(GLint Signal) {
                                    Player2Win=0;
 								   MenuGesperrt=0;
                                    StateMachine=SCHIEDSRICHTER;
-                                   GLint Spieler=Referee.FrageNachSpielerAmStoss();
-                                   GLint Fouls0=Referee.FrageNachFouls(0);
-                                   GLint Fouls1=Referee.FrageNachFouls(1);
-                                   Referee.NewGame(Spiel);
+                                   GLint Spieler=Judge.FrageNachSpielerAmStoss();
+                                   GLint Fouls0=Judge.FrageNachFouls(0);
+                                   GLint Fouls1=Judge.FrageNachFouls(1);
+                                   Judge.NewGame(Spiel);
 								   //SchiedsrichterEntscheidung=0; nur nicht!
-                                   Referee.SetPlayerToStock(Spieler);
-                                   Referee.SetzeFouls(0,Fouls0);
-                                   Referee.SetzeFouls(1,Fouls1);
+                                   Judge.SetPlayerToStock(Spieler);
+                                   Judge.SetzeFouls(0,Fouls0);
+                                   Judge.SetzeFouls(1,Fouls1);
                                    BoardLayout();
                                    Camera.loadPosition(4);
                                    NewMenuState();
@@ -2184,10 +2184,10 @@ void Menu::SignalExecution(GLint Signal) {
 								 NeuAufbauenOderAchtEinsetzen=0;
 								 MenuGesperrt=0;
                                  StateMachine=SCHIEDSRICHTER;
-                                 GLint Spieler=Referee.FrageNachSpielerAmStoss();
-                                 Referee.NewGame(Spiel);
-                                 RefereeDecision=0;
-                                 Referee.SetPlayerToStock(1-Spieler);
+                                 GLint Spieler=Judge.FrageNachSpielerAmStoss();
+                                 Judge.NewGame(Spiel);
+                                 JudgeDecision=0;
+                                 Judge.SetPlayerToStock(1-Spieler);
                                  BoardLayout();
                                  Camera.loadPosition(4);
                                  NewMenuState();
@@ -2245,8 +2245,8 @@ void Menu::SignalExecution(GLint Signal) {
                                StateMachine=BETRACHTEN;
 							   Spiel=ACHTBALL;
                                BoardLayout();
-                               Referee.NewGame(Spiel);
-                               RefereeDecision=0;
+                               Judge.NewGame(Spiel);
+                               JudgeDecision=0;
                                Camera.loadPosition(4);
                                setMenuState(SPIEL);
 						   } break;

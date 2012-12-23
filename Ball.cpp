@@ -11,12 +11,12 @@
 #include "LA.h"                // Zum Handling von .bmp-Files bzw. Matrix-Bildern
 #include "bmp.h"
 
-#include "Kugel.h"
+#include "Ball.h"
 
 #include "createTexture.h"   // Funktion zum Generieren einer Textur aus einem 
 // Matrix-Bild (aus "Ubungen)
 
-#include "SchattenKreis.h"   // zeichnet Schatten
+#include "Shadow.h"   // zeichnet Schatten
 
 //ball
 

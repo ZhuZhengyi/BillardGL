@@ -1,11 +1,11 @@
 #include <GL/glut.h>
 #include <stdlib.h>
-#include "Kugel.h"
-#include "Kamera.h"
-#include "Einsetzen.h"
+#include "Ball.h"
+#include "Camera.h"
+#include "Chosen.h"
 
 //white insert
-void WeisseEinsetzen() {
+void WhiteChosen() {
     if (LageVerbesserungKopffeld) {  //Situation improving header
 		GLfloat x=-63.2,y=0.0;
 		GLfloat mabs=100,abs;
@@ -58,7 +58,7 @@ void WeisseEinsetzen() {
 /*
  * eight insertion
  */
-void AchtEinsetzen() {
+void EightChosen() {
     Ball[8].newPositionCM(3000,3000);
 	GLfloat x=63.5,y=0.0;
 	GLfloat mabs=100,abs;  
@@ -85,7 +85,7 @@ void AchtEinsetzen() {
 
 //
 //nine insertion
-void NeunEinsetzen() {
+void NineChosen() {
     Ball[9].newPositionCM(3000,3000);
 	GLfloat x=63.5,y=0.0;
 	GLfloat mabs=100,abs;  

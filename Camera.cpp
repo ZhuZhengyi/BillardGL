@@ -6,8 +6,8 @@
 
 #include <math.h>
 #include <stdio.h> //2CHANGE wieder raus wenn kein printf mehr drin
-#include "Kugel.h"
-#include "Kamera.h"
+#include "Ball.h"
+#include "Camera.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846

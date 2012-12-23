@@ -1,6 +1,6 @@
 #include <GL/glut.h>
 #include <stdlib.h>
-#include "Tischfunktionen.h"
+#include "TableHelpFunc.h"
 
 //Table surface
 void Tischflaeche() {

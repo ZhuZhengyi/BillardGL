@@ -256,10 +256,10 @@ extern GLint   BallsInGame[16];
 extern class Ball Ball[16];  
 extern class Table Table;
 extern class Display Display;
-extern class Referee Referee;
+extern class Judge Judge;
 extern class Lighting Lighting;
 
-extern GLint RefereeDecision;
+extern GLint JudgeDecision;
 extern GLint SpielerAmStoss;
 extern GLint RecodingChanges;
 extern GLint Foul;

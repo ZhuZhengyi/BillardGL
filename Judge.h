@@ -1,7 +1,7 @@
 
-class Referee {
+class Judge {
 	public:
-		Referee();
+		Judge();
 		void KugelKugel(GLint,GLfloat,GLint,GLfloat);
 		void BallBand(GLint,GLfloat,GLint);
 		void BallHole(GLint,GLint);

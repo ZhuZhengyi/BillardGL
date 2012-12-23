@@ -10,21 +10,21 @@
 #include <stdio.h>
 #include "BillardGL.h"
 
-#include "Kugel.h"
-#include "Kamera.h"
-#include "Anzeige.h"
+#include "Ball.h"
+#include "Camera.h"
+#include "Display.h"
 #include "Schild.h"
 #include "Textfeld.h"
 #include "Menu.h"
-#include "Schiedsrichter.h"
+#include "Judge.h"
 
 #include "Namen.h"
-#include "Zeit.h"
-#include "SpielfeldAufbau.h"
+#include "ElapsedTime.h"
+#include "BoardLayout.h"
 #include "Handling.h"
-#include "Einsetzen.h"
+#include "Chosen.h"
 
-#include "Benutzerschnittstelle.h"
+#include "MouseKey.h"
 
 GLint MouseButton=0;
 
@@ -111,7 +111,7 @@ void MouseClick(int button, int state, int x, int y)
 									}
                                     if (Ball[0].Pos_x()==3000) {
                                         StateMachine=WEISSNEU;
-										WeisseEinsetzen();
+										WhiteChosen();
 									} else {
                                         StateMachine=BETRACHTEN;
 										Menu.NewMenuState();
@@ -125,7 +125,7 @@ void MouseClick(int button, int state, int x, int y)
 							   } break;
 				case SCHIEDSRICHTER: {
 										 if (LageVerbesserungKopffeld|LageVerbesserung) {
-											 WeisseEinsetzen();
+											 WhiteChosen();
                                              StateMachine=WEISSNEU;
 											 Menu.NewMenuState();
 										 } else {
@@ -394,7 +394,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
 					  if (xnor==4) {
 						  Spiel=ACHTBALL;
 						  BoardLayout();
-                          Referee.NewGame(Spiel);
+                          Judge.NewGame(Spiel);
 					  }
 				  } break;//a
 		case 'n': {
@@ -404,14 +404,14 @@ void KeyPress( unsigned char keyPressed, int x, int y )
 					  if (xnor==4) {
 						  Spiel=NEUNBALL;
 						  BoardLayout();
-                          Referee.NewGame(Spiel);
+                          Judge.NewGame(Spiel);
 					  } 
 				  } break;//n
 		case '9': {
 					  if (xnor==4) {
 						  Spiel=NEUNBALL;
 						  BoardLayout();
-                          Referee.NewGame(Spiel);
+                          Judge.NewGame(Spiel);
 					  }
 				  } break;//9
 		case 's': {
@@ -466,7 +466,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
 											  }
                                               if (Ball[0].Pos_x()==3000) {
                                                   StateMachine=WEISSNEU;
-												  WeisseEinsetzen();
+												  WhiteChosen();
 												  Menu.NewMenuState();
 											  } else {
                                                   StateMachine=BETRACHTEN;
@@ -480,7 +480,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
 										 } break;
 						  case SCHIEDSRICHTER: {
 												   if (LageVerbesserungKopffeld|LageVerbesserung) {
-													   WeisseEinsetzen();
+													   WhiteChosen();
                                                        StateMachine=WEISSNEU;
 													   Menu.NewMenuState();
 												   } else {

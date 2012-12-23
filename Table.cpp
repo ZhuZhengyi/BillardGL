@@ -14,10 +14,10 @@
 
 #include "createTexture.h"  
 
-#include "Tisch.h"
+#include "Table.h"
 
-#include "Beleuchtung.h"
-#include "Tischfunktionen.h"
+#include "Lighting.h"
+#include "TableHelpFunc.h"
 #include "viertelLoch.h"
 
 FMatrix woodtex_r,woodtex_g,woodtex_b;     // Matrix-Bilder, in die die Textur kommt

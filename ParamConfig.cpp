@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "Namen.h"
-#include "KommandoZeilenParameter.h"
+#include "ParamConfig.h"
 
 void WriteConfig(){
 	FILE *f;

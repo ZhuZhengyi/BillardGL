@@ -4,15 +4,15 @@
 #include <stdlib.h>
 
 #include "Textfeld.h"
-#include "Kamera.h"
-#include "Kugel.h"
-#include "Anzeige.h"
+#include "Camera.h"
+#include "Ball.h"
+#include "Display.h"
 #include "Namen.h"
 #include "Schild.h"
 #include "Menu.h"
-#include "Schiedsrichter.h"
+#include "Judge.h"
 
-#include "Einsetzen.h"
+#include "Chosen.h"
 #include "Handling.h"
 
 #ifndef M_PI
@@ -142,14 +142,14 @@ void ShockHandling() {
                 Display.setShockStaerke(0.0);
 				LageVerbesserung=1;
 				LageVerbesserungKopffeld=1;
-				WeisseEinsetzen();
+                WhiteChosen();
                 Menu.NewMenuState();
 			} else {
 				StateMachine=BETRACHTEN;
                 Display.setShockStaerke(0.0);
                 Menu.NewMenuState();
 			}
-		} else if (Referee.Entscheidung()) {
+        } else if (Judge.Entscheidung()) {
 			StateMachine=SCHIEDSRICHTER;
             Display.setShockStaerke(0.0);
 		} else {
@@ -223,18 +223,18 @@ void WeissneuHandling() {
     if (KEY_END)        {Camera.Zoom_Out(Factor);}
 }
 
-void RefereeHandling() {
-	if (RefereeDecision == -1) {
-		RefereeDecision = Referee.Entscheidung();
+void JudgeHandling() {
+	if (JudgeDecision == -1) {
+        JudgeDecision = Judge.Entscheidung();
 
-		RecodingChanges = RefereeDecision & 1;
-		Foul = RefereeDecision & 2;
-		LageVerbesserungKopffeld = RefereeDecision & 4;
-		LageVerbesserung = RefereeDecision & 8;
-		NeuAufbauenOderWeiterspielen = RefereeDecision & 16;
-		NeuAufbauenOderAchtEinsetzen = RefereeDecision & 32;
-		Player1Win = RefereeDecision & 64;
-		Player2Win = RefereeDecision & 128;
+		RecodingChanges = JudgeDecision & 1;
+		Foul = JudgeDecision & 2;
+		LageVerbesserungKopffeld = JudgeDecision & 4;
+		LageVerbesserung = JudgeDecision & 8;
+		NeuAufbauenOderWeiterspielen = JudgeDecision & 16;
+		NeuAufbauenOderAchtEinsetzen = JudgeDecision & 32;
+		Player1Win = JudgeDecision & 64;
+		Player2Win = JudgeDecision & 128;
 
         Menu.NewMenuState();
 

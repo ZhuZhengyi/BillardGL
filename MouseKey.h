@@ -1,6 +1,6 @@
 /****************************************************************************
  **
- ** Benutzerschnittstelle.h   Stefan Disch, Tobias Nopper, Martina Welte 2001
+ ** MouseKey.h   Stefan Disch, Tobias Nopper, Martina Welte 2001
  **
  ****************************************************************************/  
 
@@ -15,7 +15,7 @@ extern class Ball Ball[16];
 extern class Camera Camera;
 extern class Display Display;
 extern class Menu Menu;
-extern class Referee Referee;
+extern class Judge Judge;
 
 extern GLint DelayCompensation;
 extern GLint InvertX;

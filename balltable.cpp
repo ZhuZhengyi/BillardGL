@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <GL/glut.h>
 #include <math.h>
-#include "kugeltabellen.h"
+#include "balltable.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846

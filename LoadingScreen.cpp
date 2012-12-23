@@ -5,25 +5,25 @@
 
 #include "Textfeld.h"
 #include "Schild.h"
-#include "Tisch.h"
-#include "Kamera.h"
-#include "Kugel.h"
-#include "Anzeige.h"
+#include "Table.h"
+#include "Camera.h"
+#include "Ball.h"
+#include "Display.h"
 #include "Menu.h"
-#include "Beleuchtung.h"
-#include "Schiedsrichter.h"
+#include "Lighting.h"
+#include "Judge.h"
 
 #include "LA.h"
 #include "bmp.h"
 
 #include "createTexture.h"  
 
-#include "SpielfeldAufbau.h"
-#include "kugeltabellen.h"
+#include "BoardLayout.h"
+#include "balltable.h"
 #include "BillardGL.h"
-#include "Benutzerschnittstelle.h"
+#include "MouseKey.h"
 
-#include "LadeScreen.h"
+#include "LoadingScreen.h"
 
 
 
@@ -135,7 +135,7 @@ void LSidle() {
         case 24: Menu.LoadLanguage(999); break;
 		case 25: Menu.Initialisiere(DisplayTextureSize); break;
         case 26: BoardLayout(); break;
-        case 27: Referee.NewGame(Spiel); break;
+        case 27: Judge.NewGame(Spiel); break;
 		case 28: {
 
 					 glDeleteTextures(1,&ThirteenTexture);

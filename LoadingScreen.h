@@ -10,7 +10,7 @@ extern GLint CurrentWindow, BallResolution,
 extern class Ball Ball[16];
 extern class Display Display;
 extern class Menu Menu;
-extern class Referee Referee;
+extern class Judge Judge;
 extern class Lighting Lighting;
 extern GLuint ThirteenTexture;
 extern GLuint LogoTexture;

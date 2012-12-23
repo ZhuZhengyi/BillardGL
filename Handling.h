@@ -5,7 +5,7 @@ void BackswingHandling();
 void ShockHandling();
 void WeissneuHandling();
 void MenuHandling();
-void RefereeHandling();
+void JudgeHandling();
 
 extern GLint KEY_UP,KEY_DOWN,
 	   KEY_RIGHT,KEY_LEFT,KEY_SHIFT,
@@ -22,9 +22,9 @@ extern class Camera Camera;
 extern class Ball Ball[16];
 extern class Display Display;
 extern class Menu Menu;
-extern class Referee Referee;
+extern class Judge Judge;
 
-extern GLint RefereeDecision;
+extern GLint JudgeDecision;
 extern GLint SpielerAmStoss;
 extern GLint RecodingChanges;
 extern GLint Foul;

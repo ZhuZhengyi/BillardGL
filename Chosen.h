@@ -1,6 +1,6 @@
-void WeisseEinsetzen();
-void AchtEinsetzen();
-void NeunEinsetzen();
+void WhiteChosen();
+void EightChosen();
+void NineChosen();
 
 extern GLint LageVerbesserungKopffeld;
 extern class Ball Ball[16];

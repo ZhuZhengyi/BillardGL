@@ -13,25 +13,25 @@
 
 #include "Textfeld.h"
 #include "Schild.h"
-#include "Tisch.h"
-#include "Kamera.h"
-#include "Kugel.h"
-#include "Anzeige.h"
+#include "Table.h"
+#include "Camera.h"
+#include "Ball.h"
+#include "Display.h"
 #include "Menu.h"
-#include "Beleuchtung.h"
+#include "Lighting.h"
 
 #include "Namen.h" 
 #include "LA.h"
 #include "bmp.h"
-#include "Zeit.h"
-#include "Physik.h" 
-#include "SpielfeldAufbau.h"
-#include "Benutzerschnittstelle.h"
-#include "KommandoZeilenParameter.h"
+#include "ElapsedTime.h"
+#include "Physics.h"
+#include "BoardLayout.h"
+#include "MouseKey.h"
+#include "ParamConfig.h"
 #include "Handling.h"
-#include "Schiedsrichter.h"
-#include "kugeltabellen.h"
-#include "LadeScreen.h"
+#include "Judge.h"
+#include "balltable.h"
+#include "LoadingScreen.h"
 
 #include "BillardGL.h"
 
@@ -47,7 +47,7 @@ class Table   Table;        //球台
 class Display Display;      //显示
 class Camera  Camera;       //相机
 class Menu Menu;            //菜单
-class Referee Referee;      //裁判
+class Judge Judge;      //裁判
 class Lighting Lighting;    //光照
 
 //Sonstige Variablen
@@ -84,7 +84,7 @@ GLint   Spiel=ACHTBALL;         //Game
 GLint   GameMode=TRAININGSSPIEL;  //Game
 
 // Schiedsrichter
-GLint RefereeDecision=0; //referee decision
+GLint JudgeDecision=0; //Judge decision
 GLint RecodingChanges=0;   //recording changes
 //GLint SpielerAmStoss=0;
 GLint Foul=0;           //犯规
@@ -248,7 +248,7 @@ void timerEvent()
 
             case WEISSNEU: WeissneuHandling();break;
 
-            case SCHIEDSRICHTER: RefereeHandling();break;
+            case SCHIEDSRICHTER: JudgeHandling();break;
 
 		}
 
@@ -312,10 +312,10 @@ int main(int argc, char **argv)
 /* -------------------- Stoss -------------------- */
 void Stoke(GLfloat Stoss_x, GLfloat Stoss_y) {
 
-    Referee.NewStoke();
-    RefereeDecision=-1;
+    Judge.NewStoke();
+    JudgeDecision=-1;
 
-	Physik(Stoss_x, Stoss_y);               // Physik-Simulation
+    Physics(Stoss_x, Stoss_y);               // Physik-Simulation
 
     StartTime=ElapsedTime();               // Startzeit bestimmen
 

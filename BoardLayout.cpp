@@ -1,13 +1,13 @@
 #include <GL/glut.h>
 #include <math.h>
 #include <stdlib.h>
-#include "Zeit.h"
+#include "ElapsedTime.h"
 #include "Namen.h"
-#include "Kugel.h"
+#include "Ball.h"
 #include "Textfeld.h"
 #include "Schild.h"
 #include "Menu.h"
-#include "SpielfeldAufbau.h"
+#include "BoardLayout.h"
 
 GLfloat random(GLfloat Epsilon) {
 	return (Epsilon*(((rand()*2.0)/RAND_MAX)-1));

@@ -1,5 +1,5 @@
 #include <GL/glut.h>
-#include "Beleuchtung.h"
+#include "Lighting.h"
 
 //lighting
 
