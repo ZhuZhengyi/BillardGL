@@ -30,7 +30,7 @@ Scale::Scale() {
 	//
 }
 
-void Scale::Initialisiere(GLint TexGr,
+void Scale::Init(GLint TexGr,
 		char Name[],
 		char AlphaName[]){
 	FMatrix texr,texg,texb,texa;     // Matrix-Bilder, in die die Textur kommt
@@ -79,7 +79,7 @@ void Scale::Initialisiere(GLint TexGr,
 
 }
 
-void Scale::Initialisiere(GLint TexGr,
+void Scale::Init(GLint TexGr,
 		char Name[]){
 	FMatrix texr,texg,texb;     // Matrix-Bilder, in die die Textur kommt
 	if (!SchildIndex) {
@@ -123,7 +123,7 @@ void Scale::Initialisiere(GLint TexGr,
 	SchildTyp=1;
 }
 
-void Scale::InitialisiereLogo() {
+void Scale::InitLogo() {
 	if (!SchildIndex) {
 		SchildIndex=glGenLists(1);
 	}
@@ -154,7 +154,7 @@ void Scale::InitialisiereLogo() {
 	SchildTyp=1;
 }
 
-void Scale::InitialisiereBuchstabe(GLint TexGr,
+void Scale::InitBuchstabe(GLint TexGr,
 		char Name[]){
 	FMatrix texr,texg,texb;     // Matrix-Bilder, in die die Textur kommt
 	if (!SchildIndex) {
@@ -198,7 +198,7 @@ void Scale::InitialisiereBuchstabe(GLint TexGr,
 	SchildTyp=1;
 }
 
-void Scale::Initialisiere(GLint TexGr,
+void Scale::Init(GLint TexGr,
 		char Name[],
 		char Land){
 	Land='c';
@@ -244,7 +244,7 @@ void Scale::Initialisiere(GLint TexGr,
 	SchildTyp=1;
 }
 
-void Scale::Initialisiere(){
+void Scale::Init(){
 	if (!SchildIndex) {
 		SchildIndex=glGenLists(1);
 	}
@@ -342,7 +342,7 @@ void Scale::Positioning(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 
 		Signal=0;
 
-		StarteAnimation();
+        StartAnimation();
 
 		//printf("  %f %f %f %f\n   %f %f %f %f\n",
 		//ax_,ay_,bx_,by_,soll_ax,soll_ay,soll_bx,soll_by);
@@ -350,7 +350,7 @@ void Scale::Positioning(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 	}
 }
 
-void Scale::PositioniereFix(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
+void Scale::PositionFix(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 
     if (Aspect!=0.0 && Aspect!=(bx_-ax_)/(by_-ay_)) {
 		GLfloat cx=(ax_+bx_)*.5;
@@ -365,9 +365,6 @@ void Scale::PositioniereFix(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 
 	Alpha=soll_Alpha=EINGEBLENDET;
 	Signal=0;
-
-
-
 }
 
 //deactivated
@@ -385,29 +382,29 @@ void Scale::Desaktiviere() {
 		soll_bx=soll_ax+.5*(bx-ax);
 		soll_by=soll_ay+.5*(by-ay);     
 		*/
-	if (soll_Alpha!=Alpha) StarteAnimation();
+    if (soll_Alpha!=Alpha) StartAnimation();
 }
 
 //selected
 void Scale::Angewaehlt() {
 	Alpha=ANGEWAEHLT;
 	soll_Alpha=EINGEBLENDET;
-	if (soll_Alpha!=Alpha) StarteAnimation();
+    if (soll_Alpha!=Alpha) StartAnimation();
 }
 
 //Superimposed
 void Scale::Eingeblendet() {
 	soll_Alpha=EINGEBLENDET;
-	if (soll_Alpha!=Alpha) StarteAnimation();
+    if (soll_Alpha!=Alpha) StartAnimation();
 }
 
 //fully Visible
 void Scale::VollSichtbar() {
 	soll_Alpha=VOLLSICHTBAR;
-	if (soll_Alpha!=Alpha) StarteAnimation();
+    if (soll_Alpha!=Alpha) StartAnimation();
 }
 
-void Scale::StarteAnimation(){
+void Scale::StartAnimation(){
 	InAnimation=1;
 	Zeit=0;
 	alt_ax=ax;

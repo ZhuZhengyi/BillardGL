@@ -24,7 +24,7 @@ class Ball {
 		void newPositionINCH(GLfloat,GLfloat);
 		void newPositionINCH(GLfloat,GLfloat,GLfloat);
 		void disappear();
-		void Initialisiere(GLint,GLint,GLint,GLint);
+        void Init(GLint,GLint,GLint,GLint);
 		GLfloat Pos_x();
 		GLfloat Pos_y();
 		GLfloat Pos_xD();

@@ -75,5 +75,5 @@ class Judge {
 #define S1_GANZE_S2_HALBE 1
 #define S1_HALBE_S2_GANZE 2
 
-#define ACHTBALL 8
+#define EIGHT_BALL 8
 #define NEUNBALL 9

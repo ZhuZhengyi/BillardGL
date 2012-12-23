@@ -1,15 +1,15 @@
 void StartHandling();
-void ConsiderHandling();
+void ViewingHandling();
 void AimHandling();
 void BackswingHandling();
 void ShockHandling();
-void WeissneuHandling();
+void NewWhiteHandling();
 void MenuHandling();
 void JudgeHandling();
 
 extern GLint KEY_UP,KEY_DOWN,
 	   KEY_RIGHT,KEY_LEFT,KEY_SHIFT,
-	   KEY_CTRL,KEY_Bild_ON,KEY_Bild_Ab,KEY_Pos1,
+	   KEY_CTRL,KEY_PAGE_UP,KEY_PAGE_DOWN,KEY_Pos1,
 	   KEY_END,Factor,AusholStartTime,StartTime,
 	   Stossdauer,StateMachine,FrameTimePoint,Anfangsstoss,
 	   WeisseVersetzbar;

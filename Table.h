@@ -9,10 +9,10 @@
 class Table {
 	public:
 		Table();
-		void Initialisiere(GLint);
-		void maleArea();
-		void maleBanden();
-		void maleLinien();
+        void Init(GLint);
+        void drawSurface();
+        void drawBorder();
+        void drawLine();
 	private:
 		GLint TableAreaIndex;
 		GLint BandenIndex;

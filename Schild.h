@@ -2,20 +2,20 @@
 class Scale {
 	public:
 		Scale();
-		void Initialisiere();
-		void InitialisiereLogo();
-		void Initialisiere(GLint,char[]);
-		void InitialisiereBuchstabe(GLint,char[]);
-		void Initialisiere(GLint,char[],char);
-		void Initialisiere(GLint,char[],char[]);
+		void Init();
+		void InitLogo();
+		void Init(GLint,char[]);
+        void InitBuchstabe(GLint,char[]);
+		void Init(GLint,char[],char);
+		void Init(GLint,char[],char[]);
 		void draw();
 		void Positioning(GLfloat,GLfloat,GLfloat,GLfloat);
-		void PositioniereFix(GLfloat,GLfloat,GLfloat,GLfloat);
+        void PositionFix(GLfloat,GLfloat,GLfloat,GLfloat);
 		void Desaktiviere();
 		void Angewaehlt();
 		void Eingeblendet();
 		void VollSichtbar();
-		void StarteAnimation();
+        void StartAnimation();
 		GLint Animate(GLint);
 		GLint MouseButton(int,int,int,int);
 		void SetzeZielZustand(GLint);

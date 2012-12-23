@@ -7,7 +7,7 @@
 class Display {
 	public:
 		Display();
-		void Initialisiere();
+        void Init();
         void draw();
 		void setShockStaerke(GLfloat);
 	private:

@@ -31,7 +31,7 @@ void Judge::NewGame(GLint _Spiel){
 
     PlayerToStock=((rand()/(RAND_MAX+0.0))>.5)?1:0;
 
-    if (Game==ACHTBALL) {
+    if (Game==EIGHT_BALL) {
 		for (GLint i=0;i<16;i++) {
 			KugelnImSpiel[i]=JA;
 		}
@@ -150,7 +150,7 @@ GLint Judge::Entscheidung(){
 				Foul = JA;
                 if (!Substantiation) Substantiation=451;
 				//printf("Foul weiss bei eroff versenkt\n");
-                if (Game==ACHTBALL) {
+                if (Game==EIGHT_BALL) {
 					LageVerbesserungKopffeld = JA;
 					//printf("LageVerbesserungKopffeld weiss bei eroff versenkt\n");
 				}
@@ -203,7 +203,7 @@ GLint Judge::Entscheidung(){
 			//printf("AufnahmeWechsel wegen Foul\n");
 		}
 
-        if (Game==ACHTBALL) {
+        if (Game==EIGHT_BALL) {
 
 			if (Eroeffnungsstoss && KugelnVersenkt[8]) {
 				NeuAufbauenOderAchtEinsetzen = JA;
@@ -333,7 +333,7 @@ GLint Judge::Entscheidung(){
 
 GLint Judge::CorrectBallWithPlay(GLint Kugel){
     switch (Game) {
-		case ACHTBALL: {
+        case EIGHT_BALL: {
 						   if (GruppenVerteilung == KEINE && Kugel != 8 ) {
 							   return JA;
 						   }
@@ -405,7 +405,7 @@ GLint Judge::CorrectBallWithPlay(GLint Kugel){
 
 GLint Judge::CorrectBallSunk(GLint Kugel){
     switch (Game) {
-		case ACHTBALL: {
+        case EIGHT_BALL: {
 						   if (GruppenVerteilung == KEINE && Kugel != 8 ) {
 							   return JA;
 						   }
@@ -484,7 +484,7 @@ GLint Judge::CorrectBallSunkHere(GLint Kugel[16]){
 }
 
 GLint Judge::ColoredBall(GLint Kugel){
-    if (Game==ACHTBALL) {
+    if (Game==EIGHT_BALL) {
 		if (0<Kugel && Kugel<8 || 8<Kugel && Kugel<16) {
 			return JA;
 		}

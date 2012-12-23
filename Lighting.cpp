@@ -9,7 +9,7 @@ Lighting::Lighting() {
 }
 
 
-void Lighting::Initialisiere(GLint AmbientesLicht, //Ambient lighting
+void Lighting::Init(GLint AmbientesLicht, //Ambient lighting
                              GLint Tischlampen, //table lamps
                              GLint GrueneLampe, //green lamp
                              GLint Reflektionen //reflections

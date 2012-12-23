@@ -26,7 +26,10 @@
 #include "LoadingScreen.h"
 
 
-
+/*
+ * Loading Screen Update
+ *
+ */
 void LSupdateGL() {
 
 	glEnable(GL_BLEND);
@@ -70,6 +73,7 @@ void LSupdateGL() {
 
 	glBindTexture(GL_TEXTURE_2D,LogoTexture);
 	glEnable(GL_TEXTURE_2D);
+
 	glBegin(GL_QUADS);
 	glColor4f(1.0,1.0,1.0,.7);
 	glTexCoord2f(0,0);
@@ -81,15 +85,19 @@ void LSupdateGL() {
 	glTexCoord2f(0,1);
 	glVertex2f(-2,1);
 	glEnd();
+
 	glDisable(GL_TEXTURE_2D);
 	glutSwapBuffers();
 
 }
 
+/*
+ * Loading Screen idle
+ */
 void LSidle() {
 
 	switch (LoadingProgress++) {
-		case 0: {
+        case 0: {   //logo
 					glEnable(GL_BLEND);
 					glDisable(GL_LIGHTING);
 					glClear(GL_COLOR_BUFFER_BIT);
@@ -109,33 +117,33 @@ void LSidle() {
 					g.free_FMatrix();
 					b.free_FMatrix();
 				}break;
-        case 1: initializeBallTables(BallResolution); break;
-		case 2: Ball[0].Initialisiere(0,TextureSize,BallResolution,Shadow); break;
-		case 3: Ball[1].Initialisiere(1,TextureSize,BallResolution,Shadow); break;
-		case 4: Ball[2].Initialisiere(2,TextureSize,BallResolution,Shadow); break;
-		case 5: Ball[3].Initialisiere(3,TextureSize,BallResolution,Shadow); break;
-		case 6: Ball[4].Initialisiere(4,TextureSize,BallResolution,Shadow); break;
-		case 7: Ball[5].Initialisiere(5,TextureSize,BallResolution,Shadow); break;
-		case 8: Ball[6].Initialisiere(6,TextureSize,BallResolution,Shadow); break;
-		case 9: Ball[7].Initialisiere(7,TextureSize,BallResolution,Shadow); break;
-		case 10: Ball[8].Initialisiere(8,TextureSize,BallResolution,Shadow); break;
-		case 11: Ball[9].Initialisiere(9,TextureSize,BallResolution,Shadow); break;
-		case 12: Ball[10].Initialisiere(10,TextureSize,BallResolution,Shadow); break;
-		case 13: Ball[11].Initialisiere(11,TextureSize,BallResolution,Shadow); break;
-		case 14: Ball[12].Initialisiere(12,TextureSize,BallResolution,Shadow); break;
-		case 15: Ball[13].Initialisiere(13,TextureSize,BallResolution,Shadow); break;
-		case 16: Ball[14].Initialisiere(14,TextureSize,BallResolution,Shadow); break;
-		case 17: Ball[15].Initialisiere(15,TextureSize,BallResolution,Shadow); break;
-		case 18: Table.Initialisiere(TableTextureSize); break;
-		case 19: Lighting.Initialisiere(AmbientLighting,TableLamps,GrueneLamp,Reflections); break;
-		case 20: Display.Initialisiere(); break;
-		case 21: Menu.Initialisiere(DisplayTextureSize); break;
+        case 1: initializeBallTables(BallResolution); break;  //table init
+        case 2: Ball[0].Init(0,TextureSize,BallResolution,Shadow); break; //ball0 init
+        case 3: Ball[1].Init(1,TextureSize,BallResolution,Shadow); break;
+        case 4: Ball[2].Init(2,TextureSize,BallResolution,Shadow); break;
+        case 5: Ball[3].Init(3,TextureSize,BallResolution,Shadow); break;
+        case 6: Ball[4].Init(4,TextureSize,BallResolution,Shadow); break;
+        case 7: Ball[5].Init(5,TextureSize,BallResolution,Shadow); break;
+        case 8: Ball[6].Init(6,TextureSize,BallResolution,Shadow); break;
+        case 9: Ball[7].Init(7,TextureSize,BallResolution,Shadow); break;
+        case 10: Ball[8].Init(8,TextureSize,BallResolution,Shadow); break;
+        case 11: Ball[9].Init(9,TextureSize,BallResolution,Shadow); break;
+        case 12: Ball[10].Init(10,TextureSize,BallResolution,Shadow); break;
+        case 13: Ball[11].Init(11,TextureSize,BallResolution,Shadow); break;
+        case 14: Ball[12].Init(12,TextureSize,BallResolution,Shadow); break;
+        case 15: Ball[13].Init(13,TextureSize,BallResolution,Shadow); break;
+        case 16: Ball[14].Init(14,TextureSize,BallResolution,Shadow); break;
+        case 17: Ball[15].Init(15,TextureSize,BallResolution,Shadow); break;
+        case 18: Table.Init(TableTextureSize); break;
+        case 19: Lighting.Init(AmbientLighting,TableLamps,GrueneLamp,Reflections); break;
+        case 20: Display.Init(); break;
+        case 21: Menu.Init(DisplayTextureSize); break;
         case 22: Menu.LoadLanguage(900); break;
         case 23: Menu.LoadLanguage(901); break;
         case 24: Menu.LoadLanguage(999); break;
-		case 25: Menu.Initialisiere(DisplayTextureSize); break;
+        case 25: Menu.Init(DisplayTextureSize); break;
         case 26: BoardLayout(); break;
-        case 27: Judge.NewGame(Spiel); break;
+        case 27: Judge.NewGame(GameType); break;
 		case 28: {
 
 					 glDeleteTextures(1,&ThirteenTexture);

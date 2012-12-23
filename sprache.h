@@ -37,7 +37,7 @@
 #define T_ABBRECHEN 103
 
 //Training
-#define T_ACHTBALL 110
+#define T_EIGHT_BALL 110
 #define T_NEUNBALL 111
 
 // Zwei Spieler
@@ -60,7 +60,7 @@
 
 //Im Spiel
 #define T_WEISSENEUSETZEN 180
-#define T_BETRACHTEN 181
+#define T_VIEWING 181
 #define T_ZIELEN 182
 #define T_AUSHOLEN 183
 #define T_STOSS 184
@@ -77,7 +77,7 @@
 #define T_FOUL2 195
 #define T_FOULS1 196
 #define T_FOULS2 197
-#define T_NEUEACHTBALLAUFSTELLUNG 198
+#define T_NEUEEIGHT_BALLAUFSTELLUNG 198
 #define T_NEUENEUNBALLAUFSTELLUNG 199
 
 // Einstellungen - Bedienung

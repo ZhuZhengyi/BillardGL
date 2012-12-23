@@ -8,15 +8,15 @@
 
 #define AUS 0
 #define STARTBILDSCHIRM 1
-#define HAUPTMENU 2
+#define MAIN_MENU 2
 #define TRAINING 3
-#define ZWEISPIELER 4
-#define NETZWERKHAUPT 5
-#define NETZWERKNEU 6
-#define NETZWERKBEITRETEN 7
-#define BEENDEN 8
-#define AUSSPIEL 9
-#define EINSTELLUNGEN 10
+#define TWO_PLAYERS 4
+#define NETWORK_MAIN 5
+#define NETWORK_NEW 6
+#define NETWORK_JOIN 7
+#define EXIT 8
+#define OFF_GAME 9
+#define SETTINGS 10
 #define EINSTELLUNGENSTEUERUNG 11
 #define EINSTELLUNGENGRAFIK 12
 #define EINSTELLUNGENGRAFIKHINWEIS 13
@@ -57,12 +57,12 @@
 #define S_HM_COMPUTERGEGNER 115
 #define S_HM_HILFE 116
 
-#define S_TR_ACHTBALL 120
+#define S_TR_EIGHT_BALL 120
 #define S_TR_NEUNBALL 121
 #define S_TR_VIERZEHNPLUSEINS 122
 #define S_TR_ZURUECK 123
 
-#define S_ZW_ACHTBALL 130
+#define S_ZW_EIGHT_BALL 130
 #define S_ZW_NEUNBALL 131
 #define S_ZW_VIERZEHNPLUSEINS 132
 #define S_ZW_ZURUECK 133
@@ -71,7 +71,7 @@
 #define S_NE_TEILNEHMEN 141
 #define S_NE_ZURUECK 142
 
-#define S_NB_ACHTBALL 150
+#define S_NB_EIGHT_BALL 150
 #define S_NB_NEUNBALL 151
 #define S_NB_VIERZEHNPLUSEINS 152
 #define S_NB_ZURUECK  153
@@ -129,7 +129,7 @@
 #define S_SP_HAUPTMENU 540
 #define S_SP_NEUESSPIEL 541
 
-#define S_SP_NEUEACHTBALLAUFSTELLUNG 550
+#define S_SP_NEUEEIGHT_BALLAUFSTELLUNG 550
 #define S_SP_NEUENEUNBALLAUFSTELLUNG 551
 
 #define S_SPIELER1HERHOEREN 601
@@ -169,12 +169,12 @@
 class Menu {
 	public:
 		Menu();
-		void Initialisiere(GLint);
+		void Init(GLint);
 		void draw();
 		void Update(GLint);
 
         GLint MouseClick(int,int,int,int);
-		GLint KeyboardTaste (unsigned char,int,int);
+		GLint KeyboardButton (unsigned char,int,int);
 		void NewMenuState();
 		void SignalExecution(GLint);
 		void setMenuState(GLint); 
@@ -236,7 +236,7 @@ class Menu {
 
 
 extern GLint StateMachine;
-extern GLint Spiel;
+extern GLint GameType;
 extern class Camera Camera;
 
 extern GLint TextureSize,

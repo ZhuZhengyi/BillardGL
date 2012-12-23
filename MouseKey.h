@@ -27,11 +27,11 @@ extern GLint PolygonMode_view;
 extern GLint StartTime,AusholStartTime,Stossdauer,Ausholstaerke;
 extern GLint xnor;
 extern int OriginalWindow,CurrentWindow;
-extern GLint Spiel,StateMachine, FullScreen;
+extern GLint GameType,StateMachine, FullScreen;
 extern GLint KEY_UP,KEY_DOWN;
 extern GLint KEY_RIGHT,KEY_LEFT;
 extern GLint KEY_SHIFT, KEY_CTRL;
-extern GLint KEY_Bild_ON,KEY_Bild_Ab;
+extern GLint KEY_PAGE_UP,KEY_PAGE_DOWN;
 extern GLint KEY_Pos1,KEY_END;
 
 extern GLint MouseLookLast_x,MouseLookLast_y;

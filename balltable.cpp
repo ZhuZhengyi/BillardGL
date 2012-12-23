@@ -65,6 +65,10 @@ void Triangle(GLfloat ax, GLfloat ay, GLfloat az,
 	}
 }
 
+/*
+ * init Ball Table
+ *
+ */
 void initializeBallTables(GLint Aufloesung) {
 
     if (Aufloesung<1) Aufloesung=1;  //Display resolution

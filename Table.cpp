@@ -34,7 +34,7 @@ Table::Table() {
    Tisch initialisieren
    ---------------------- */
 
-void Table::Initialisiere(GLint Texturgroesse) {
+void Table::Init(GLint Texturgroesse) {
     if (!LinesIndex) {
         LinesIndex=glGenLists(1);      // Display List erzeugen
 	}
@@ -971,14 +971,14 @@ void Table::Initialisiere(GLint Texturgroesse) {
    Tisch malen
    ----------------- */
 
-void Table::maleArea() {
+void Table::drawSurface() {
     glCallList(TableAreaIndex);       // Tischflaeche zeichnen-draw
 }
 
-void Table::maleBanden() { 
+void Table::drawBorder() {
 	glCallList(BandenIndex);       // Banden zeichnen
 }
 
-void Table::maleLinien() {
+void Table::drawLine() {
     glCallList(LinesIndex);
 }

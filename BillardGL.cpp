@@ -80,8 +80,8 @@ GLint   MouseButtonIntercepted=0; //click intercept
 
 //State-Maschin'
 GLint   StateMachine=START;
-GLint   Spiel=ACHTBALL;         //Game
-GLint   GameMode=TRAININGSSPIEL;  //Game
+GLint   GameType=EIGHT_BALL;         //Game
+GLint   GameMode=TRAINING_MODE;  //Game
 
 // Schiedsrichter
 GLint JudgeDecision=0; //Judge decision
@@ -102,8 +102,8 @@ GLint KEY_RIGHT=0; //right
 GLint KEY_LEFT=0;  //left
 GLint KEY_SHIFT=0;        //shift
 GLint KEY_CTRL=0;         //ctrl
-GLint KEY_Bild_ON=0;     //
-GLint KEY_Bild_Ab=0;      //
+GLint KEY_PAGE_UP=0;     //
+GLint KEY_PAGE_DOWN=0;      //
 GLint KEY_Pos1=0;         //pos1
 GLint KEY_END=0;         //end
 
@@ -161,11 +161,11 @@ void updateGL()
 
     Lighting.draw();
 
-    Table.maleArea();                  // Tischflaeche zeichen
+    Table.drawSurface();                  // Tischflaeche zeichen
 
 	glDisable(GL_DEPTH_TEST);
 
-    Table.maleLinien();
+    Table.drawLine();
 
     for (int BallIndex=0;BallIndex<16;BallIndex++) {
         Ball[BallIndex].drawShadow();      // Schatten zeichen
@@ -173,7 +173,7 @@ void updateGL()
 
 	glEnable(GL_DEPTH_TEST);
 
-    Table.maleBanden();
+    Table.drawBorder();
 
     GLfloat Abstand=0;  //distance
     GLint Aufloesung=1; //Display resolution
@@ -238,17 +238,17 @@ void timerEvent()
 
 			case START: StartHandling();break;
 
-            case BETRACHTEN: ConsiderHandling();break;
+            case VIEWING: ViewingHandling();break;
 
-            case ZIELEN: AimHandling();break;
+            case AIMING: AimHandling();break;
 
             case AUSHOLEN: BackswingHandling();break;
 
-            case STOSS: ShockHandling();break;
+            case SHOCK: ShockHandling();break;      //击球
 
-            case WEISSNEU: WeissneuHandling();break;
+            case NEW_WHITE: NewWhiteHandling();break;
 
-            case SCHIEDSRICHTER: JudgeHandling();break;
+            case JUDGEING: JudgeHandling();break;
 
 		}
 

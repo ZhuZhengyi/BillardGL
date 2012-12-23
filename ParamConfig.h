@@ -2,7 +2,7 @@ void GetCommandParam(int,char**);
 void WriteConfig();
 void LoadConfig();
 extern GLint TextureSize,DisplayTextureSize;
-extern GLint TableTextureSize,BallResolution,InvertX,InvertY,Spiel,Shadow,PhysicsFrequenz,ZBufferDelete,ColorDepth,Reflections,Language,FullScreen;
+extern GLint TableTextureSize,BallResolution,InvertX,InvertY,GameType,Shadow,PhysicsFrequenz,ZBufferDelete,ColorDepth,Reflections,Language,FullScreen;
 extern GLfloat Epsilon,MouseSpeed,FrictionFactor,GangsFactor,CollisionFactor;
 extern char Player1[10];
 extern char Player2[10];

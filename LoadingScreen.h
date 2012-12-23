@@ -4,7 +4,7 @@ void LSidle();
 extern GLint CurrentWindow, BallResolution,
 	   TextureSize, TableTextureSize, AmbientLighting, 
 	   TableLamps, GrueneLamp, Reflections, 
-	   DisplayTextureSize, Spiel,
+       DisplayTextureSize, GameType,
 	   LoadingProgress;
 
 extern class Ball Ball[16];

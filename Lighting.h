@@ -4,7 +4,7 @@
 class Lighting {
 	public:
 		Lighting();
-		void Initialisiere(GLint,GLint,GLint,GLint);
+		void Init(GLint,GLint,GLint,GLint);
         void draw();
 	private:
 		GLint LightingIndex;

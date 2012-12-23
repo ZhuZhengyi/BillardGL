@@ -56,7 +56,7 @@ void Display::draw() {
 	}
 }
 
-void Display::Initialisiere() {
+void Display::Init() {
 }
 
 void Display::setShockStaerke(GLfloat neuStossStaerke) {

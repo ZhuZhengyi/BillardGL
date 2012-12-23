@@ -63,14 +63,22 @@ GLint exp2(GLint a) { //b=2^a
 }
 
 // ... stattdessen kommt hier alles in Initialisiere
-void Ball::Initialisiere(GLint Nr, GLint Texturgroesse, GLint MaxAufloesung, GLint Schatten_) {
+/*
+ * init ball
+ *
+ * @Nr: ball id
+ * @TextureSize:
+ * @MaxAufloesung: Max Display Resolution
+ * @Schatten_: shadow
+ */
+void Ball::Init(GLint Nr, GLint TextureSize, GLint MaxAufloesung, GLint Schatten_) {
 
     Shadow=Schatten_;
 
 	FMatrix tex_r,tex_g,tex_b;     // Matrix-Bilder, in die die Textur kommt
 
 	char Name[40];                  // Wie hei"st die zu ladene .bmp-Datei?
-	sprintf(Name,"Texturen/%i/%i.bmp",Texturgroesse,Nr); 
+    sprintf(Name,"Texturen/%i/%i.bmp",TextureSize,Nr);
 
 	if (!sphereIndex[3]) {
 		Position[0]=Position[1]=3000.0; // Kugel nicht sichtbar
@@ -87,14 +95,14 @@ void Ball::Initialisiere(GLint Nr, GLint Texturgroesse, GLint MaxAufloesung, GLi
 	for (int Aufloesung=3; Aufloesung<=MaxAufloesung;Aufloesung+=2) {
 
 		if (!sphereIndex[Aufloesung]||
-                (OldTextureSize!=Texturgroesse)) {
+                (OldTextureSize!=TextureSize)) {
 
 			//printf(".");fflush(stdout);
 
 			sphereIndex[Aufloesung]=glGenLists(1); 
 			sphereIndexStatisch[Aufloesung]=glGenLists(1); 
 
-            if ((Texturgroesse==0)||(Number==0)) { // Keine Textur?
+            if ((TextureSize==0)||(Number==0)) { // Keine Textur?
 
 				glNewList(sphereIndex[Aufloesung],GL_COMPILE_AND_EXECUTE);
 				GLfloat mat_diffuse[]={1.0,1.0,1.0,1.0};
@@ -118,7 +126,7 @@ void Ball::Initialisiere(GLint Nr, GLint Texturgroesse, GLint MaxAufloesung, GLi
 			} else {                        // sonst
 
 				GLint TG=exp2((7-Aufloesung)/2);
-				if (TG<Texturgroesse) TG=Texturgroesse;
+                if (TG<TextureSize) TG=TextureSize;
 				if (TG>8) TG=1;
 				if (!Texturen[TG]) 
 					glGenTextures(1,&Texturen[TG]);
@@ -213,7 +221,7 @@ void Ball::Initialisiere(GLint Nr, GLint Texturgroesse, GLint MaxAufloesung, GLi
 		glEndList();
 	}
 
-    OldTextureSize=Texturgroesse;
+    OldTextureSize=TextureSize;
 
 }
 

@@ -25,7 +25,7 @@ void StartHandling() {
 	//Menu.Update(Faktor);
 }
 
-void ConsiderHandling() {
+void ViewingHandling() {
 	//Menu.Update(Faktor);
     if (KEY_UP)  {Camera.Move_Front(Factor);}
     if (KEY_DOWN) {Camera.Move_Back(Factor);}
@@ -33,12 +33,15 @@ void ConsiderHandling() {
     if (KEY_LEFT) {Camera.Move_Left(Factor);}
     if (KEY_SHIFT)       {Camera.Move_Up(Factor);}
     if (KEY_CTRL)        {Camera.Move_Down(Factor);}
-    if (KEY_Bild_ON)    {Camera.Move_In(Factor);}
-    if (KEY_Bild_Ab)     {Camera.Move_Out(Factor);}
+    if (KEY_PAGE_UP)    {Camera.Move_In(Factor);}
+    if (KEY_PAGE_DOWN)     {Camera.Move_Out(Factor);}
     if (KEY_Pos1)        {Camera.Zoom_In(Factor);}
     if (KEY_END)        {Camera.Zoom_Out(Factor);}
 }
 
+/*
+ * Aim Handling
+ */
 void AimHandling() {
     if (KEY_UP)  {Camera.Move_In(Factor);}
     if (KEY_DOWN) {Camera.Move_Out(Factor);}
@@ -46,8 +49,8 @@ void AimHandling() {
     if (KEY_LEFT) {Camera.SwingLeft(2*Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
     if (KEY_SHIFT)       {Camera.SwingDown(Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
     if (KEY_CTRL)        {Camera.SwingUp(Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
-    if (KEY_Bild_ON)    {Camera.Move_In(Factor);}
-    if (KEY_Bild_Ab)     {Camera.Move_Out(Factor);}
+    if (KEY_PAGE_UP)    {Camera.Move_In(Factor);}
+    if (KEY_PAGE_DOWN)     {Camera.Move_Out(Factor);}
     if (KEY_Pos1)        {Camera.Vertigo_In(Factor);}
     if (KEY_END)        {Camera.Vertigo_Out(Factor);}
 }
@@ -60,8 +63,8 @@ void BackswingHandling() {
     if (KEY_LEFT) {Camera.SwingLeft(2*Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
     if (KEY_SHIFT)       {Camera.SwingDown(Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
     if (KEY_CTRL)        {Camera.SwingUp(Factor,Ball[0].Pos_xCM(),Ball[0].Pos_yCM());}
-    if (KEY_Bild_ON)    {Camera.Move_In(Factor);}
-    if (KEY_Bild_Ab)     {Camera.Move_Out(Factor);}
+    if (KEY_PAGE_UP)    {Camera.Move_In(Factor);}
+    if (KEY_PAGE_DOWN)     {Camera.Move_Out(Factor);}
     if (KEY_Pos1)        {Camera.Zoom_In(Factor);}
     if (KEY_END)        {Camera.Zoom_Out(Factor);}
 
@@ -82,8 +85,8 @@ void ShockHandling() {
     if (KEY_LEFT) {Camera.Move_Left(Factor);}
     if (KEY_SHIFT)       {Camera.Move_Up(Factor);}
     if (KEY_CTRL)        {Camera.Move_Down(Factor);}
-    if (KEY_Bild_ON)    {Camera.Move_In(Factor);}
-    if (KEY_Bild_Ab)     {Camera.Move_Out(Factor);}
+    if (KEY_PAGE_UP)    {Camera.Move_In(Factor);}
+    if (KEY_PAGE_DOWN)     {Camera.Move_Out(Factor);}
     if (KEY_Pos1)        {Camera.Zoom_In(Factor);}
     if (KEY_END)        {Camera.Zoom_Out(Factor);}
 
@@ -136,34 +139,34 @@ void ShockHandling() {
 			}
 		}
 
-		if (GameMode == TRAININGSSPIEL||GameMode == TUTORIAL) {
+        if (GameMode == TRAINING_MODE||GameMode == TUTORIAL) {
 			if (Ball[0].Pos_x()==3000) {
-				StateMachine=WEISSNEU;
+                StateMachine=NEW_WHITE;
                 Display.setShockStaerke(0.0);
 				LageVerbesserung=1;
 				LageVerbesserungKopffeld=1;
                 WhiteChosen();
                 Menu.NewMenuState();
 			} else {
-				StateMachine=BETRACHTEN;
+                StateMachine=VIEWING;
                 Display.setShockStaerke(0.0);
                 Menu.NewMenuState();
 			}
         } else if (Judge.Entscheidung()) {
-			StateMachine=SCHIEDSRICHTER;
+            StateMachine=JUDGEING;
             Display.setShockStaerke(0.0);
 		} else {
-			StateMachine=BETRACHTEN;
+            StateMachine=VIEWING;
             Display.setShockStaerke(0.0);
             Menu.NewMenuState();
 		}
 	}
 }
 
-void WeissneuHandling() {
+void NewWhiteHandling() {
 
-	if (GameMode==TRAININGSSPIEL) {
-		LageVerbesserungKopffeld=0;
+    if (GameMode==TRAINING_MODE) {
+        LageVerbesserungKopffeld=0; //Location improving header
 		LageVerbesserung=1;
 	}
 
@@ -195,7 +198,7 @@ void WeissneuHandling() {
 		y-=.3*Factor*Faktor2*sin(Camera.Beta*M_PI/180.0);
 	}
 
-	GLint ungueltig=0;
+    GLint invalid=0;
 
 	if (x<-124 || x>124 || (x>-63.5 && LageVerbesserungKopffeld)) {
 		x=Ball[0].Pos_xCM();
@@ -207,18 +210,19 @@ void WeissneuHandling() {
 	for (int nr=1;nr<16;nr++) {
 		if ((Ball[nr].Pos_xCM()-x)*(Ball[nr].Pos_xCM()-x)+
 				(Ball[nr].Pos_yCM()-y)*(Ball[nr].Pos_yCM()-y)<32.7) {
-			ungueltig=1;
+            invalid=1;
 		}
 	}
 
-	if (!ungueltig) {
+    //invalid
+    if (!invalid) {
 		Ball[0].newPositionCM(x,y);
 	}
 
     if (KEY_SHIFT)       {Camera.Move_Up(Factor);}
     if (KEY_CTRL)        {Camera.Move_Down(Factor);}
-    if (KEY_Bild_ON)    {Camera.Move_In(Factor);}
-    if (KEY_Bild_Ab)     {Camera.Move_Out(Factor);}
+    if (KEY_PAGE_UP)    {Camera.Move_In(Factor);}
+    if (KEY_PAGE_DOWN)     {Camera.Move_Out(Factor);}
     if (KEY_Pos1)        {Camera.Zoom_In(Factor);}
     if (KEY_END)        {Camera.Zoom_Out(Factor);}
 }

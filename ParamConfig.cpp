@@ -132,7 +132,7 @@ void GetCommandParam(int argc,char **argv) {
 	BallResolution      = 7;
 	InvertX              = 0;
 	InvertY              = 0;
-	Spiel                = ACHTBALL;
+    GameType                = EIGHT_BALL;
 	Shadow             = 1;
 
 	TexMMM               = 3;
@@ -228,15 +228,15 @@ void GetCommandParam(int argc,char **argv) {
 		} else if (!strcmp(argv[i],"-a")||!strcmp(argv[i],"-aufstellung")) {
 			i++;
 			if (!strcmp(argv[i],"2")||!strcmp(argv[i],"s")||!strcmp(argv[i],"simpel")||!strcmp(argv[i],"zweibaelle")) {
-				Spiel=ZWEIBAELLE;
-			} else if (!strcmp(argv[i],"8")||!strcmp(argv[i],"a")||!strcmp(argv[i],"achtball")||!strcmp(argv[i],"8ball")||!strcmp(argv[i],"8-ball")) {
-				Spiel=ACHTBALL;
+                GameType=ZWEIBAELLE;
+            } else if (!strcmp(argv[i],"8")||!strcmp(argv[i],"a")||!strcmp(argv[i],"EIGHT_BALL")||!strcmp(argv[i],"8ball")||!strcmp(argv[i],"8-ball")) {
+                GameType=EIGHT_BALL;
 			} else if (!strcmp(argv[i],"9")||!strcmp(argv[i],"n")||!strcmp(argv[i],"neunball")||!strcmp(argv[i],"9ball")||!strcmp(argv[i],"9-ball")) {
-				Spiel=NEUNBALL;
+                GameType=NEUNBALL;
 			} else if (!strcmp(argv[i],"0")||!strcmp(argv[i],"l")||!strcmp(argv[i],"leer")) {
-				Spiel=LEER;
+                GameType=LEER;
 			} else if (!strcmp(argv[i],"z")||!strcmp(argv[i],"zufall")) {
-				Spiel=ZUFALL;
+                GameType=ZUFALL;
 			}
 		} else if (!strcmp(argv[i],"-s")||!strcmp(argv[i],"-schatten")) {
 			Shadow=0;
@@ -336,7 +336,7 @@ void GetCommandParam(int argc,char **argv) {
 	printf("  Spiel         : ");
 	switch (Spiel) {
 	case ZWEIBAELLE: printf("Zwei Kugeln");break;
-	case ACHTBALL: printf("8-Ball");break;
+    case EIGHT_BALL: printf("8-Ball");break;
 	case NEUNBALL: printf("9-Ball");break;
 	case ZUFALL: printf("Zufall");break;
 	case LEER: printf("Aus");break;

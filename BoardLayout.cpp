@@ -14,10 +14,10 @@ GLfloat random(GLfloat Epsilon) {
 }
 
 void BoardLayout() {
-	if (StateMachine==BETRACHTEN||
+    if (StateMachine==VIEWING||
 			StateMachine==START||
-			StateMachine==WEISSNEU||
-			StateMachine==SCHIEDSRICHTER) {
+            StateMachine==NEW_WHITE||
+            StateMachine==JUDGEING) {
 
 		//Anfangsstoss=1;
 		//WeisseVersetzbar=1;
@@ -38,7 +38,7 @@ void BoardLayout() {
 		}
 
 
-		switch (Spiel) {        // Was f"ur ein Spiel?
+        switch (GameType) {        // Was f"ur ein Spiel?
 
 			case 2: {               // Nur zwei Kugeln
 						Ball[0].newPositionCM(0.0,0.0);
