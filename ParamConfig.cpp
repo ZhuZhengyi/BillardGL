@@ -52,7 +52,7 @@ void WriteConfig(){
 		fprintf(f,"%i\n",ShowFPS);
 		fprintf(f,"%i\n",AmbientLighting);
 		fprintf(f,"%i\n",TableLamps);
-		fprintf(f,"%i\n",GrueneLamp);
+		fprintf(f,"%i\n",GreenLamp);
 		fprintf(f,"%f\n",EffectVolumeDown);
 		fprintf(f,"%f\n",MusicVolumeDown);
 		fprintf(f,"%s\n",Spieler1temp);
@@ -92,7 +92,7 @@ void LoadConfig(){
 		fscanf(f,"%i",&ShowFPS);
 		fscanf(f,"%i",&AmbientLighting);
 		fscanf(f,"%i",&TableLamps);
-		fscanf(f,"%i",&GrueneLamp);
+		fscanf(f,"%i",&GreenLamp);
 		fscanf(f,"%f",&EffectVolumeDown);
 		fscanf(f,"%f",&MusicVolumeDown);
 		fscanf(f,"%s",Spieler1temp);
@@ -152,7 +152,7 @@ void GetCommandParam(int argc,char **argv) {
 	ShowFPS             = 0;
 	AmbientLighting       = 1;
 	TableLamps          = 2;
-	GrueneLamp          = 0;
+	GreenLamp          = 0;
 
     FullScreen           = 0;
 
@@ -228,11 +228,11 @@ void GetCommandParam(int argc,char **argv) {
 		} else if (!strcmp(argv[i],"-a")||!strcmp(argv[i],"-aufstellung")) {
 			i++;
 			if (!strcmp(argv[i],"2")||!strcmp(argv[i],"s")||!strcmp(argv[i],"simpel")||!strcmp(argv[i],"zweibaelle")) {
-                GameType=ZWEIBAELLE;
+                GameType=TWO_BALLS;
             } else if (!strcmp(argv[i],"8")||!strcmp(argv[i],"a")||!strcmp(argv[i],"EIGHT_BALL")||!strcmp(argv[i],"8ball")||!strcmp(argv[i],"8-ball")) {
                 GameType=EIGHT_BALL;
 			} else if (!strcmp(argv[i],"9")||!strcmp(argv[i],"n")||!strcmp(argv[i],"neunball")||!strcmp(argv[i],"9ball")||!strcmp(argv[i],"9-ball")) {
-                GameType=NEUNBALL;
+                GameType=NINE_BALL;
 			} else if (!strcmp(argv[i],"0")||!strcmp(argv[i],"l")||!strcmp(argv[i],"leer")) {
                 GameType=LEER;
 			} else if (!strcmp(argv[i],"z")||!strcmp(argv[i],"zufall")) {
@@ -335,9 +335,9 @@ void GetCommandParam(int argc,char **argv) {
 
 	printf("  Spiel         : ");
 	switch (Spiel) {
-	case ZWEIBAELLE: printf("Zwei Kugeln");break;
+	case TWO_BALLS: printf("Zwei Kugeln");break;
     case EIGHT_BALL: printf("8-Ball");break;
-	case NEUNBALL: printf("9-Ball");break;
+	case NINE_BALL: printf("9-Ball");break;
 	case ZUFALL: printf("Zufall");break;
 	case LEER: printf("Aus");break;
 	}

@@ -4,10 +4,10 @@
  **
  ****************************************************************************/  
 
-#include "sprache.h"
+#include "language.h"
 
 #define AUS 0
-#define STARTBILDSCHIRM 1
+#define HOME_SCREEN 1
 #define MAIN_MENU 2
 #define TRAINING 3
 #define TWO_PLAYERS 4
@@ -16,32 +16,32 @@
 #define NETWORK_JOIN 7
 #define EXIT 8
 #define OFF_GAME 9
-#define SETTINGS 10
-#define EINSTELLUNGENSTEUERUNG 11
-#define EINSTELLUNGENGRAFIK 12
-#define EINSTELLUNGENGRAFIKHINWEIS 13
-#define EINSTELLUNGENAUDIO 14
-#define SPRACHAUSWAHL 15
-#define SPIEL 20
+#define SETUP 10
+#define SETUP_CONTROL 11
+#define SETUP_VIDEO 12
+#define SETUP_VIDEO_NOTICE 13
+#define SETUP_AUDIO 14
+#define LANGUAGE 15
+#define PLAYING 20
 
-#define HILFE 30
-#define HILFEREGELN1 31
-#define HILFEREGELN2 32
-#define HILFEREGELN3 33
-#define HILFEREGELN4 34
-#define HILFEREGELN5 35
-#define HILFEREGELN6 36
-#define HILFEREGELN7 37
-#define HILFEREGELN8 38
-#define HILFEEINFUEHRUNG1 41
-#define HILFEEINFUEHRUNG2 42
-#define HILFEEINFUEHRUNG3 43
-#define HILFEEINFUEHRUNG4 44
-#define HILFEEINFUEHRUNG5 45
-#define HILFEEINFUEHRUNG6 46
-#define HILFEEINFUEHRUNG7 47
-#define HILFEEINFUEHRUNG8 48
-#define HILFETASTENBELEGUNGEN 49
+#define HELP 30
+#define HELP_REGELN1 31
+#define HELP_REGELN2 32
+#define HELP_REGELN3 33
+#define HELP_REGELN4 34
+#define HELP_REGELN5 35
+#define HELP_REGELN6 36
+#define HELP_REGELN7 37
+#define HELP_REGELN8 38
+#define HELP_EINFUEHRUNG1 41
+#define HELP_EINFUEHRUNG2 42
+#define HELP_EINFUEHRUNG3 43
+#define HELP_EINFUEHRUNG4 44
+#define HELP_EINFUEHRUNG5 45
+#define HELP_EINFUEHRUNG6 46
+#define HELP_EINFUEHRUNG7 47
+#define HELP_EINFUEHRUNG8 48
+#define HELP_KEY_SET 49
 
 #define SPIELENDE 99
 
@@ -49,97 +49,97 @@
 #define S_SB_NAMEN 101
 #define S_LOGO 102
 
-#define S_HM_TRAINING 110
-#define S_HM_ZWEISPIELER 111
-#define S_HM_NETZWERKSPIEL 112
-#define S_HM_EINSTELLUNGEN 113
-#define S_HM_BEENDEN 114
-#define S_HM_COMPUTERGEGNER 115
-#define S_HM_HILFE 116
+#define S_MAINMENU_TRAINING 110
+#define S_MAINMENU_TWO_PLAYERS 111
+#define S_MAINMENU_NETWORK_PLAYER 112
+#define S_MAINMENU_SETUP_ 113
+#define S_MAINMENU_EXIT 114
+#define S_MAINMENU_COMPUTERGEGNER 115
+#define S_MAINMENU_HELP 116
 
 #define S_TR_EIGHT_BALL 120
-#define S_TR_NEUNBALL 121
+#define S_TR_NINE_BALL 121
 #define S_TR_VIERZEHNPLUSEINS 122
-#define S_TR_ZURUECK 123
+#define S_TR_BACK 123
 
 #define S_ZW_EIGHT_BALL 130
-#define S_ZW_NEUNBALL 131
+#define S_ZW_NINE_BALL 131
 #define S_ZW_VIERZEHNPLUSEINS 132
-#define S_ZW_ZURUECK 133
+#define S_ZW_BACK 133
 
-#define S_NE_BEGINNEN 140
+#define S_NE_BEGIN 140
 #define S_NE_TEILNEHMEN 141
-#define S_NE_ZURUECK 142
+#define S_NE_BACK 142
 
 #define S_NB_EIGHT_BALL 150
-#define S_NB_NEUNBALL 151
+#define S_NB_NINE_BALL 151
 #define S_NB_VIERZEHNPLUSEINS 152
-#define S_NB_ZURUECK  153
+#define S_NB_BACK  153
 
 #define S_NT_IPADRESSE 160
-#define S_NT_VERBINDEN 161
-#define S_NT_ZURUECK   162
+#define S_NT_CONNECT 161
+#define S_NT_BACK   162
 
-#define S_EI_BALLTEXTUREN 170
-#define S_EI_TISCHTEXTUREN 180
-#define S_EI_ANZEIGETEXTUREN 190
-#define S_EI_TEXTURINTERPOLATION 195
-#define S_EI_BALLGEOMETRIE   201
-#define S_EI_MOUSESPEED      202
-#define S_EI_XINVERT   203
-#define S_EI_YINVERT   204
-#define S_EI_SPRACHE   205
-#define S_EI_ZURUECK 220
-#define S_EI_ZURUECK_AS 221
-#define S_EI_UEBERNEHMEN 222
-#define S_EI_STEUERUNG 223
-#define S_EI_STEUERUNGZURUECK 224
-#define S_EI_STEUERUNGUEBERNEHMEN 225
-#define S_EI_AUDIO 226
-#define S_EI_AUDIOZURUECK 227
-#define S_EI_AUDIOUEBERNEHMEN 228
-#define S_EI_GRAFIK 800
-#define S_EI_GRAFIKZURUECK 801
-#define S_EI_GRAFIKUEBERNEHMEN 802
-#define S_EI_AUFLOESUNG 803
-#define S_EI_FARBTIEFE 804
-#define S_EI_REFLEKTIONEN 805
-#define S_EI_QUALITAET 806
-#define S_EI_SCHATTEN 807
-#define S_EI_AMBIENTESLICHT 808
-#define S_EI_TISCHLAMPEN 809
-#define S_EI_GRUENELAMPE 810
-#define S_EI_FPS 811
+#define S_SETUP_BALLTEXTURES 170
+#define S_SETUP_TABLE_TEXTURES 180
+#define S_SETUP_ANZEIGETEXTURES 190
+#define S_SETUP_TEXTURINTERPOLATION 195
+#define S_SETUP_BALLGEOMETRIE   201
+#define S_SETUP_MOUSESPEED      202
+#define S_SETUP_XINVERT   203
+#define S_SETUP_YINVERT   204
+#define S_SETUP_LANGUAGE   205
+#define S_SETUP_BACK 220
+#define S_SETUP_BACK_AS 221
+#define S_SETUP_UEBERNEHMEN 222     //PICK-UP
+#define S_SETUP_CONTROL 223
+#define S_SETUP_CONTROLBACK 224
+#define S_SETUP_CONTROLUEBERNEHMEN 225
+#define S_SETUP_AUDIO 226
+#define S_SETUP_AUDIOBACK 227
+#define S_SETUP_AUDIOUEBERNEHMEN 228
+#define S_SETUP_VIDEO 800
+#define S_SETUP_VIDEOBACK 801
+#define S_SETUP_VIDEOUEBERNEHMEN 802
+#define S_SETUP_RESOLUTION 803
+#define S_SETUP_COLOR_DEPTH 804
+#define S_SETUP_REFLEKTIONEN 805
+#define S_SETUP_QUALITAET 806
+#define S_SETUP_SHADOWS 807
+#define S_SETUP_AMBIENCE_LIGHTING 808
+#define S_SETUP_TABLE_LAMPEN 809
+#define S_SETUP_GRUENELAMPE 810
+#define S_SETUP_FPS 811
 
 #define S_AS_WEITERSPIELEN 230
-#define S_AS_HAUPTMENU 231
-#define S_AS_EINSTELLUNGEN 232
-#define S_AS_BEENDEN 233
-#define S_AS_HILFE 234
+#define S_AS_MAIN_MENU 231
+#define S_AS_SETUP 232
+#define S_AS_EXIT 233
+#define S_AS_HELP 234
 
-#define S_BE_JABEENDEN       850
-#define S_BE_ZURUECK         851
-#define S_BE_ZURUECK_AS       852
+#define S_BE_JAEXIT       850
+#define S_BE_BACK         851
+#define S_BE_BACK_AS       852
 
 #define S_SP_LOGO    500
 #define S_SP_BALL    510
-#define S_SP_WEITERSPIELEN 530
+#define S_SP_WEITERSPIELEN 530  //CONTINUE PLAYING
 #define S_SP_ACHTEINSETZEN 531
-#define S_SP_NEUAUFBAUEN 532
-#define S_SP_HAUPTMENU 540
-#define S_SP_NEUESSPIEL 541
+#define S_SP_NEUAUFBAUEN 532    //Rebuild
+#define S_SP_MAIN_MENU 540
+#define S_SP_NEW_GAME 541
 
-#define S_SP_NEUEEIGHT_BALLAUFSTELLUNG 550
-#define S_SP_NEUENEUNBALLAUFSTELLUNG 551
+#define S_SP_NEWEIGHT_BALLAUFSTELLUNG 550
+#define S_SP_NEWNINE_BALLAUFSTELLUNG 551
 
 #define S_SPIELER1HERHOEREN 601
 #define S_SPIELER2HERHOEREN 602
-#define S_NETZWERKSPIELERHERHOEREN 603
+#define S_NETWORK_PLAYERERHERHOEREN 603
 
-#define S_H_TASTENBELEGUNGEN 300
-#define S_H_BILLARDREGELN 301
+#define S_H_KEY_ASSIGNMENTS 300
+#define S_H_BILLARDREGELN 301   //POOL RULES
 #define S_H_TUTORIAL 302
-#define S_H_ZUHILFE 303
+#define S_H_ZUHELP_ 303
 #define S_H_E1_N 304
 #define S_H_E2_N 305
 #define S_H_E2_L 306
@@ -164,7 +164,7 @@
 #define S_H_R6_L 325
 
 
-#define ANIMATIONSDAUER 100
+#define ANIMATION_TIME 100
 
 class Menu {
 	public:
@@ -191,19 +191,19 @@ class Menu {
         Scale MenuBackground;
 
         Scale logo;
-        Scale namen;
+        Scale namen;    //
 
-        Scale halbe;
-        Scale volle;
+        Scale halbe;    //half
+        Scale volle;    //full
 
         Scale ball[16];
 
         Scale GameStar;
 
         Scale* SchildArray[300];
-		Textfeld* TextfeldArray[1000];
+        TextItem* TextItemArray[1000];
 
-		Textfeld dummyTextfeld;
+        TextItem dummyTextfeld;
 
 		GLint TDL;
 		//GLint TTA;
@@ -211,24 +211,24 @@ class Menu {
 		GLint SchildAnzahl;
 		GLint TextfeldAnzahl;
 
-		GLint E_Texturgroesse;
-		GLint E_AnzeigeTexturgroesse;
-		GLint E_TischTexturgroesse;
-		GLint E_KugelAufloesung;
+        GLint E_BallTextureSize;        //球显示精度
+        GLint E_AnzeigeTexturgroesse;   //
+        GLint E_TableTextureSize;       //桌面图像精度
+        GLint E_KugelAufloesung;        //球分辨率
 		GLfloat E_MouseSpeed;
 		GLint E_InvertX;
 		GLint E_InvertY;
-		GLint MenuGesperrt;
-		GLint E_Reflektionen;
-		GLint E_Farbtiefe;
-		GLint E_BildschirmAufloesung;
-		GLint Qualitaet;
-		GLint E_Schatten;
+        GLint MenuGesperrt;     //menu locked/disabled
+        GLint E_Reflection;
+        GLint E_ColorDepth;
+        GLint E_ScreenResolution;
+        GLint Quality;
+        GLint E_Shadows;
 
-		GLint E_AmbientesLicht;
-		GLint E_TischLampen;
-		GLint E_GrueneLampe;
-		GLint E_ZeigeFPS;
+        GLint E_AmbientLighting;
+        GLint E_TableLampes;
+        GLint E_GreenLampe;
+        GLint E_ShowFPS;
 
 		GLint E_TexMMM;
 
@@ -247,7 +247,7 @@ extern GLint TextureSize,
 	   InvertY,
 	   Shadow,
 	   GameMode,
-	   SpielerAmStoss;
+       PlayerOnShock;
 
 extern GLfloat MouseSpeed;
 extern GLint   BallsSunk[16];
@@ -259,10 +259,10 @@ extern class Display Display;
 extern class Judge Judge;
 extern class Lighting Lighting;
 
-extern GLint JudgeDecision;
-extern GLint SpielerAmStoss;
-extern GLint RecodingChanges;
-extern GLint Foul;
+extern GLint JudgeDecision;     //裁决
+extern GLint PlayerOnShock;     //击球者
+extern GLint RecodingChanges;   //记分
+extern GLint Foul;  //犯规
 extern GLint LageVerbesserungKopffeld;
 extern GLint LageVerbesserung;
 extern GLint NeuAufbauenOderWeiterspielen;
@@ -271,7 +271,7 @@ extern GLint Player1Win;
 extern GLint Player2Win;
 extern GLint AllerersterStoss;
 
-extern GLint ShowFPS,TableLamps,GrueneLamp;
+extern GLint ShowFPS,TableLamps,GreenLamp;
 extern GLfloat EffectVolumeDown,MusicVolumeDown;
 
 extern GLint TexMMM;

@@ -5,17 +5,17 @@ class Scale {
 		void Init();
 		void InitLogo();
 		void Init(GLint,char[]);
-        void InitBuchstabe(GLint,char[]);
+        void InitLetter(GLint,char[]);
 		void Init(GLint,char[],char);
 		void Init(GLint,char[],char[]);
 		void draw();
 		void Positioning(GLfloat,GLfloat,GLfloat,GLfloat);
         void PositionFix(GLfloat,GLfloat,GLfloat,GLfloat);
-		void Desaktiviere();
-		void Angewaehlt();
-		void Eingeblendet();
-		void VollSichtbar();
-        void StartAnimation();
+        void Disactive();    //disactive
+        void Selected();      //In chooses
+        void Eingeblendet();    //
+        void FullyVisible();    //
+        void StartAnimation();  //
 		GLint Animate(GLint);
 		GLint MouseButton(int,int,int,int);
 		void SetzeZielZustand(GLint);
@@ -33,16 +33,16 @@ class Scale {
 		GLfloat alt_Alpha;
 		GLint InAnimation;
 		GLint Signal;
-		GLint Zeit;
-		GLuint Textur;
+        GLint ElapseTime;
+        GLuint Texture;
 };
 
-#define AUSGEBLENDET 0.0
-#define TRANSPARENT  0.2
-#define EINGEBLENDET 0.6
-#define ANGEWAEHLT   0.8
-#define VOLLSICHTBAR 1.0
+#define HIDDEN 0.0    //HIDDEN
+#define TRANSPARENT  0.2    //
+#define EINGEBLENDET 0.6    //AGREED HIDDEN
+#define SELECTED   0.8    //selected
+#define FULL_VISIBLE 1.0    //FULL VISIBLE
 
-#define ANIMATIONSDAUER 100
+#define ANIMATION_TIME 100 //ANIMATION TIME
 
 extern GLuint LogoTexture;

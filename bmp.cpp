@@ -239,8 +239,8 @@ bool loadBMP(FMatrix& r, FMatrix& g, FMatrix& b, const char* fname) {
 	BITMAPINFOHEADERX iheader;
 
 	char ffname[60];
-	sprintf(ffname,"%s%s",PFAD,fname);
-	//printf("%s%s\n",PFAD,fname);
+	sprintf(ffname,"%s%s",PATH,fname);
+	//printf("%s%s\n",PATH,fname);
 	f = fopen(ffname, "rb");
 
 	if(!f) {

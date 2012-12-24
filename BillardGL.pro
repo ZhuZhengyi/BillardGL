@@ -14,7 +14,6 @@ SOURCES += \
     Menu.cpp \
     Schild.cpp \
     Textfeld.cpp \
-    viertelLoch.cpp \
     Ball.cpp \
     Judge.cpp \
     Camera.cpp \
@@ -31,7 +30,8 @@ SOURCES += \
     Physics.cpp \
     Shadow.cpp \
     BoardLayout.cpp \
-    Display.cpp
+    Display.cpp \
+    quarterHole.cpp
 
 HEADERS += \
     BillardGL.h \
@@ -43,9 +43,7 @@ HEADERS += \
     Namen.h \
     resource.h \
     Schild.h \
-    sprache.h \
     Textfeld.h \
-    viertelLoch.h \
     Ball.h \
     Judge.h \
     Camera.h \
@@ -62,5 +60,7 @@ HEADERS += \
     Physics.h \
     Shadow.h \
     BoardLayout.h \
-    Display.h
+    Display.h \
+    language.h \
+    quarterHole.h
 

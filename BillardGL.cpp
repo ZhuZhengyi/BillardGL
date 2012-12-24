@@ -142,7 +142,7 @@ int OriginalWindow=0,CurrentWindow=0;
 GLint ShowFPS;              //显示FPS
 GLint AmbientLighting;      //环境光
 GLint TableLamps;           //球台灯
-GLint GrueneLamp;            //
+GLint GreenLamp;            //
 
 GLfloat EffectVolumeDown=.5;     //效果音量减小量
 GLfloat MusicVolumeDown=.5;      //音乐音量减小量

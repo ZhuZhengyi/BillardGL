@@ -328,7 +328,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
         case 'q': {
             if (xnor==4) {
                 StateMachine=START;
-                Menu.setMenuState(STARTBILDSCHIRM);
+                Menu.setMenuState(HOME_SCREEN);
             }
         } break;
 
@@ -402,21 +402,21 @@ void KeyPress( unsigned char keyPressed, int x, int y )
                 xnor=2;
             }
             if (xnor==4) {
-                GameType=NEUNBALL;
+                GameType=NINE_BALL;
                 BoardLayout();
                 Judge.NewGame(GameType);
             }
         } break;//n
         case '9': {
             if (xnor==4) {
-                GameType=NEUNBALL;
+                GameType=NINE_BALL;
                 BoardLayout();
                 Judge.NewGame(GameType);
             }
         } break;//9
         case 's': {
             if (xnor==4) {
-                GameType=ZWEIBAELLE;
+                GameType=TWO_BALLS;
                 BoardLayout();
             }
         } break;//s

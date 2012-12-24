@@ -48,7 +48,7 @@ GLint rechts[]={
 	28, 27, 28, 28, 28, 28, 28,  0, 28, 26, 26, 26, 26, 25, 28, 25
 };
 
-Textfeld::Textfeld() {
+TextItem::TextItem() {
 	//
 	x=y=Hoehe=Aspekt=Alpha = 0;
 	alt_x=alt_y=alt_Hoehe=alt_Alpha = 0;
@@ -57,9 +57,9 @@ Textfeld::Textfeld() {
 	InAnimation = 0;
 	Signal = 0;
 	Zeit = 0; 
-	DisplayListAnfang = 0;
+    DisplayListArray = 0;
 	for (GLint i=0;i<512;i++)
-		TexturenAnfang[i] = 0;
+        TextureArray[i] = 0;
 	TextfeldIndex = 0;
 	Horchen = 0;
 	Zeilen=0;
@@ -68,13 +68,13 @@ Textfeld::Textfeld() {
 
 }
 
-GLint Textfeld::dummyInitialisiere(GLint TexGr){
+GLint TextItem::dummyInit(GLint TexGr){
 	FMatrix tex;
-	if (!DisplayListAnfang)
-		DisplayListAnfang=glGenLists(512);
+    if (!DisplayListArray)
+        DisplayListArray=glGenLists(512);
 
-	if (!TexturenAnfang[0]) 
-		glGenTextures(512,&TexturenAnfang[0]);
+    if (!TextureArray[0])
+        glGenTextures(512,&TextureArray[0]);
 
 	char DateiName[80];
 	sprintf(DateiName,"Texturen/%i/buchstaben.bmp",TexGr); 
@@ -86,13 +86,13 @@ GLint Textfeld::dummyInitialisiere(GLint TexGr){
 		GLint y = Buchstabe / 16;
 
 		if (rechts[Buchstabe] && Buchstabe!=32) {
-			glBindTexture(GL_TEXTURE_2D,TexturenAnfang[Buchstabe]);
+            glBindTexture(GL_TEXTURE_2D,TextureArray[Buchstabe]);
 			createTextureText(tex,x,y,Rastergroesse);
 		}
 
-		glNewList(DisplayListAnfang+Buchstabe,GL_COMPILE_AND_EXECUTE);
+        glNewList(DisplayListArray+Buchstabe,GL_COMPILE_AND_EXECUTE);
 		if (rechts[Buchstabe] && Buchstabe!=32) {
-			glBindTexture(GL_TEXTURE_2D,TexturenAnfang[Buchstabe]);
+            glBindTexture(GL_TEXTURE_2D,TextureArray[Buchstabe]);
 			//glEnable(GL_TEXTURE_2D);
 			//glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 			glBegin(GL_QUADS);
@@ -116,13 +116,13 @@ GLint Textfeld::dummyInitialisiere(GLint TexGr){
 		GLint y = Buchstabe2 / 16;
 
 		if (rechts[Buchstabe2] && Buchstabe2!=32) {
-			glBindTexture(GL_TEXTURE_2D,TexturenAnfang[256+Buchstabe2]);
+            glBindTexture(GL_TEXTURE_2D,TextureArray[256+Buchstabe2]);
 			createTextureText2(tex,x,y,Rastergroesse);
 		}
 
-		glNewList(DisplayListAnfang+256+Buchstabe2,GL_COMPILE_AND_EXECUTE);
+        glNewList(DisplayListArray+256+Buchstabe2,GL_COMPILE_AND_EXECUTE);
 		if (rechts[Buchstabe2] && Buchstabe2!=32) {
-			glBindTexture(GL_TEXTURE_2D,TexturenAnfang[256+Buchstabe2]);
+            glBindTexture(GL_TEXTURE_2D,TextureArray[256+Buchstabe2]);
 			//glEnable(GL_TEXTURE_2D);
 			//glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 			glBegin(GL_QUADS);
@@ -148,15 +148,15 @@ GLint Textfeld::dummyInitialisiere(GLint TexGr){
 	Zeit=0;
 	Zeichenkette[0]='\0';
 	Horchen=0;
-	return DisplayListAnfang;
+    return DisplayListArray;
 }
 
 
 
 
 
-void Textfeld::Initialisiere(GLint DLA){
-	DisplayListAnfang=DLA;
+void TextItem::Initialisiere(GLint DLA){
+    DisplayListArray=DLA;
 	x=y=Hoehe=Aspekt=Alpha=0.0;
 	alt_x=alt_y=alt_Hoehe=alt_Alpha=0.0;
 	soll_x=soll_y=soll_Hoehe=soll_Alpha=0.0;
@@ -168,17 +168,17 @@ void Textfeld::Initialisiere(GLint DLA){
 	Horchen=0;
 }  
 
-void Textfeld::Initialisiere(GLint DLA, char TextZ[]){
+void TextItem::Initialisiere(GLint DLA, char TextZ[]){
 	Initialisiere(DLA);
-	SetzeText(TextZ);
+    SetText(TextZ);
 }
 
-void Textfeld::InitialisiereKDL(GLint DLA, char TextZ[]){
+void TextItem::InitialisiereKDL(GLint DLA, char TextZ[]){
 	Initialisiere(DLA);
-	SetzeTextKDL(TextZ);
+    SetTextKDL(TextZ);
 }
 
-void Textfeld::male(){  
+void TextItem::draw(){
 	if (Alpha<.03) {return;}
 	glPushMatrix();
 	glTranslatef(x,y,0);
@@ -189,7 +189,7 @@ void Textfeld::male(){
 
 }
 
-void Textfeld::PositioniereFix(GLfloat X,GLfloat Y,GLfloat H,GLint A){
+void TextItem::PositioniereFix(GLfloat X,GLfloat Y,GLfloat H,GLint A){
 
 	if (A) Ausrichtung=A;
 
@@ -211,7 +211,7 @@ void Textfeld::PositioniereFix(GLfloat X,GLfloat Y,GLfloat H,GLint A){
 
 }
 
-void Textfeld::Positioniere(GLfloat X,GLfloat Y,GLfloat H,GLint A){
+void TextItem::Positioniere(GLfloat X,GLfloat Y,GLfloat H,GLint A){
 
 	if (A) Ausrichtung=A;
 
@@ -225,7 +225,7 @@ void Textfeld::Positioniere(GLfloat X,GLfloat Y,GLfloat H,GLint A){
 	soll_Hoehe = H; 
 	soll_Alpha = EINGEBLENDET;
 
-	if (Alpha==AUSGEBLENDET) {
+	if (Alpha==HIDDEN) {
 
 		x=((soll_x-8)/1.5)+8;
 		y=((soll_y-6)/1.5)+6;
@@ -245,7 +245,7 @@ void Textfeld::Positioniere(GLfloat X,GLfloat Y,GLfloat H,GLint A){
 }
 
 
-void Textfeld::SetzeText(char TextZ[]){
+void TextItem::SetText(char TextZ[]){
 	int i=0;
 	while (TextZ[i] && i<1999) {
 		Zeichenkette[i]=TextZ[i];
@@ -255,7 +255,7 @@ void Textfeld::SetzeText(char TextZ[]){
     GenerateDisplayList();
 }
 
-void Textfeld::SetzeTextKDL(char TextZ[]){
+void TextItem::SetTextKDL(char TextZ[]){
 	int i=0;
 	while (TextZ[i] && i<1999) {
 		Zeichenkette[i]=TextZ[i];
@@ -264,7 +264,7 @@ void Textfeld::SetzeTextKDL(char TextZ[]){
 	Zeichenkette[i]=0;
 }
 
-GLint Textfeld::Scale(char Taste){
+GLint TextItem::Scale(char Taste){
 	if (Horchen) {
 		if (Taste>=32 &&
 				Taste!=8 && Taste!=127 &&
@@ -290,11 +290,11 @@ GLint Textfeld::Scale(char Taste){
 	return 0;
 }
 
-char* Textfeld::Text(){return Zeichenkette;}
+char* TextItem::Text(){return Zeichenkette;}
 
 //deactivated
-void Textfeld::Desaktiviere(){
-	soll_Alpha=AUSGEBLENDET;
+void TextItem::Desaktiviere(){
+	soll_Alpha=HIDDEN;
 
 	soll_x=((x-8)*1.5)+8;
 	soll_y=((y-6)*1.5)+6;
@@ -305,40 +305,41 @@ void Textfeld::Desaktiviere(){
 	if (soll_Alpha!=Alpha) StarteAnimation();
 }
 
-void Textfeld::Weghoeren(){
+//turning a deaf ear
+void TextItem::Weghoeren(){
 	if (Alpha && soll_Alpha) Eingeblendet();
 	Horchen = 0;
 }
 
 //Listen up
-void Textfeld::Herhoeren(){
+void TextItem::Herhoeren(){
 	VollSichtbar();
 	Horchen = 1;
 }
 
 //In chooses
-void Textfeld::Angewaehlt(){
-	Alpha=ANGEWAEHLT;
+void TextItem::Angewaehlt(){
+	Alpha=SELECTED;
 	soll_Alpha=EINGEBLENDET;
 	if (soll_Alpha!=Alpha) StarteAnimation();
 }
 
 //Superimposed
-void Textfeld::Eingeblendet(){
+void TextItem::Eingeblendet(){
 	soll_Alpha=EINGEBLENDET;
 	if (soll_Alpha!=Alpha) StarteAnimation();
 }
 
 //fully Visible
-void Textfeld::VollSichtbar(){
-	soll_Alpha=VOLLSICHTBAR;
+void TextItem::VollSichtbar(){
+	soll_Alpha=FULL_VISIBLE;
 	if (soll_Alpha!=Alpha) StarteAnimation();
 }
 
-GLint Textfeld::Animiere(GLint Faktor){
+GLint TextItem::Animiere(GLint Faktor){
 	if (!InAnimation) {return 0;}
 	Zeit+=Faktor;
-	if (Zeit>=ANIMATIONSDAUER) {
+	if (Zeit>=ANIMATION_TIME) {
 		x=soll_x;
 		y=soll_y;
 		Hoehe=soll_Hoehe;
@@ -346,7 +347,7 @@ GLint Textfeld::Animiere(GLint Faktor){
 		InAnimation=0;
 		return 1;
 	} else {
-		GLfloat Faktor=(.5-.5*cos(M_PI*Zeit/ANIMATIONSDAUER));
+		GLfloat Faktor=(.5-.5*cos(M_PI*Zeit/ANIMATION_TIME));
 		x=(soll_x-alt_x)*Faktor+alt_x;
 		y=(soll_y-alt_y)*Faktor+alt_y;
 		Hoehe=(soll_Hoehe-alt_Hoehe)*Faktor+alt_Hoehe;
@@ -356,11 +357,11 @@ GLint Textfeld::Animiere(GLint Faktor){
 	}
 }
 
-void Textfeld::SetzeSignal(GLint NeuesSignal){
+void TextItem::SetzeSignal(GLint NeuesSignal){
 	Signal=NeuesSignal;
 }
 
-void Textfeld::StarteAnimation(){
+void TextItem::StarteAnimation(){
 	InAnimation=1;
 	Zeit=0;
 	alt_x=x;
@@ -369,7 +370,7 @@ void Textfeld::StarteAnimation(){
 	alt_Alpha=Alpha;
 }
 
-void Textfeld::GenerateDisplayList(){
+void TextItem::GenerateDisplayList(){
 	if (!TextfeldIndex) {
 		TextfeldIndex=glGenLists(1);
 	}
@@ -387,7 +388,7 @@ void Textfeld::GenerateDisplayList(){
 			if (c<0) c+=256;
 			Aspekt+=(rechts[c]-links[c]+4)/64.0;
 			glTranslatef(-links[c]/64.0,0,0);
-			glCallList(DisplayListAnfang+c+256);
+            glCallList(DisplayListArray+c+256);
 			glTranslatef((rechts[c]+4)/64.0,0,0);
 		}
 		glPopMatrix();
@@ -397,7 +398,7 @@ void Textfeld::GenerateDisplayList(){
 		while ((c=Zeichenkette[p++])) {
 			if (c<0) c+=256;
 			glTranslatef(-links[c]/64.0,0,0);
-			glCallList(DisplayListAnfang+c);
+            glCallList(DisplayListArray+c);
 			glTranslatef((rechts[c]+4)/64.0,0,0);
 		}
 		glPopMatrix();
@@ -449,7 +450,7 @@ void Textfeld::GenerateDisplayList(){
 				while ((c=Zeichenkette[Pos++])&& Pos<=LetztesLeerzeichen) {
 					if (c<0) c+=256;
 					glTranslatef(-links[c]/64.0,0,0);
-					glCallList(DisplayListAnfang+c+256);
+                    glCallList(DisplayListArray+c+256);
 					glTranslatef((rechts[c]+4)/64.0,0,0);
 					if (c==32) glTranslatef(delta,0,0);
 				}
@@ -460,7 +461,7 @@ void Textfeld::GenerateDisplayList(){
 				while ((c=Zeichenkette[Pos++])&& Pos<=LetztesLeerzeichen) {
 					if (c<0) c+=256;
 					glTranslatef(-links[c]/64.0,0,0);
-					glCallList(DisplayListAnfang+c);
+                    glCallList(DisplayListArray+c);
 					glTranslatef((rechts[c]+4)/64.0,0,0);
 					if (c==32) glTranslatef(delta,0,0);
 				}
@@ -477,7 +478,7 @@ void Textfeld::GenerateDisplayList(){
 				while ((c=Zeichenkette[Pos++])) {
 					if (c<0) c+=256;
 					glTranslatef(-links[c]/64.0,0,0);
-					glCallList(DisplayListAnfang+c+256);
+                    glCallList(DisplayListArray+c+256);
 					glTranslatef((rechts[c]+4)/64.0,0,0);
 					if (c==32) glTranslatef(delta,0,0);
 				}
@@ -488,7 +489,7 @@ void Textfeld::GenerateDisplayList(){
 				while ((c=Zeichenkette[Pos++])) {
 					if (c<0) c+=256;
 					glTranslatef(-links[c]/64.0,0,0);
-					glCallList(DisplayListAnfang+c);
+                    glCallList(DisplayListArray+c);
 					glTranslatef((rechts[c]+4)/64.0,0,0);
 					if (c==32) glTranslatef(delta,0,0);
 				}
@@ -506,7 +507,7 @@ void Textfeld::GenerateDisplayList(){
 
 }
 
-GLint Textfeld::MouseButton(int Taste,int Richtung,int x_,int y_) {
+GLint TextItem::MouseButton(int Taste,int Richtung,int x_,int y_) {
 	GLfloat xf=16.0*x_/glutGet(GLUT_WINDOW_WIDTH);
 	GLfloat yf=12.0-12.0*y_/glutGet(GLUT_WINDOW_HEIGHT);
 	if (soll_Alpha>0.0 &&
@@ -527,12 +528,12 @@ GLint Textfeld::MouseButton(int Taste,int Richtung,int x_,int y_) {
 	}
 }
 
-GLfloat Textfeld::TextboxHeight() {
+GLfloat TextItem::TextboxHeight() {
 	return .7*Zeilen;
 }
 
 
-void Textfeld::SetzeMaxBreite(GLfloat mb) {
+void TextItem::SetMaxWidth(GLfloat mb) {
 	if (mb<0) mb=0;
 	MaxBreite=mb;
 }

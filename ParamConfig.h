@@ -8,6 +8,6 @@ extern char Player1[10];
 extern char Player2[10];
 extern char NetworkPlayer[10];
 extern GLint ScreenResolution;
-extern GLint ShowFPS,AmbientLighting,TableLamps,GrueneLamp;
+extern GLint ShowFPS,AmbientLighting,TableLamps,GreenLamp;
 extern GLfloat EffectVolumeDown,MusicVolumeDown;
 extern GLint TexMMM;

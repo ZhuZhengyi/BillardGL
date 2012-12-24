@@ -135,7 +135,7 @@ void LSidle() {
         case 16: Ball[14].Init(14,TextureSize,BallResolution,Shadow); break;
         case 17: Ball[15].Init(15,TextureSize,BallResolution,Shadow); break;
         case 18: Table.Init(TableTextureSize); break;
-        case 19: Lighting.Init(AmbientLighting,TableLamps,GrueneLamp,Reflections); break;
+        case 19: Lighting.Init(AmbientLighting,TableLamps,GreenLamp,Reflections); break;
         case 20: Display.Init(); break;
         case 21: Menu.Init(DisplayTextureSize); break;
         case 22: Menu.LoadLanguage(900); break;

@@ -18,7 +18,7 @@
 
 #include "Lighting.h"
 #include "TableHelpFunc.h"
-#include "viertelLoch.h"
+#include "quarterHole.h"
 
 FMatrix woodtex_r,woodtex_g,woodtex_b;     // Matrix-Bilder, in die die Textur kommt
 
@@ -586,56 +586,56 @@ void Table::Init(GLint Texturgroesse) {
 		   L鯿her machen
 		   ------------- */
 
-		// unten links
+        // bottom left
 		glPushMatrix();
 		glTranslatef(-133.29,-69.79,0);
-		viertelLoch(widthx+1.3,widthy+1.3,4,4,.63,10,9.84,9.21,-133.29,-69.79,1,0,0,1); 
+        quarterHole(widthx+1.3,widthy+1.3,4,4,.63,10,9.84,9.21,-133.29,-69.79,1,0,0,1);
 		glPopMatrix();
 
-		// unten Mitte 
+        // bottom center
 		glPushMatrix();
 		glTranslatef(0,-71.75,0);
-		viertelLoch(widthx+0.01,widthy+3.26,4,4,.63,10,7.62,6.99,0,-71.75,1,0,0,1);
+        quarterHole(widthx+0.01,widthy+3.26,4,4,.63,10,7.62,6.99,0,-71.75,1,0,0,1);
 		glPopMatrix();
 
 		glPushMatrix();
 		glTranslatef(0,-71.75,0);
 		glRotatef(90,0,0,1);
-		viertelLoch(widthy+3.26,widthx+0.01,4,4,.63,10.2,7.62,6.99,0,-71.75,0,-1,1,0);
+        quarterHole(widthy+3.26,widthx+0.01,4,4,.63,10.2,7.62,6.99,0,-71.75,0,-1,1,0);
 		glPopMatrix();
 
-		//unten rechts   
+        //bottom right
 		glPushMatrix();
 		glTranslatef(133.29,-69.79,0); 
 		glRotatef(90,0,0,1);
-		viertelLoch(widthy+1.3,widthx+1.3,4,4,.63,10,9.84,9.21,133.29,-69.79,0,-1,-1,0); 
+        quarterHole(widthy+1.3,widthx+1.3,4,4,.63,10,9.84,9.21,133.29,-69.79,0,-1,-1,0);
 		glPopMatrix();
 
-		//oben rechts
+        //top right
 		glPushMatrix();
 		glTranslatef(133.29,69.79,0);
 		glRotatef(180,0,0,1);
-		viertelLoch(widthx+1.3,widthy+1.3,4,4,.63,10,9.84,9.21,133.29,69.79,-1,0,0,-1); 
+        quarterHole(widthx+1.3,widthy+1.3,4,4,.63,10,9.84,9.21,133.29,69.79,-1,0,0,-1);
 		glPopMatrix();
 
-		//oben Mitte
+        //top center
 		glPushMatrix();
 		glTranslatef(0,71.75,0);
 		glRotatef(180,0,0,1);
-		viertelLoch(widthx+0.1,widthy+3.26,4,4,.63,10,7.62,6.99,0,71.75,-1,0,0,-1); 
+        quarterHole(widthx+0.1,widthy+3.26,4,4,.63,10,7.62,6.99,0,71.75,-1,0,0,-1);
 		glPopMatrix();
 
 		glPushMatrix();
 		glTranslatef(0,71.75,0);
 		glRotatef(-90,0,0,1);
-		viertelLoch(widthy+3.26,widthx+0.1,4,4,.63,10,7.62,6.99,0,71.75,0,1,-1,0);
+        quarterHole(widthy+3.26,widthx+0.1,4,4,.63,10,7.62,6.99,0,71.75,0,1,-1,0);
 		glPopMatrix();
 
-		//oben links
+        //top left
 		glPushMatrix();
 		glTranslatef(-133.29,69.79,0); 
 		glRotatef(-90,0,0,1);
-		viertelLoch(widthy+1.3,widthx+1.3,4,4,.63,10,9.84,9.21,-133.29,69.79,0,1,-1,0); 
+        quarterHole(widthy+1.3,widthx+1.3,4,4,.63,10,9.84,9.21,-133.29,69.79,0,1,-1,0);
 		glPopMatrix();
 		glDisable(GL_TEXTURE_2D);
 
@@ -660,53 +660,53 @@ void Table::Init(GLint Texturgroesse) {
 		// unten links
 		glPushMatrix();
 		glTranslatef(-133.29,-69.79,0);
-		viertelLoch(widthx+1.3,widthy+1.3,4,4,.63,10,9.84,9.21); 
+        quarterHole(widthx+1.3,widthy+1.3,4,4,.63,10,9.84,9.21);
 		glPopMatrix();
 
 		// unten Mitte 
 		glPushMatrix();
 		glTranslatef(0,-71.75,0);
-		viertelLoch(widthx+0.01,widthy+3.26,4,4,.63,10,7.62,6.99);
+        quarterHole(widthx+0.01,widthy+3.26,4,4,.63,10,7.62,6.99);
 		glPopMatrix();
 
 		glPushMatrix();
 		glTranslatef(0,-71.75,0);
 		glRotatef(90,0,0,1);
-		viertelLoch(widthy+3.26,widthx+0.01,4,4,.63,10.2,7.62,6.99);
+        quarterHole(widthy+3.26,widthx+0.01,4,4,.63,10.2,7.62,6.99);
 		glPopMatrix();
 
 		//unten rechts   
 		glPushMatrix();
 		glTranslatef(133.29,-69.79,0); 
 		glRotatef(90,0,0,1);
-		viertelLoch(widthy+1.3,widthx+1.3,4,4,.63,10,9.84,9.21); 
+        quarterHole(widthy+1.3,widthx+1.3,4,4,.63,10,9.84,9.21);
 		glPopMatrix();
 
 		//oben rechts
 		glPushMatrix();
 		glTranslatef(133.29,69.79,0);
 		glRotatef(180,0,0,1);
-		viertelLoch(widthx+1.3,widthy+1.3,4,4,.63,10,9.84,9.21); 
+        quarterHole(widthx+1.3,widthy+1.3,4,4,.63,10,9.84,9.21);
 		glPopMatrix();
 
 		//oben Mitte
 		glPushMatrix();
 		glTranslatef(0,71.75,0);
 		glRotatef(180,0,0,1);
-		viertelLoch(widthx+0.1,widthy+3.26,4,4,.63,10,7.62,6.99); 
+        quarterHole(widthx+0.1,widthy+3.26,4,4,.63,10,7.62,6.99);
 		glPopMatrix();
 
 		glPushMatrix();
 		glTranslatef(0,71.75,0);
 		glRotatef(-90,0,0,1);
-		viertelLoch(widthy+3.26,widthx+0.1,4,4,.63,10,7.62,6.99);
+        quarterHole(widthy+3.26,widthx+0.1,4,4,.63,10,7.62,6.99);
 		glPopMatrix();
 
 		//oben links
 		glPushMatrix();
 		glTranslatef(-133.29,69.79,0); 
 		glRotatef(-90,0,0,1);
-		viertelLoch(widthy+1.3,widthx+1.3,4,4,.63,10,9.84,9.21); 
+        quarterHole(widthy+1.3,widthx+1.3,4,4,.63,10,9.84,9.21);
 		glPopMatrix();
 
 	}

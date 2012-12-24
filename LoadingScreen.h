@@ -3,7 +3,7 @@ void LSidle();
 
 extern GLint CurrentWindow, BallResolution,
 	   TextureSize, TableTextureSize, AmbientLighting, 
-	   TableLamps, GrueneLamp, Reflections, 
+	   TableLamps, GreenLamp, Reflections, 
        DisplayTextureSize, GameType,
 	   LoadingProgress;
 

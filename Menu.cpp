@@ -39,7 +39,7 @@
 Menu::Menu() {
     //
     for (GLint TextfeldNr=0; TextfeldNr < 1000 ; TextfeldNr++ ) {
-        TextfeldArray[TextfeldNr] = 0;
+        TextItemArray[TextfeldNr] = 0;
     }
 
     TDL=0;
@@ -52,8 +52,8 @@ void Menu::Update(GLint Faktor) {
     } else {
 
         AnimationsTime+=Faktor;
-        if (AnimationsTime>=ANIMATIONSDAUER) {
-            AnimationsTime=ANIMATIONSDAUER;
+        if (AnimationsTime>=ANIMATION_TIME) {
+            AnimationsTime=ANIMATION_TIME;
             InAnimation=0;
         }
 
@@ -62,8 +62,8 @@ void Menu::Update(GLint Faktor) {
         }
 
         for (GLint TextfeldNr=0;TextfeldNr<1000;TextfeldNr++) {
-            if( TextfeldArray[TextfeldNr] )
-                TextfeldArray[TextfeldNr]->Animiere(Faktor);
+            if( TextItemArray[TextfeldNr] )
+                TextItemArray[TextfeldNr]->Animiere(Faktor);
         }
 
     }
@@ -83,8 +83,8 @@ void Menu::draw()
     }
 
     for (GLint TextfeldNr=0;TextfeldNr<1000;TextfeldNr++) {
-        if( TextfeldArray[TextfeldNr] )
-            TextfeldArray[TextfeldNr]->male();
+        if( TextItemArray[TextfeldNr] )
+            TextItemArray[TextfeldNr]->draw();
     }
 
 }
@@ -98,7 +98,7 @@ void Menu::LoadLanguage(GLint Sprache)
     FILE *f;
     char dateiname[1000];
 #ifndef _WIN32
-    sprintf(dateiname,"%slang/%i.lang",PFAD,Sprache);
+    sprintf(dateiname,"%slang/%i.lang",PATH,Sprache);
     f=fopen(dateiname,"r");
 #endif
 #ifdef _WIN32
@@ -128,11 +128,11 @@ void Menu::LoadLanguage(GLint Sprache)
             wort[index+i]=0;
 
             if (temp[0]) {
-                if (TextfeldArray[nummer]) {
-                    TextfeldArray[nummer]->SetzeTextKDL(wort);
+                if (TextItemArray[nummer]) {
+                    TextItemArray[nummer]->SetTextKDL(wort);
                 } else {
-                    TextfeldArray[nummer] = new Textfeld();
-                    TextfeldArray[nummer]->InitialisiereKDL(TDL,wort);
+                    TextItemArray[nummer] = new TextItem();
+                    TextItemArray[nummer]->InitialisiereKDL(TDL,wort);
                 }
             }
         }
@@ -144,7 +144,7 @@ void Menu::Init(GLint Texturgroesse)
 {
 
     if (!TDL) {
-        TDL=dummyTextfeld.dummyInitialisiere(Texturgroesse);
+        TDL=dummyTextfeld.dummyInit(Texturgroesse);
         return;
     }
 
@@ -157,35 +157,35 @@ void Menu::Init(GLint Texturgroesse)
 
     //Tutorial-Texta auf Breite 31.2
     for (GLint tf=640 ; tf < 700 ; tf++ ) {
-        if (!TextfeldArray[tf]) continue;
-        TextfeldArray[tf]->SetzeMaxBreite(31.2);
+        if (!TextItemArray[tf]) continue;
+        TextItemArray[tf]->SetMaxWidth(31.2);
     }
 
     //Regeln-Text auf Breite 24
     for (GLint tf2=700 ; tf2 < 800 ; tf2++ ) {
-        if (!TextfeldArray[tf2]) continue;
-        TextfeldArray[tf2]->SetzeMaxBreite(26);
+        if (!TextItemArray[tf2]) continue;
+        TextItemArray[tf2]->SetMaxWidth(26);
     }
 
     //printf("\n\n Generating Menu Display Lists\n");
 
     for (GLint dl=0 ; dl < 1000 ; dl++ ) {
-        if (!TextfeldArray[dl]) continue;
-        TextfeldArray[dl]->GenerateDisplayList();
+        if (!TextItemArray[dl]) continue;
+        TextItemArray[dl]->GenerateDisplayList();
         //printf("."); fflush(stdout);
     }
 
     //printf("\n\n");
 
-    TextfeldArray[T_SPIELER1NAME]->SetzeText(Player1);
+    TextItemArray[T_SPIELER1NAME]->SetText(Player1);
 
-    TextfeldArray[T_SPIELER2NAME]->SetzeText(Player2);
+    TextItemArray[T_SPIELER2NAME]->SetText(Player2);
 
-    if (TextfeldArray[T_FPS])
-        TextfeldArray[T_FPS]->SetzeText("0 fps");
+    if (TextItemArray[T_FPS])
+        TextItemArray[T_FPS]->SetText("0 fps");
     else {
-        TextfeldArray[T_FPS] = new Textfeld();
-        TextfeldArray[T_FPS]->Initialisiere(TDL,"0 fps");
+        TextItemArray[T_FPS] = new TextItem();
+        TextItemArray[T_FPS]->Initialisiere(TDL,"0 fps");
     }
 
     SchildAnzahl=0;
@@ -238,7 +238,7 @@ void Menu::Init(GLint Texturgroesse)
     //SchildArray[SchildAnzahl++]=&GameStar;
 
 
-    if (!MenuState) {MenuState=STARTBILDSCHIRM;}
+    if (!MenuState) {MenuState=HOME_SCREEN;}
 
     NewMenuState();
     StarteAnimation();
@@ -261,23 +261,23 @@ GLint Menu::MouseClick(int Button,int Richtung,int x,int y){
 
     for (TextfeldNr=0 ; TextfeldNr<1000; TextfeldNr++) {
         if (Signal) break;
-        if (TextfeldArray[TextfeldNr])
-            Signal=TextfeldArray[TextfeldNr]->MouseButton(Button,Richtung,x,y);
+        if (TextItemArray[TextfeldNr])
+            Signal=TextItemArray[TextfeldNr]->MouseButton(Button,Richtung,x,y);
     }
 
     if (Signal>0) {
         SignalExecution(Signal);
     }
 
-    if (MenuState==STARTBILDSCHIRM &&
+    if (MenuState==HOME_SCREEN &&
             Richtung==GLUT_UP) {
         if (Language) setMenuState(MAIN_MENU);
-        else setMenuState(SPRACHAUSWAHL);
+        else setMenuState(LANGUAGE);
         return 1;
     }
 
     if (MenuGesperrt ||
-            MenuState!=SPIEL) {
+            MenuState!=PLAYING) {
         return 1;
     }
 
@@ -297,19 +297,19 @@ void Menu::setMenuState(GLint NeuerZustand) {
 void Menu::NewMenuState(){
 
     for (GLint SchildNr=0;SchildNr<SchildAnzahl;SchildNr++) {
-        SchildArray[SchildNr]->Desaktiviere();
+        SchildArray[SchildNr]->Disactive();
     }
 
     for (GLint TextfeldNr=0;TextfeldNr<1000;TextfeldNr++) {
-        if( TextfeldArray[TextfeldNr] )
-            TextfeldArray[TextfeldNr]->Desaktiviere();
+        if( TextItemArray[TextfeldNr] )
+            TextItemArray[TextfeldNr]->Desaktiviere();
     }
 
-    if (ShowFPS) TextfeldArray[T_FPS]->Positioniere(0,11.7,.3,A_LINKS);
+    if (ShowFPS) TextItemArray[T_FPS]->Positioniere(0,11.7,.3,A_LINKS);
 
     switch (MenuState) {
 
-    case STARTBILDSCHIRM: {
+    case HOME_SCREEN: {
 
         //GameStar.Positioniere(6,5,10,6);
         //GameStar.Positioniere(6,5,10,6);
@@ -322,37 +322,37 @@ void Menu::NewMenuState(){
         //TextfeldArray[791]->Positioniere(10.2,5,1,A_LINKS);
         //TextfeldArray[791]->Positioniere(10.2,5,1,A_LINKS);
 
-        TextfeldArray[T_NAMEN1]->Positioniere(8,1.4,.5,A_MITTE);
-        TextfeldArray[T_NAMEN2]->Positioniere(8,1.0,.5,A_MITTE);
-        TextfeldArray[T_NOWARRANTY]->Positioniere(8,0,.5,A_MITTE);
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_NAMEN1]->Positioniere(8,1.4,.5,A_MITTE);
+        TextItemArray[T_NAMEN2]->Positioniere(8,1.0,.5,A_MITTE);
+        TextItemArray[T_NOWARRANTY]->Positioniere(8,0,.5,A_MITTE);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
 
     } break;
 
-    case SPRACHAUSWAHL: {
+    case LANGUAGE: {
 
         MenuBackground.Positioning(2,2.5,14,8.5);
         logo.Positioning(5,9,11,11);
-        logo.VollSichtbar();
+        logo.FullyVisible();
 
-        TextfeldArray[T_SPRACHAUSWAHL]->Positioniere(8,8,1,A_MITTE);
-        TextfeldArray[T_SPRACHAUSWAHL]->VollSichtbar();
+        TextItemArray[T_SPRACHAUSWAHL]->Positioniere(8,8,1,A_MITTE);
+        TextItemArray[T_SPRACHAUSWAHL]->VollSichtbar();
         GLfloat Pos_y=7;
         for (GLint TextfeldNr=900;TextfeldNr<1000;TextfeldNr++) {
-            if ( TextfeldArray[TextfeldNr] ) {
-                TextfeldArray[TextfeldNr]->Positioniere(8,Pos_y,.71,A_MITTE);
-                TextfeldArray[TextfeldNr]->SetzeSignal(TextfeldNr);
+            if ( TextItemArray[TextfeldNr] ) {
+                TextItemArray[TextfeldNr]->Positioniere(8,Pos_y,.71,A_MITTE);
+                TextItemArray[TextfeldNr]->SetzeSignal(TextfeldNr);
                 Pos_y-=.5;
             }
         }
 
         if (Language) {
-            TextfeldArray[T_ZURUECK]->Positioniere(8,1,1,A_MITTE);
-            TextfeldArray[T_ZURUECK]->SetzeSignal(S_HM_EINSTELLUNGEN);
+            TextItemArray[T_BACK]->Positioniere(8,1,1,A_MITTE);
+            TextItemArray[T_BACK]->SetzeSignal(S_MAINMENU_SETUP_);
         }
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
     } break;
 
     case MAIN_MENU: {
@@ -360,29 +360,29 @@ void Menu::NewMenuState(){
         MenuBackground.Positioning(2,2.5,14,8.5);
 
         logo.Positioning(5,9,11,11);
-        logo.VollSichtbar();
+        logo.FullyVisible();
         logo.SetSignal(S_LOGO);
 
-        TextfeldArray[T_HAUPTMENU]->Positioniere(8,8,1,A_MITTE);
-        TextfeldArray[T_HAUPTMENU]->VollSichtbar();
+        TextItemArray[T_MAIN_MENU]->Positioniere(8,8,1,A_MITTE);
+        TextItemArray[T_MAIN_MENU]->VollSichtbar();
 
-        TextfeldArray[T_TRAINING]->Positioniere(5.5,6,1,A_MITTE);
-        TextfeldArray[T_TRAINING]->SetzeSignal(S_HM_TRAINING);
+        TextItemArray[T_TRAINING]->Positioniere(5.5,6,1,A_MITTE);
+        TextItemArray[T_TRAINING]->SetzeSignal(S_MAINMENU_TRAINING);
 
-        TextfeldArray[T_ZWEISPIELER]->Positioniere(10.5,6,1,A_MITTE);
-        TextfeldArray[T_ZWEISPIELER]->SetzeSignal(S_HM_ZWEISPIELER);
+        TextItemArray[T_TWO_PLAYERS]->Positioniere(10.5,6,1,A_MITTE);
+        TextItemArray[T_TWO_PLAYERS]->SetzeSignal(S_MAINMENU_TWO_PLAYERS);
 
-        TextfeldArray[T_HILFE]->Positioniere(5.5,4,1,A_MITTE);
-        TextfeldArray[T_HILFE]->SetzeSignal(S_HM_HILFE);
+        TextItemArray[T_HELP_]->Positioniere(5.5,4,1,A_MITTE);
+        TextItemArray[T_HELP_]->SetzeSignal(S_MAINMENU_HELP);
 
-        TextfeldArray[T_EINSTELLUNGEN]->Positioniere(10.5,4,1,A_MITTE);
-        TextfeldArray[T_EINSTELLUNGEN]->SetzeSignal(S_HM_EINSTELLUNGEN);
+        TextItemArray[T_SETUP_]->Positioniere(10.5,4,1,A_MITTE);
+        TextItemArray[T_SETUP_]->SetzeSignal(S_MAINMENU_SETUP_);
 
-        TextfeldArray[T_BEENDEN]->Positioniere(8,1,1,A_MITTE);
-        TextfeldArray[T_BEENDEN]->SetzeSignal(S_HM_BEENDEN);
+        TextItemArray[T_EXIT]->Positioniere(8,1,1,A_MITTE);
+        TextItemArray[T_EXIT]->SetzeSignal(S_MAINMENU_EXIT);
 
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
     } break;
 
     case TRAINING: {
@@ -390,809 +390,809 @@ void Menu::NewMenuState(){
         MenuBackground.Positioning(4,5,12,8.5);
 
         logo.Positioning(4,9,12,11);
-        logo.VollSichtbar();
+        logo.FullyVisible();
 
-        TextfeldArray[T_TRAINING]->Positioniere(8,8,1,A_MITTE);
-        TextfeldArray[T_TRAINING]->VollSichtbar();
+        TextItemArray[T_TRAINING]->Positioniere(8,8,1,A_MITTE);
+        TextItemArray[T_TRAINING]->VollSichtbar();
 
-        TextfeldArray[T_EIGHT_BALL]->Positioniere(6.5,6,1,A_MITTE);
-        TextfeldArray[T_EIGHT_BALL]->SetzeSignal(S_TR_EIGHT_BALL);
+        TextItemArray[T_EIGHT_BALL]->Positioniere(6.5,6,1,A_MITTE);
+        TextItemArray[T_EIGHT_BALL]->SetzeSignal(S_TR_EIGHT_BALL);
 
-        TextfeldArray[T_NEUNBALL]->Positioniere(9.5,6,1,A_MITTE);
-        TextfeldArray[T_NEUNBALL]->SetzeSignal(S_TR_NEUNBALL);
+        TextItemArray[T_NINE_BALL]->Positioniere(9.5,6,1,A_MITTE);
+        TextItemArray[T_NINE_BALL]->SetzeSignal(S_TR_NINE_BALL);
 
-        TextfeldArray[T_ZURUECK]->Positioniere(8,1,1,A_MITTE);
-        TextfeldArray[T_ZURUECK]->SetzeSignal(S_TR_ZURUECK);
+        TextItemArray[T_BACK]->Positioniere(8,1,1,A_MITTE);
+        TextItemArray[T_BACK]->SetzeSignal(S_TR_BACK);
 
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
     } break;
 
     case TWO_PLAYERS: {
         MenuBackground.Positioning(3,2.5,13,8.5);
         logo.Positioning(4,9,12,11);
-        logo.VollSichtbar();
-        TextfeldArray[T_ZWEISPIELER]->Positioniere(8,8,1,A_MITTE);
-        TextfeldArray[T_ZWEISPIELER]->VollSichtbar();
-        TextfeldArray[T_SPIELER1]->Positioniere(8,6,1,A_RECHTS);
-        TextfeldArray[T_SPIELER1]->SetzeSignal(S_SPIELER1HERHOEREN);
-        TextfeldArray[T_SPIELER1NAME]->Positioniere(8.2,6,1,A_LINKS);
-        TextfeldArray[T_SPIELER1NAME]->SetzeSignal(S_SPIELER1HERHOEREN);
-        TextfeldArray[T_SPIELER2]->Positioniere(8,5,1,A_RECHTS);
-        TextfeldArray[T_SPIELER2]->SetzeSignal(S_SPIELER2HERHOEREN);
-        TextfeldArray[T_SPIELER2NAME]->Positioniere(8.2,5,1,A_LINKS);
-        TextfeldArray[T_SPIELER2NAME]->SetzeSignal(S_SPIELER2HERHOEREN);
-        TextfeldArray[T_EIGHT_BALL]->Positioniere(5,3,1,A_MITTE);
-        TextfeldArray[T_EIGHT_BALL]->SetzeSignal(S_ZW_EIGHT_BALL);
-        TextfeldArray[T_NEUNBALL]->Positioniere(11,3,1,A_MITTE);
-        TextfeldArray[T_NEUNBALL]->SetzeSignal(S_ZW_NEUNBALL);
-        TextfeldArray[T_ZURUECK]->Positioniere(8,1,1,A_MITTE);
-        TextfeldArray[T_ZURUECK]->SetzeSignal(S_ZW_ZURUECK);
+        logo.FullyVisible();
+        TextItemArray[T_TWO_PLAYERS]->Positioniere(8,8,1,A_MITTE);
+        TextItemArray[T_TWO_PLAYERS]->VollSichtbar();
+        TextItemArray[T_SPIELER1]->Positioniere(8,6,1,A_RECHTS);
+        TextItemArray[T_SPIELER1]->SetzeSignal(S_SPIELER1HERHOEREN);
+        TextItemArray[T_SPIELER1NAME]->Positioniere(8.2,6,1,A_LINKS);
+        TextItemArray[T_SPIELER1NAME]->SetzeSignal(S_SPIELER1HERHOEREN);
+        TextItemArray[T_SPIELER2]->Positioniere(8,5,1,A_RECHTS);
+        TextItemArray[T_SPIELER2]->SetzeSignal(S_SPIELER2HERHOEREN);
+        TextItemArray[T_SPIELER2NAME]->Positioniere(8.2,5,1,A_LINKS);
+        TextItemArray[T_SPIELER2NAME]->SetzeSignal(S_SPIELER2HERHOEREN);
+        TextItemArray[T_EIGHT_BALL]->Positioniere(5,3,1,A_MITTE);
+        TextItemArray[T_EIGHT_BALL]->SetzeSignal(S_ZW_EIGHT_BALL);
+        TextItemArray[T_NINE_BALL]->Positioniere(11,3,1,A_MITTE);
+        TextItemArray[T_NINE_BALL]->SetzeSignal(S_ZW_NINE_BALL);
+        TextItemArray[T_BACK]->Positioniere(8,1,1,A_MITTE);
+        TextItemArray[T_BACK]->SetzeSignal(S_ZW_BACK);
 
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
     } break;
 
-    case SETTINGS: {
+    case SETUP: {
         MenuBackground.Positioning(4,2.5,12,8.5);
         logo.Positioning(4,9,12,11);
-        logo.VollSichtbar();
-        TextfeldArray[T_EINSTELLUNGEN]->Positioniere(8,8,1,A_MITTE);
-        TextfeldArray[T_EINSTELLUNGEN]->VollSichtbar();
-        TextfeldArray[T_STEUERUNG]->Positioniere(8,6.5,1,A_MITTE);
-        TextfeldArray[T_STEUERUNG]->SetzeSignal(S_EI_STEUERUNG);
-        TextfeldArray[T_GRAFIK]->Positioniere(8,5.5,1,A_MITTE);
-        TextfeldArray[T_GRAFIK]->SetzeSignal(S_EI_GRAFIK);
-        TextfeldArray[T_AUDIO]->Positioniere(8,4.5,1,A_MITTE);
-        TextfeldArray[T_SPRACHE]->Positioniere(8,3.5,1,A_MITTE);
-        TextfeldArray[T_SPRACHE]->SetzeSignal(S_EI_SPRACHE);
-        TextfeldArray[T_ZURUECK]->Positioniere(8,1,1,A_MITTE);
+        logo.FullyVisible();
+        TextItemArray[T_SETUP_]->Positioniere(8,8,1,A_MITTE);
+        TextItemArray[T_SETUP_]->VollSichtbar();
+        TextItemArray[T_CONTROL]->Positioniere(8,6.5,1,A_MITTE);
+        TextItemArray[T_CONTROL]->SetzeSignal(S_SETUP_CONTROL);
+        TextItemArray[T_VIDEO]->Positioniere(8,5.5,1,A_MITTE);
+        TextItemArray[T_VIDEO]->SetzeSignal(S_SETUP_VIDEO);
+        TextItemArray[T_AUDIO]->Positioniere(8,4.5,1,A_MITTE);
+        TextItemArray[T_LANGUAGE]->Positioniere(8,3.5,1,A_MITTE);
+        TextItemArray[T_LANGUAGE]->SetzeSignal(S_SETUP_LANGUAGE);
+        TextItemArray[T_BACK]->Positioniere(8,1,1,A_MITTE);
         if (AusSpiel) {
-            TextfeldArray[T_ZURUECK]->SetzeSignal(S_EI_ZURUECK_AS);
+            TextItemArray[T_BACK]->SetzeSignal(S_SETUP_BACK_AS);
         } else {
-            TextfeldArray[T_ZURUECK]->SetzeSignal(S_EI_ZURUECK);
+            TextItemArray[T_BACK]->SetzeSignal(S_SETUP_BACK);
         }
 
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
 
     } break;
 
-    case EINSTELLUNGENSTEUERUNG: {
+    case SETUP_CONTROL: {
         MenuBackground.Positioning(2,3.5,14,8.5);
         logo.Positioning(4,9,12,11);
-        logo.VollSichtbar();
-        TextfeldArray[T_EINSTELLUNGEN]->Positioniere(4,8,1,A_LINKS);
-        TextfeldArray[T_EINSTELLUNGEN]->VollSichtbar();
-        TextfeldArray[T_STEUERUNG]->Positioniere(12,8,1,A_RECHTS);
-        TextfeldArray[T_STEUERUNG]->VollSichtbar();
+        logo.FullyVisible();
+        TextItemArray[T_SETUP_]->Positioniere(4,8,1,A_LINKS);
+        TextItemArray[T_SETUP_]->VollSichtbar();
+        TextItemArray[T_CONTROL]->Positioniere(12,8,1,A_RECHTS);
+        TextItemArray[T_CONTROL]->VollSichtbar();
 
-        TextfeldArray[T_MAUSGESCHWINDIGKEIT]->Positioniere(8,6,.71,A_RECHTS);
-        TextfeldArray[T_MAUSGESCHWINDIGKEIT]->SetzeSignal(S_EI_MOUSESPEED);
-        TextfeldArray[T_XACHSEINVERTIERT]->Positioniere(8,5.5,.71,A_RECHTS);
-        TextfeldArray[T_XACHSEINVERTIERT]->SetzeSignal(S_EI_XINVERT);
-        TextfeldArray[T_YACHSEINVERTIERT]->Positioniere(8,5,.71,A_RECHTS);
-        TextfeldArray[T_YACHSEINVERTIERT]->SetzeSignal(S_EI_YINVERT);
+        TextItemArray[T_MAUSGESCHWINDIGKEIT]->Positioniere(8,6,.71,A_RECHTS);
+        TextItemArray[T_MAUSGESCHWINDIGKEIT]->SetzeSignal(S_SETUP_MOUSESPEED);
+        TextItemArray[T_XACHSEINVERTIERT]->Positioniere(8,5.5,.71,A_RECHTS);
+        TextItemArray[T_XACHSEINVERTIERT]->SetzeSignal(S_SETUP_XINVERT);
+        TextItemArray[T_YACHSEINVERTIERT]->Positioniere(8,5,.71,A_RECHTS);
+        TextItemArray[T_YACHSEINVERTIERT]->SetzeSignal(S_SETUP_YINVERT);
 
         if (E_InvertX) {
-            TextfeldArray[T_X_AN]->Positioniere(8.2,5.5,.71,A_LINKS);
-            TextfeldArray[T_X_AN]->SetzeSignal(S_EI_XINVERT);
+            TextItemArray[T_X_AN]->Positioniere(8.2,5.5,.71,A_LINKS);
+            TextItemArray[T_X_AN]->SetzeSignal(S_SETUP_XINVERT);
         } else {
-            TextfeldArray[T_X_AUS]->Positioniere(8.2,5.5,.71,A_LINKS);
-            TextfeldArray[T_X_AUS]->SetzeSignal(S_EI_XINVERT);
+            TextItemArray[T_X_AUS]->Positioniere(8.2,5.5,.71,A_LINKS);
+            TextItemArray[T_X_AUS]->SetzeSignal(S_SETUP_XINVERT);
         }
         if (E_InvertY) {
-            TextfeldArray[T_Y_AN]->Positioniere(8.2,5,.71,A_LINKS);
-            TextfeldArray[T_Y_AN]->SetzeSignal(S_EI_YINVERT);
+            TextItemArray[T_Y_AN]->Positioniere(8.2,5,.71,A_LINKS);
+            TextItemArray[T_Y_AN]->SetzeSignal(S_SETUP_YINVERT);
         } else {
-            TextfeldArray[T_Y_AUS]->Positioniere(8.2,5,.71,A_LINKS);
-            TextfeldArray[T_Y_AUS]->SetzeSignal(S_EI_YINVERT);
+            TextItemArray[T_Y_AUS]->Positioniere(8.2,5,.71,A_LINKS);
+            TextItemArray[T_Y_AUS]->SetzeSignal(S_SETUP_YINVERT);
         }
         if (E_MouseSpeed<=.293) {
-            TextfeldArray[T_MG_LANGSAM]->Positioniere(8.2,6,.71,A_LINKS);
-            TextfeldArray[T_MG_LANGSAM]->SetzeSignal(S_EI_MOUSESPEED);
+            TextItemArray[T_MG_LANGSAM]->Positioniere(8.2,6,.71,A_LINKS);
+            TextItemArray[T_MG_LANGSAM]->SetzeSignal(S_SETUP_MOUSESPEED);
         } else if (E_MouseSpeed<=.41) {
-            TextfeldArray[T_MG_NORMAL]->Positioniere(8.2,6,.71,A_LINKS);
-            TextfeldArray[T_MG_NORMAL]->SetzeSignal(S_EI_MOUSESPEED);
+            TextItemArray[T_MG_NORMAL]->Positioniere(8.2,6,.71,A_LINKS);
+            TextItemArray[T_MG_NORMAL]->SetzeSignal(S_SETUP_MOUSESPEED);
         } else if (E_MouseSpeed<=.575) {
-            TextfeldArray[T_MG_SCHNELL]->Positioniere(8.2,6,.71,A_LINKS);
-            TextfeldArray[T_MG_SCHNELL]->SetzeSignal(S_EI_MOUSESPEED);
+            TextItemArray[T_MG_SCHNELL]->Positioniere(8.2,6,.71,A_LINKS);
+            TextItemArray[T_MG_SCHNELL]->SetzeSignal(S_SETUP_MOUSESPEED);
         } else {
-            TextfeldArray[T_MG_SEHRSCHNELL]->Positioniere(8.2,6,.71,A_LINKS);
-            TextfeldArray[T_MG_SEHRSCHNELL]->SetzeSignal(S_EI_MOUSESPEED);
+            TextItemArray[T_MG_SEHRSCHNELL]->Positioniere(8.2,6,.71,A_LINKS);
+            TextItemArray[T_MG_SEHRSCHNELL]->SetzeSignal(S_SETUP_MOUSESPEED);
         }
         if( E_MouseSpeed==MouseSpeed &&
                 E_InvertX==InvertX &&
                 E_InvertY==InvertY) {
-            TextfeldArray[T_ZURUECK]->Positioniere(8,1,1,A_MITTE);
-            TextfeldArray[T_ZURUECK]->SetzeSignal(S_EI_STEUERUNGZURUECK);
+            TextItemArray[T_BACK]->Positioniere(8,1,1,A_MITTE);
+            TextItemArray[T_BACK]->SetzeSignal(S_SETUP_CONTROLBACK);
         } else {
-            TextfeldArray[T_UEBERNEHMEN]->Positioniere(12,1,1,A_RECHTS);
-            TextfeldArray[T_UEBERNEHMEN]->SetzeSignal(S_EI_STEUERUNGUEBERNEHMEN);
-            TextfeldArray[T_ABBRECHEN]->Positioniere(4,1,1,A_LINKS);
-            TextfeldArray[T_ABBRECHEN]->SetzeSignal(S_EI_STEUERUNGZURUECK);
+            TextItemArray[T_UEBERNEHMEN]->Positioniere(12,1,1,A_RECHTS);
+            TextItemArray[T_UEBERNEHMEN]->SetzeSignal(S_SETUP_CONTROLUEBERNEHMEN);
+            TextItemArray[T_ABBRECHEN]->Positioniere(4,1,1,A_LINKS);
+            TextItemArray[T_ABBRECHEN]->SetzeSignal(S_SETUP_CONTROLBACK);
         }
 
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
     } break;
 
-    case EINSTELLUNGENGRAFIK: {
+    case SETUP_VIDEO: {
         if (E_KugelAufloesung==3 &&
-                E_Texturgroesse==8 &&
-                E_TischTexturgroesse==0 &&
+                E_BallTextureSize==8 &&
+                E_TableTextureSize==0 &&
                 E_AnzeigeTexturgroesse==2 &&
-                E_Reflektionen==0 &&
-                E_BildschirmAufloesung==640 &&
-                E_Farbtiefe==16 &&
-                E_Schatten==0 &&
-                E_TischLampen==1 &&
+                E_Reflection==0 &&
+                E_ScreenResolution==640 &&
+                E_ColorDepth==16 &&
+                E_Shadows==0 &&
+                E_TableLampes==1 &&
                 E_TexMMM==0 &&
-                E_GrueneLampe==0) {Qualitaet=1;}
+                E_GreenLampe==0) {Quality=1;}
         else if (E_KugelAufloesung==5 &&
-                 E_Texturgroesse==4 &&
-                 E_TischTexturgroesse==4 &&
+                 E_BallTextureSize==4 &&
+                 E_TableTextureSize==4 &&
                  E_AnzeigeTexturgroesse==2 &&
-                 E_Reflektionen==0 &&
-                 E_BildschirmAufloesung==640 &&
-                 E_Farbtiefe==16 &&
-                 E_Schatten==1 &&
-                 E_TischLampen==1 &&
+                 E_Reflection==0 &&
+                 E_ScreenResolution==640 &&
+                 E_ColorDepth==16 &&
+                 E_Shadows==1 &&
+                 E_TableLampes==1 &&
                  E_TexMMM==2 &&
-                 E_GrueneLampe==0) {Qualitaet=2;}
+                 E_GreenLampe==0) {Quality=2;}
         else if (E_KugelAufloesung==7 &&
-                 E_Texturgroesse==2 &&
-                 E_TischTexturgroesse==2 &&
+                 E_BallTextureSize==2 &&
+                 E_TableTextureSize==2 &&
                  E_AnzeigeTexturgroesse==1 &&
-                 E_Reflektionen==0 &&
-                 E_BildschirmAufloesung==800 &&
-                 E_Farbtiefe==16 &&
-                 E_Schatten==1 &&
-                 E_TischLampen==2 &&
+                 E_Reflection==0 &&
+                 E_ScreenResolution==800 &&
+                 E_ColorDepth==16 &&
+                 E_Shadows==1 &&
+                 E_TableLampes==2 &&
                  E_TexMMM==3 &&
-                 E_GrueneLampe==0) {Qualitaet=3;}
+                 E_GreenLampe==0) {Quality=3;}
         else if (E_KugelAufloesung==7 &&
-                 E_Texturgroesse==2 &&
-                 E_TischTexturgroesse==1 &&
+                 E_BallTextureSize==2 &&
+                 E_TableTextureSize==1 &&
                  E_AnzeigeTexturgroesse==1 &&
-                 E_Reflektionen==1 &&
-                 E_BildschirmAufloesung==1024 &&
-                 E_Farbtiefe==16 &&
-                 E_Schatten==1 &&
-                 E_TischLampen==2 &&
+                 E_Reflection==1 &&
+                 E_ScreenResolution==1024 &&
+                 E_ColorDepth==16 &&
+                 E_Shadows==1 &&
+                 E_TableLampes==2 &&
                  E_TexMMM==7 &&
-                 E_GrueneLampe==1) {Qualitaet=4;}
+                 E_GreenLampe==1) {Quality=4;}
         else if (E_KugelAufloesung==11 &&
-                 E_Texturgroesse==1 &&
-                 E_TischTexturgroesse==1 &&
+                 E_BallTextureSize==1 &&
+                 E_TableTextureSize==1 &&
                  E_AnzeigeTexturgroesse==1 &&
-                 E_Reflektionen==1 &&
-                 E_BildschirmAufloesung==1024 &&
-                 E_Farbtiefe==32 &&
-                 E_Schatten==1 &&
-                 E_TischLampen==3 &&
+                 E_Reflection==1 &&
+                 E_ScreenResolution==1024 &&
+                 E_ColorDepth==32 &&
+                 E_Shadows==1 &&
+                 E_TableLampes==3 &&
                  E_TexMMM==7 &&
-                 E_GrueneLampe==1) {Qualitaet=5;}
-        else Qualitaet=0;
+                 E_GreenLampe==1) {Quality=5;}
+        else Quality=0;
 
         MenuBackground.Positioning(2,1.7,14,8.5);
         logo.Positioning(4,9,12,11);
-        logo.VollSichtbar();
-        TextfeldArray[T_EINSTELLUNGEN]->Positioniere(4,8,1,A_LINKS);
-        TextfeldArray[T_EINSTELLUNGEN]->VollSichtbar();
-        TextfeldArray[T_GRAFIK]->Positioniere(12,8,1,A_RECHTS);
-        TextfeldArray[T_GRAFIK]->VollSichtbar();
+        logo.FullyVisible();
+        TextItemArray[T_SETUP_]->Positioniere(4,8,1,A_LINKS);
+        TextItemArray[T_SETUP_]->VollSichtbar();
+        TextItemArray[T_VIDEO]->Positioniere(12,8,1,A_RECHTS);
+        TextItemArray[T_VIDEO]->VollSichtbar();
 
-        TextfeldArray[T_QUALITAET]->Positioniere(8,7,1,A_RECHTS);
-        TextfeldArray[T_QUALITAET]->SetzeSignal(S_EI_QUALITAET);
+        TextItemArray[T_QUALITAET]->Positioniere(8,7,1,A_RECHTS);
+        TextItemArray[T_QUALITAET]->SetzeSignal(S_SETUP_QUALITAET);
 
-        TextfeldArray[T_BALLGEOMETRIE]->Positioniere(8,6.5,.6,A_RECHTS);
-        TextfeldArray[T_BALLGEOMETRIE]->SetzeSignal(S_EI_BALLGEOMETRIE);
-        TextfeldArray[T_BALLTEXTUREN]->Positioniere(8,6.1,.6,A_RECHTS);
-        TextfeldArray[T_BALLTEXTUREN]->SetzeSignal(S_EI_BALLTEXTUREN);
-        TextfeldArray[T_TISCHTEXTUREN]->Positioniere(8,5.7,.6,A_RECHTS);
-        TextfeldArray[T_TISCHTEXTUREN]->SetzeSignal(S_EI_TISCHTEXTUREN);
-        TextfeldArray[T_MENUTEXTUREN]->Positioniere(8,5.3,.6,A_RECHTS);
-        TextfeldArray[T_MENUTEXTUREN]->SetzeSignal(S_EI_ANZEIGETEXTUREN);
-        TextfeldArray[T_REFLEKTIONEN]->Positioniere(8,4.9,.6,A_RECHTS);
-        TextfeldArray[T_REFLEKTIONEN]->SetzeSignal(S_EI_REFLEKTIONEN);
-        TextfeldArray[T_AUFLOESUNG]->Positioniere(8,4.5,.6,A_RECHTS);
-        TextfeldArray[T_AUFLOESUNG]->SetzeSignal(S_EI_AUFLOESUNG);
-        TextfeldArray[T_FARBTIEFE]->Positioniere(8,4.1,.6,A_RECHTS);
-        TextfeldArray[T_FARBTIEFE]->SetzeSignal(S_EI_FARBTIEFE);
-        TextfeldArray[T_SCHATTEN]->Positioniere(8,3.7,.6,A_RECHTS);
-        TextfeldArray[T_SCHATTEN]->SetzeSignal(S_EI_SCHATTEN);
-        TextfeldArray[T_TEXTURINTERPOLATION]->Positioniere(8,3.3,.6,A_RECHTS);
-        TextfeldArray[T_TEXTURINTERPOLATION]->SetzeSignal(S_EI_TEXTURINTERPOLATION);
-        //TextfeldArray[T_AMBIENTESLICHT]->Positioniere(8,2.9,.6,A_RECHTS);
-        //TextfeldArray[T_AMBIENTESLICHT]->SetzeSignal(S_EI_AMBIENTESLICHT);
-        TextfeldArray[T_TISCHLAMPEN]->Positioniere(8,2.9,.6,A_RECHTS);
-        TextfeldArray[T_TISCHLAMPEN]->SetzeSignal(S_EI_TISCHLAMPEN);
-        TextfeldArray[T_TISCHCOLORBLEEDING]->Positioniere(8,2.5,.6,A_RECHTS);
-        TextfeldArray[T_TISCHCOLORBLEEDING]->SetzeSignal(S_EI_GRUENELAMPE);
-        TextfeldArray[T_FRAMERATE]->Positioniere(8,2.1,.6,A_RECHTS);
-        TextfeldArray[T_FRAMERATE]->SetzeSignal(S_EI_FPS);
+        TextItemArray[T_BALLGEOMETRIE]->Positioniere(8,6.5,.6,A_RECHTS);
+        TextItemArray[T_BALLGEOMETRIE]->SetzeSignal(S_SETUP_BALLGEOMETRIE);
+        TextItemArray[T_BALLTEXTURES]->Positioniere(8,6.1,.6,A_RECHTS);
+        TextItemArray[T_BALLTEXTURES]->SetzeSignal(S_SETUP_BALLTEXTURES);
+        TextItemArray[T_TABLE_TEXTURES]->Positioniere(8,5.7,.6,A_RECHTS);
+        TextItemArray[T_TABLE_TEXTURES]->SetzeSignal(S_SETUP_TABLE_TEXTURES);
+        TextItemArray[T_MENUTEXTURES]->Positioniere(8,5.3,.6,A_RECHTS);
+        TextItemArray[T_MENUTEXTURES]->SetzeSignal(S_SETUP_ANZEIGETEXTURES);
+        TextItemArray[T_REFLEKTIONEN]->Positioniere(8,4.9,.6,A_RECHTS);
+        TextItemArray[T_REFLEKTIONEN]->SetzeSignal(S_SETUP_REFLEKTIONEN);
+        TextItemArray[T_RESOLUTION]->Positioniere(8,4.5,.6,A_RECHTS);
+        TextItemArray[T_RESOLUTION]->SetzeSignal(S_SETUP_RESOLUTION);
+        TextItemArray[T_COLOR_DEPTH]->Positioniere(8,4.1,.6,A_RECHTS);
+        TextItemArray[T_COLOR_DEPTH]->SetzeSignal(S_SETUP_COLOR_DEPTH);
+        TextItemArray[T_SHADOWS]->Positioniere(8,3.7,.6,A_RECHTS);
+        TextItemArray[T_SHADOWS]->SetzeSignal(S_SETUP_SHADOWS);
+        TextItemArray[T_TEXTURINTERPOLATION]->Positioniere(8,3.3,.6,A_RECHTS);
+        TextItemArray[T_TEXTURINTERPOLATION]->SetzeSignal(S_SETUP_TEXTURINTERPOLATION);
+        //TextfeldArray[T_AMBIENCE_LIGHTING]->Positioniere(8,2.9,.6,A_RECHTS);
+        //TextfeldArray[T_AMBIENCE_LIGHTING]->SetzeSignal(S_SETUP_AMBIENCE_LIGHTING);
+        TextItemArray[T_TABLE_LAMPEN]->Positioniere(8,2.9,.6,A_RECHTS);
+        TextItemArray[T_TABLE_LAMPEN]->SetzeSignal(S_SETUP_TABLE_LAMPEN);
+        TextItemArray[T_TABLE_COLORBLEEDING]->Positioniere(8,2.5,.6,A_RECHTS);
+        TextItemArray[T_TABLE_COLORBLEEDING]->SetzeSignal(S_SETUP_GRUENELAMPE);
+        TextItemArray[T_FRAMERATE]->Positioniere(8,2.1,.6,A_RECHTS);
+        TextItemArray[T_FRAMERATE]->SetzeSignal(S_SETUP_FPS);
 
         //switch (E_AmbientesLicht) {
         //case 1: {
-        //  TextfeldArray[T_AMBIENTESLICHTEIN]->Positioniere(8.2,2.9,.6,A_LINKS);
-        //  TextfeldArray[T_AMBIENTESLICHTEIN]->SetzeSignal(S_EI_AMBIENTESLICHT);
+        //  TextfeldArray[T_AMBIENCE_LIGHTINGEIN]->Positioniere(8.2,2.9,.6,A_LINKS);
+        //  TextfeldArray[T_AMBIENCE_LIGHTINGEIN]->SetzeSignal(S_SETUP_AMBIENCE_LIGHTING);
         //} break;
         //case 0: {
-        //  TextfeldArray[T_AMBIENTESLICHTAUS]->Positioniere(8.2,2.9,.6,A_LINKS);
-        //  TextfeldArray[T_AMBIENTESLICHTAUS]->SetzeSignal(S_EI_AMBIENTESLICHT);
+        //  TextfeldArray[T_AMBIENCE_LIGHTINGAUS]->Positioniere(8.2,2.9,.6,A_LINKS);
+        //  TextfeldArray[T_AMBIENCE_LIGHTINGAUS]->SetzeSignal(S_SETUP_AMBIENCE_LIGHTING);
         //} break;
         //}
 
-        switch (E_TischLampen) {
+        switch (E_TableLampes) {
         case 1: {
-            TextfeldArray[T_TISCHLAMPEN1]->Positioniere(8.2,2.9,.6,A_LINKS);
-            TextfeldArray[T_TISCHLAMPEN1]->SetzeSignal(S_EI_TISCHLAMPEN);
+            TextItemArray[T_TABLE_LAMPEN1]->Positioniere(8.2,2.9,.6,A_LINKS);
+            TextItemArray[T_TABLE_LAMPEN1]->SetzeSignal(S_SETUP_TABLE_LAMPEN);
         } break;
         case 2: {
-            TextfeldArray[T_TISCHLAMPEN2]->Positioniere(8.2,2.9,.6,A_LINKS);
-            TextfeldArray[T_TISCHLAMPEN2]->SetzeSignal(S_EI_TISCHLAMPEN);
+            TextItemArray[T_TABLE_LAMPEN2]->Positioniere(8.2,2.9,.6,A_LINKS);
+            TextItemArray[T_TABLE_LAMPEN2]->SetzeSignal(S_SETUP_TABLE_LAMPEN);
         } break;
         case 3: {
-            TextfeldArray[T_TISCHLAMPEN3]->Positioniere(8.2,2.9,.6,A_LINKS);
-            TextfeldArray[T_TISCHLAMPEN3]->SetzeSignal(S_EI_TISCHLAMPEN);
+            TextItemArray[T_TABLE_LAMPEN3]->Positioniere(8.2,2.9,.6,A_LINKS);
+            TextItemArray[T_TABLE_LAMPEN3]->SetzeSignal(S_SETUP_TABLE_LAMPEN);
         } break;
         }
 
-        switch (E_GrueneLampe) {
+        switch (E_GreenLampe) {
         case 1: {
-            TextfeldArray[T_TISCHCOLORBLEEDINGEIN]->Positioniere(8.2,2.5,.6,A_LINKS);
-            TextfeldArray[T_TISCHCOLORBLEEDINGEIN]->SetzeSignal(S_EI_GRUENELAMPE);
+            TextItemArray[T_TABLE_COLORBLEEDINGEIN]->Positioniere(8.2,2.5,.6,A_LINKS);
+            TextItemArray[T_TABLE_COLORBLEEDINGEIN]->SetzeSignal(S_SETUP_GRUENELAMPE);
         } break;
         case 0: {
-            TextfeldArray[T_TISCHCOLORBLEEDINGAUS]->Positioniere(8.2,2.5,.6,A_LINKS);
-            TextfeldArray[T_TISCHCOLORBLEEDINGAUS]->SetzeSignal(S_EI_GRUENELAMPE);
+            TextItemArray[T_TABLE_COLORBLEEDINGAUS]->Positioniere(8.2,2.5,.6,A_LINKS);
+            TextItemArray[T_TABLE_COLORBLEEDINGAUS]->SetzeSignal(S_SETUP_GRUENELAMPE);
         } break;
         }
 
-        switch (E_ZeigeFPS) {
+        switch (E_ShowFPS) {
         case 1: {
-            TextfeldArray[T_FRAMERATEEIN]->Positioniere(8.2,2.1,.6,A_LINKS);
-            TextfeldArray[T_FRAMERATEEIN]->SetzeSignal(S_EI_FPS);
+            TextItemArray[T_FRAMERATEEIN]->Positioniere(8.2,2.1,.6,A_LINKS);
+            TextItemArray[T_FRAMERATEEIN]->SetzeSignal(S_SETUP_FPS);
         } break;
         case 0: {
-            TextfeldArray[T_FRAMERATEAUS]->Positioniere(8.2,2.1,.6,A_LINKS);
-            TextfeldArray[T_FRAMERATEAUS]->SetzeSignal(S_EI_FPS);
+            TextItemArray[T_FRAMERATEAUS]->Positioniere(8.2,2.1,.6,A_LINKS);
+            TextItemArray[T_FRAMERATEAUS]->SetzeSignal(S_SETUP_FPS);
         } break;
         }
 
-        switch (E_Schatten) {
+        switch (E_Shadows) {
         case 1: {
-            TextfeldArray[T_S_EIN]->Positioniere(8.2,3.7,.6,A_LINKS);
-            TextfeldArray[T_S_EIN]->SetzeSignal(S_EI_SCHATTEN);
+            TextItemArray[T_S_EIN]->Positioniere(8.2,3.7,.6,A_LINKS);
+            TextItemArray[T_S_EIN]->SetzeSignal(S_SETUP_SHADOWS);
         } break;
         case 0: {
-            TextfeldArray[T_S_AUS]->Positioniere(8.2,3.7,.6,A_LINKS);
-            TextfeldArray[T_S_AUS]->SetzeSignal(S_EI_SCHATTEN);
+            TextItemArray[T_S_AUS]->Positioniere(8.2,3.7,.6,A_LINKS);
+            TextItemArray[T_S_AUS]->SetzeSignal(S_SETUP_SHADOWS);
         } break;
         }
 
 
         switch (E_TexMMM) {
         case 0: {
-            TextfeldArray[T_TI_AUS]->Positioniere(8.2,3.3,.6,A_LINKS);
-            TextfeldArray[T_TI_AUS]->SetzeSignal(S_EI_TEXTURINTERPOLATION);
+            TextItemArray[T_TI_AUS]->Positioniere(8.2,3.3,.6,A_LINKS);
+            TextItemArray[T_TI_AUS]->SetzeSignal(S_SETUP_TEXTURINTERPOLATION);
         } break;
         case 2: {
-            TextfeldArray[T_TI_NIEDRIG]->Positioniere(8.2,3.3,.6,A_LINKS);
-            TextfeldArray[T_TI_NIEDRIG]->SetzeSignal(S_EI_TEXTURINTERPOLATION);
+            TextItemArray[T_TI_NIEDRIG]->Positioniere(8.2,3.3,.6,A_LINKS);
+            TextItemArray[T_TI_NIEDRIG]->SetzeSignal(S_SETUP_TEXTURINTERPOLATION);
         } break;
         case 7: {
-            TextfeldArray[T_TI_HOCH]->Positioniere(8.2,3.3,.6,A_LINKS);
-            TextfeldArray[T_TI_HOCH]->SetzeSignal(S_EI_TEXTURINTERPOLATION);
+            TextItemArray[T_TI_HOCH]->Positioniere(8.2,3.3,.6,A_LINKS);
+            TextItemArray[T_TI_HOCH]->SetzeSignal(S_SETUP_TEXTURINTERPOLATION);
         } break;
         default: {
-            TextfeldArray[T_TI_NORMAL]->Positioniere(8.2,3.3,.6,A_LINKS);
-            TextfeldArray[T_TI_NORMAL]->SetzeSignal(S_EI_TEXTURINTERPOLATION);
+            TextItemArray[T_TI_NORMAL]->Positioniere(8.2,3.3,.6,A_LINKS);
+            TextItemArray[T_TI_NORMAL]->SetzeSignal(S_SETUP_TEXTURINTERPOLATION);
         } break;
         }
 
-        switch (Qualitaet) {
+        switch (Quality) {
         case 1: {
-            TextfeldArray[T_Q_SEHRSCHNELL]->Positioniere(8.2,7,1,A_LINKS);
-            TextfeldArray[T_Q_SEHRSCHNELL]->SetzeSignal(S_EI_QUALITAET);
+            TextItemArray[T_Q_SEHRSCHNELL]->Positioniere(8.2,7,1,A_LINKS);
+            TextItemArray[T_Q_SEHRSCHNELL]->SetzeSignal(S_SETUP_QUALITAET);
         }break;
         case 2: {
-            TextfeldArray[T_Q_SCHNELL]->Positioniere(8.2,7,1,A_LINKS);
-            TextfeldArray[T_Q_SCHNELL]->SetzeSignal(S_EI_QUALITAET);
+            TextItemArray[T_Q_SCHNELL]->Positioniere(8.2,7,1,A_LINKS);
+            TextItemArray[T_Q_SCHNELL]->SetzeSignal(S_SETUP_QUALITAET);
         }break;
         case 3: {
-            TextfeldArray[T_Q_NORMAL]->Positioniere(8.2,7,1,A_LINKS);
-            TextfeldArray[T_Q_NORMAL]->SetzeSignal(S_EI_QUALITAET);
+            TextItemArray[T_Q_NORMAL]->Positioniere(8.2,7,1,A_LINKS);
+            TextItemArray[T_Q_NORMAL]->SetzeSignal(S_SETUP_QUALITAET);
         }break;
         case 4: {
-            TextfeldArray[T_Q_HOCH]->Positioniere(8.2,7,1,A_LINKS);
-            TextfeldArray[T_Q_HOCH]->SetzeSignal(S_EI_QUALITAET);
+            TextItemArray[T_Q_HOCH]->Positioniere(8.2,7,1,A_LINKS);
+            TextItemArray[T_Q_HOCH]->SetzeSignal(S_SETUP_QUALITAET);
         }break;
         case 5: {
-            TextfeldArray[T_Q_SEHRHOCH]->Positioniere(8.2,7,1,A_LINKS);
-            TextfeldArray[T_Q_SEHRHOCH]->SetzeSignal(S_EI_QUALITAET);
+            TextItemArray[T_Q_SEHRHOCH]->Positioniere(8.2,7,1,A_LINKS);
+            TextItemArray[T_Q_SEHRHOCH]->SetzeSignal(S_SETUP_QUALITAET);
         }break;
         default: {
-            TextfeldArray[T_Q_BENUTZER]->Positioniere(8.2,7,1,A_LINKS);
-            TextfeldArray[T_Q_BENUTZER]->SetzeSignal(S_EI_QUALITAET);
+            TextItemArray[T_Q_BENUTZER]->Positioniere(8.2,7,1,A_LINKS);
+            TextItemArray[T_Q_BENUTZER]->SetzeSignal(S_SETUP_QUALITAET);
         }break;
         }
 
-        switch (E_BildschirmAufloesung) {
+        switch (E_ScreenResolution) {
         case 640: {
-            TextfeldArray[T_AUF_640x480]->Positioniere(8.2,4.5,.6,A_LINKS);
-            TextfeldArray[T_AUF_640x480]->SetzeSignal(S_EI_AUFLOESUNG);
+            TextItemArray[T_AUF_640x480]->Positioniere(8.2,4.5,.6,A_LINKS);
+            TextItemArray[T_AUF_640x480]->SetzeSignal(S_SETUP_RESOLUTION);
         }break;
         case 1024: {
-            TextfeldArray[T_AUF_1024x768]->Positioniere(8.2,4.5,.6,A_LINKS);
-            TextfeldArray[T_AUF_1024x768]->SetzeSignal(S_EI_AUFLOESUNG);
+            TextItemArray[T_AUF_1024x768]->Positioniere(8.2,4.5,.6,A_LINKS);
+            TextItemArray[T_AUF_1024x768]->SetzeSignal(S_SETUP_RESOLUTION);
         }break;
         case 1280: {
-            TextfeldArray[T_AUF_1280x960]->Positioniere(8.2,4.5,.6,A_LINKS);
-            TextfeldArray[T_AUF_1280x960]->SetzeSignal(S_EI_AUFLOESUNG);
+            TextItemArray[T_AUF_1280x960]->Positioniere(8.2,4.5,.6,A_LINKS);
+            TextItemArray[T_AUF_1280x960]->SetzeSignal(S_SETUP_RESOLUTION);
         }break;
         case 1600: {
-            TextfeldArray[T_AUF_1600x1200]->Positioniere(8.2,4.5,.6,A_LINKS);
-            TextfeldArray[T_AUF_1600x1200]->SetzeSignal(S_EI_AUFLOESUNG);
+            TextItemArray[T_AUF_1600x1200]->Positioniere(8.2,4.5,.6,A_LINKS);
+            TextItemArray[T_AUF_1600x1200]->SetzeSignal(S_SETUP_RESOLUTION);
         }break;
         default: {
-            TextfeldArray[T_AUF_800x600]->Positioniere(8.2,4.5,.6,A_LINKS);
-            TextfeldArray[T_AUF_800x600]->SetzeSignal(S_EI_AUFLOESUNG);
+            TextItemArray[T_AUF_800x600]->Positioniere(8.2,4.5,.6,A_LINKS);
+            TextItemArray[T_AUF_800x600]->SetzeSignal(S_SETUP_RESOLUTION);
         }break;
         }
 
-        switch (E_Reflektionen) {
+        switch (E_Reflection) {
         case 1: {
-            TextfeldArray[T_REF_EIN]->Positioniere(8.2,4.9,.6,A_LINKS);
-            TextfeldArray[T_REF_EIN]->SetzeSignal(S_EI_REFLEKTIONEN);
+            TextItemArray[T_REF_EIN]->Positioniere(8.2,4.9,.6,A_LINKS);
+            TextItemArray[T_REF_EIN]->SetzeSignal(S_SETUP_REFLEKTIONEN);
         }break;
         default: {
-            TextfeldArray[T_REF_AUS]->Positioniere(8.2,4.9,.6,A_LINKS);
-            TextfeldArray[T_REF_AUS]->SetzeSignal(S_EI_REFLEKTIONEN);
+            TextItemArray[T_REF_AUS]->Positioniere(8.2,4.9,.6,A_LINKS);
+            TextItemArray[T_REF_AUS]->SetzeSignal(S_SETUP_REFLEKTIONEN);
         }break;
         }
 
-        switch (E_Farbtiefe) {
+        switch (E_ColorDepth) {
         case 32: {
-            TextfeldArray[T_FT_32]->Positioniere(8.2,4.1,.6,A_LINKS);
-            TextfeldArray[T_FT_32]->SetzeSignal(S_EI_FARBTIEFE);
+            TextItemArray[T_FT_32]->Positioniere(8.2,4.1,.6,A_LINKS);
+            TextItemArray[T_FT_32]->SetzeSignal(S_SETUP_COLOR_DEPTH);
         }break;
         default: {
-            TextfeldArray[T_FT_16]->Positioniere(8.2,4.1,.6,A_LINKS);
-            TextfeldArray[T_FT_16]->SetzeSignal(S_EI_FARBTIEFE);
+            TextItemArray[T_FT_16]->Positioniere(8.2,4.1,.6,A_LINKS);
+            TextItemArray[T_FT_16]->SetzeSignal(S_SETUP_COLOR_DEPTH);
         }break;
         }
         switch (E_AnzeigeTexturgroesse) {
         case 1: {
-            TextfeldArray[T_MT_NORMAL]->Positioniere(8.2,5.3,.6,A_LINKS);
-            TextfeldArray[T_MT_NORMAL]->SetzeSignal(S_EI_ANZEIGETEXTUREN);
+            TextItemArray[T_MT_NORMAL]->Positioniere(8.2,5.3,.6,A_LINKS);
+            TextItemArray[T_MT_NORMAL]->SetzeSignal(S_SETUP_ANZEIGETEXTURES);
         }break;
         case 2: {
-            TextfeldArray[T_MT_NIEDRIG]->Positioniere(8.2,5.3,.6,A_LINKS);
-            TextfeldArray[T_MT_NIEDRIG]->SetzeSignal(S_EI_ANZEIGETEXTUREN);
+            TextItemArray[T_MT_NIEDRIG]->Positioniere(8.2,5.3,.6,A_LINKS);
+            TextItemArray[T_MT_NIEDRIG]->SetzeSignal(S_SETUP_ANZEIGETEXTURES);
         }break;
         }
-        switch (E_Texturgroesse) {
+        switch (E_BallTextureSize) {
         case 1: {
-            TextfeldArray[T_BT_HOCH]->Positioniere(8.2,6.1,.6,A_LINKS);
-            TextfeldArray[T_BT_HOCH]->SetzeSignal(S_EI_BALLTEXTUREN);
+            TextItemArray[T_BT_HOCH]->Positioniere(8.2,6.1,.6,A_LINKS);
+            TextItemArray[T_BT_HOCH]->SetzeSignal(S_SETUP_BALLTEXTURES);
         }break;
         case 2: {
-            TextfeldArray[T_BT_NORMAL]->Positioniere(8.2,6.1,.6,A_LINKS);
-            TextfeldArray[T_BT_NORMAL]->SetzeSignal(S_EI_BALLTEXTUREN);
+            TextItemArray[T_BT_NORMAL]->Positioniere(8.2,6.1,.6,A_LINKS);
+            TextItemArray[T_BT_NORMAL]->SetzeSignal(S_SETUP_BALLTEXTURES);
         }break;
         case 4: {
-            TextfeldArray[T_BT_NIEDRIG]->Positioniere(8.2,6.1,.6,A_LINKS);
-            TextfeldArray[T_BT_NIEDRIG]->SetzeSignal(S_EI_BALLTEXTUREN);
+            TextItemArray[T_BT_NIEDRIG]->Positioniere(8.2,6.1,.6,A_LINKS);
+            TextItemArray[T_BT_NIEDRIG]->SetzeSignal(S_SETUP_BALLTEXTURES);
         }break;
         case 8: {
-            TextfeldArray[T_BT_SEHRNIEDRIG]->Positioniere(8.2,6.1,.6,A_LINKS);
-            TextfeldArray[T_BT_SEHRNIEDRIG]->SetzeSignal(S_EI_BALLTEXTUREN);
+            TextItemArray[T_BT_SEHRNIEDRIG]->Positioniere(8.2,6.1,.6,A_LINKS);
+            TextItemArray[T_BT_SEHRNIEDRIG]->SetzeSignal(S_SETUP_BALLTEXTURES);
         }break;
         }
-        switch (E_TischTexturgroesse) {
+        switch (E_TableTextureSize) {
         case 1: {
-            TextfeldArray[T_TT_HOCH]->Positioniere(8.2,5.7,.6,A_LINKS);
-            TextfeldArray[T_TT_HOCH]->SetzeSignal(S_EI_TISCHTEXTUREN);
+            TextItemArray[T_TT_HOCH]->Positioniere(8.2,5.7,.6,A_LINKS);
+            TextItemArray[T_TT_HOCH]->SetzeSignal(S_SETUP_TABLE_TEXTURES);
         }break;
         case 2: {
-            TextfeldArray[T_TT_NORMAL]->Positioniere(8.2,5.7,.6,A_LINKS);
-            TextfeldArray[T_TT_NORMAL]->SetzeSignal(S_EI_TISCHTEXTUREN);
+            TextItemArray[T_TT_NORMAL]->Positioniere(8.2,5.7,.6,A_LINKS);
+            TextItemArray[T_TT_NORMAL]->SetzeSignal(S_SETUP_TABLE_TEXTURES);
         }break;
         case 4: {
-            TextfeldArray[T_TT_NIEDRIG]->Positioniere(8.2,5.7,.6,A_LINKS);
-            TextfeldArray[T_TT_NIEDRIG]->SetzeSignal(S_EI_TISCHTEXTUREN);
+            TextItemArray[T_TT_NIEDRIG]->Positioniere(8.2,5.7,.6,A_LINKS);
+            TextItemArray[T_TT_NIEDRIG]->SetzeSignal(S_SETUP_TABLE_TEXTURES);
         }break;
         case 8: {
-            TextfeldArray[T_TT_SEHRNIEDRIG]->Positioniere(8.2,5.7,.6,A_LINKS);
-            TextfeldArray[T_TT_SEHRNIEDRIG]->SetzeSignal(S_EI_TISCHTEXTUREN);
+            TextItemArray[T_TT_SEHRNIEDRIG]->Positioniere(8.2,5.7,.6,A_LINKS);
+            TextItemArray[T_TT_SEHRNIEDRIG]->SetzeSignal(S_SETUP_TABLE_TEXTURES);
         }break;
         case 0: {
-            TextfeldArray[T_TT_AUS]->Positioniere(8.2,5.7,.6,A_LINKS);
-            TextfeldArray[T_TT_AUS]->SetzeSignal(S_EI_TISCHTEXTUREN);
+            TextItemArray[T_TT_AUS]->Positioniere(8.2,5.7,.6,A_LINKS);
+            TextItemArray[T_TT_AUS]->SetzeSignal(S_SETUP_TABLE_TEXTURES);
         }break;
         }
 
         switch (E_KugelAufloesung) {
         case 3: {
-            TextfeldArray[T_BG_SEHRNIEDRIG]->Positioniere(8.2,6.5,.6,A_LINKS);
-            TextfeldArray[T_BG_SEHRNIEDRIG]->SetzeSignal(S_EI_BALLGEOMETRIE);
+            TextItemArray[T_BG_SEHRNIEDRIG]->Positioniere(8.2,6.5,.6,A_LINKS);
+            TextItemArray[T_BG_SEHRNIEDRIG]->SetzeSignal(S_SETUP_BALLGEOMETRIE);
         }break;
         case 5: {
-            TextfeldArray[T_BG_NIEDRIG]->Positioniere(8.2,6.5,.6,A_LINKS);
-            TextfeldArray[T_BG_NIEDRIG]->SetzeSignal(S_EI_BALLGEOMETRIE);
+            TextItemArray[T_BG_NIEDRIG]->Positioniere(8.2,6.5,.6,A_LINKS);
+            TextItemArray[T_BG_NIEDRIG]->SetzeSignal(S_SETUP_BALLGEOMETRIE);
         }break;
         case 7: {
-            TextfeldArray[T_BG_NORMAL]->Positioniere(8.2,6.5,.6,A_LINKS);
-            TextfeldArray[T_BG_NORMAL]->SetzeSignal(S_EI_BALLGEOMETRIE);
+            TextItemArray[T_BG_NORMAL]->Positioniere(8.2,6.5,.6,A_LINKS);
+            TextItemArray[T_BG_NORMAL]->SetzeSignal(S_SETUP_BALLGEOMETRIE);
         }break;
         case 11: {
-            TextfeldArray[T_BG_HOCH]->Positioniere(8.2,6.5,.6,A_LINKS);
-            TextfeldArray[T_BG_HOCH]->SetzeSignal(S_EI_BALLGEOMETRIE);
+            TextItemArray[T_BG_HOCH]->Positioniere(8.2,6.5,.6,A_LINKS);
+            TextItemArray[T_BG_HOCH]->SetzeSignal(S_SETUP_BALLGEOMETRIE);
         }break;
         }
 
-        if( E_Texturgroesse==TextureSize &&
+        if( E_BallTextureSize==TextureSize &&
                 E_AnzeigeTexturgroesse==DisplayTextureSize &&
-                E_TischTexturgroesse==TableTextureSize &&
+                E_TableTextureSize==TableTextureSize &&
                 E_KugelAufloesung==BallResolution &&
-                E_BildschirmAufloesung==ScreenResolution &&
-                E_Farbtiefe==ColorDepth &&
-                E_Reflektionen==Reflections &&
-                E_Schatten==Shadow &&
-                E_AmbientesLicht==AmbientLighting &&
-                E_TischLampen==TableLamps &&
+                E_ScreenResolution==ScreenResolution &&
+                E_ColorDepth==ColorDepth &&
+                E_Reflection==Reflections &&
+                E_Shadows==Shadow &&
+                E_AmbientLighting==AmbientLighting &&
+                E_TableLampes==TableLamps &&
                 E_TexMMM==TexMMM &&
-                E_GrueneLampe==GrueneLamp) {
-            TextfeldArray[T_ZURUECK]->Positioniere(8,.7,1,A_MITTE);
-            TextfeldArray[T_ZURUECK]->SetzeSignal(S_EI_GRAFIKZURUECK);
+                E_GreenLampe==GreenLamp) {
+            TextItemArray[T_BACK]->Positioniere(8,.7,1,A_MITTE);
+            TextItemArray[T_BACK]->SetzeSignal(S_SETUP_VIDEOBACK);
         } else {
-            TextfeldArray[T_UEBERNEHMEN]->Positioniere(4,0.7,1,A_LINKS);
-            TextfeldArray[T_UEBERNEHMEN]->SetzeSignal(S_EI_GRAFIKUEBERNEHMEN);
-            TextfeldArray[T_ABBRECHEN]->Positioniere(12,0.7,1,A_RECHTS);
-            TextfeldArray[T_ABBRECHEN]->SetzeSignal(S_EI_GRAFIKZURUECK);
+            TextItemArray[T_UEBERNEHMEN]->Positioniere(4,0.7,1,A_LINKS);
+            TextItemArray[T_UEBERNEHMEN]->SetzeSignal(S_SETUP_VIDEOUEBERNEHMEN);
+            TextItemArray[T_ABBRECHEN]->Positioniere(12,0.7,1,A_RECHTS);
+            TextItemArray[T_ABBRECHEN]->SetzeSignal(S_SETUP_VIDEOBACK);
         }
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
     } break;
 
-    case EINSTELLUNGENGRAFIKHINWEIS: {
+    case SETUP_VIDEO_NOTICE: {
         MenuBackground.Positioning(2,3.5,14,8.5);
         logo.Positioning(4,9,12,11);
-        logo.VollSichtbar();
-        TextfeldArray[T_HINWEIS]->Positioniere(8,8,1,A_MITTE);
-        TextfeldArray[T_HINWEIS]->VollSichtbar();
+        logo.FullyVisible();
+        TextItemArray[T_HINWEIS]->Positioniere(8,8,1,A_MITTE);
+        TextItemArray[T_HINWEIS]->VollSichtbar();
 
-        TextfeldArray[T_HINWEIS1]->Positioniere(8,6,.7,A_MITTE);
-        TextfeldArray[T_HINWEIS2]->Positioniere(8,5.5,.7,A_MITTE);
+        TextItemArray[T_HINWEIS1]->Positioniere(8,6,.7,A_MITTE);
+        TextItemArray[T_HINWEIS2]->Positioniere(8,5.5,.7,A_MITTE);
 
-        TextfeldArray[T_OK]->Positioniere(8,1,1,A_MITTE);
-        TextfeldArray[T_OK]->SetzeSignal(S_EI_GRAFIKUEBERNEHMEN);
+        TextItemArray[T_OK]->Positioniere(8,1,1,A_MITTE);
+        TextItemArray[T_OK]->SetzeSignal(S_SETUP_VIDEOUEBERNEHMEN);
 
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
     } break;
 
-    case HILFE: {
+    case HELP: {
         MenuBackground.Positioning(4.5,3.5,11.5,8.5);
         logo.Positioning(4,9,12,11);
-        logo.VollSichtbar();
-        TextfeldArray[T_HILFE]->Positioniere(8,8,1,A_MITTE);
-        TextfeldArray[T_HILFE]->VollSichtbar();
+        logo.FullyVisible();
+        TextItemArray[T_HELP_]->Positioniere(8,8,1,A_MITTE);
+        TextItemArray[T_HELP_]->VollSichtbar();
 
-        TextfeldArray[T_H_TUTORIAL]->Positioniere(8,6.5,1,A_MITTE);
-        TextfeldArray[T_H_TUTORIAL]->SetzeSignal(S_H_TUTORIAL);
+        TextItemArray[T_H_TUTORIAL]->Positioniere(8,6.5,1,A_MITTE);
+        TextItemArray[T_H_TUTORIAL]->SetzeSignal(S_H_TUTORIAL);
 
-        TextfeldArray[T_H_TASTENBELEGUNGEN]->Positioniere(8,5.5,1,A_MITTE);
-        TextfeldArray[T_H_TASTENBELEGUNGEN]->SetzeSignal(S_H_TASTENBELEGUNGEN);
+        TextItemArray[T_H_KEY_ASSIGNMENTS]->Positioniere(8,5.5,1,A_MITTE);
+        TextItemArray[T_H_KEY_ASSIGNMENTS]->SetzeSignal(S_H_KEY_ASSIGNMENTS);
 
-        TextfeldArray[T_H_BILLARDREGELN]->Positioniere(8,4.5,1,A_MITTE);
-        TextfeldArray[T_H_BILLARDREGELN]->SetzeSignal(S_H_BILLARDREGELN);
+        TextItemArray[T_H_BILLARDREGELN]->Positioniere(8,4.5,1,A_MITTE);
+        TextItemArray[T_H_BILLARDREGELN]->SetzeSignal(S_H_BILLARDREGELN);
 
-        TextfeldArray[T_ZURUECK]->Positioniere(8,1,1,A_MITTE);
+        TextItemArray[T_BACK]->Positioniere(8,1,1,A_MITTE);
         if (AusSpiel) {
-            TextfeldArray[T_ZURUECK]->SetzeSignal(S_BE_ZURUECK_AS);
+            TextItemArray[T_BACK]->SetzeSignal(S_BE_BACK_AS);
         } else {
-            TextfeldArray[T_ZURUECK]->SetzeSignal(S_BE_ZURUECK);
+            TextItemArray[T_BACK]->SetzeSignal(S_BE_BACK);
         }
 
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
 
     } break;
 
-    case HILFETASTENBELEGUNGEN: {
+    case HELP_KEY_SET: {
         MenuBackground.Positioning(.5,1,15.5,10.5);
         logo.Positioning(0,11,4,12);
-        logo.VollSichtbar();
-        TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
-        TextfeldArray[T_HILFE]->VollSichtbar();
-        TextfeldArray[T_H_TASTENBELEGUNGEN]->Positioniere(4,11,.6,A_LINKS);
-        TextfeldArray[T_H_TASTENBELEGUNGEN]->VollSichtbar();
+        logo.FullyVisible();
+        TextItemArray[T_HELP_]->Positioniere(4,11.4,.6,A_LINKS);
+        TextItemArray[T_HELP_]->VollSichtbar();
+        TextItemArray[T_H_KEY_ASSIGNMENTS]->Positioniere(4,11,.6,A_LINKS);
+        TextItemArray[T_H_KEY_ASSIGNMENTS]->VollSichtbar();
 
-        TextfeldArray[600]->Positioniere(1.25,9.5,.7,A_LINKS);
-        TextfeldArray[601]->Positioniere(1.5,9.166666,.5,A_LINKS);
-        TextfeldArray[602]->Positioniere(1.25,8.5,.7,A_LINKS);
-        TextfeldArray[603]->Positioniere(1.5,8.166666,.5,A_LINKS);
-        TextfeldArray[604]->Positioniere(1.25,7.5,.7,A_LINKS);
-        TextfeldArray[605]->Positioniere(1.5,7.166666,.5,A_LINKS);
+        TextItemArray[600]->Positioniere(1.25,9.5,.7,A_LINKS);
+        TextItemArray[601]->Positioniere(1.5,9.166666,.5,A_LINKS);
+        TextItemArray[602]->Positioniere(1.25,8.5,.7,A_LINKS);
+        TextItemArray[603]->Positioniere(1.5,8.166666,.5,A_LINKS);
+        TextItemArray[604]->Positioniere(1.25,7.5,.7,A_LINKS);
+        TextItemArray[605]->Positioniere(1.5,7.166666,.5,A_LINKS);
 
-        TextfeldArray[606]->Positioniere(1.25,5.5,.7,A_LINKS);
-        TextfeldArray[607]->Positioniere(1.5,5.166666,.5,A_LINKS);
-        TextfeldArray[608]->Positioniere(1.25,4.5,.7,A_LINKS);
-        TextfeldArray[609]->Positioniere(1.5,4.166666,.5,A_LINKS);
-        TextfeldArray[610]->Positioniere(1.25,3.5,.7,A_LINKS);
-        TextfeldArray[611]->Positioniere(1.5,3.166666,.5,A_LINKS);
-        TextfeldArray[612]->Positioniere(1.25,2.5,.7,A_LINKS);
-        TextfeldArray[613]->Positioniere(1.5,2.166666,.5,A_LINKS);
+        TextItemArray[606]->Positioniere(1.25,5.5,.7,A_LINKS);
+        TextItemArray[607]->Positioniere(1.5,5.166666,.5,A_LINKS);
+        TextItemArray[608]->Positioniere(1.25,4.5,.7,A_LINKS);
+        TextItemArray[609]->Positioniere(1.5,4.166666,.5,A_LINKS);
+        TextItemArray[610]->Positioniere(1.25,3.5,.7,A_LINKS);
+        TextItemArray[611]->Positioniere(1.5,3.166666,.5,A_LINKS);
+        TextItemArray[612]->Positioniere(1.25,2.5,.7,A_LINKS);
+        TextItemArray[613]->Positioniere(1.5,2.166666,.5,A_LINKS);
 
-        TextfeldArray[614]->Positioniere(8.25,5.5,.7,A_LINKS);
-        TextfeldArray[615]->Positioniere(8.5,5.166666,.5,A_LINKS);
-        TextfeldArray[616]->Positioniere(8.25,4.5,.7,A_LINKS);
-        TextfeldArray[617]->Positioniere(8.5,4.166666,.5,A_LINKS);
-        TextfeldArray[618]->Positioniere(8.25,3.5,.7,A_LINKS);
-        TextfeldArray[619]->Positioniere(8.5,3.166666,.5,A_LINKS);
-        TextfeldArray[620]->Positioniere(8.25,2.5,.7,A_LINKS);
-        TextfeldArray[621]->Positioniere(8.5,2.166666,.5,A_LINKS);
+        TextItemArray[614]->Positioniere(8.25,5.5,.7,A_LINKS);
+        TextItemArray[615]->Positioniere(8.5,5.166666,.5,A_LINKS);
+        TextItemArray[616]->Positioniere(8.25,4.5,.7,A_LINKS);
+        TextItemArray[617]->Positioniere(8.5,4.166666,.5,A_LINKS);
+        TextItemArray[618]->Positioniere(8.25,3.5,.7,A_LINKS);
+        TextItemArray[619]->Positioniere(8.5,3.166666,.5,A_LINKS);
+        TextItemArray[620]->Positioniere(8.25,2.5,.7,A_LINKS);
+        TextItemArray[621]->Positioniere(8.5,2.166666,.5,A_LINKS);
 
-        TextfeldArray[T_ZURUECK]->Positioniere(8,.1,1,A_MITTE);
-        TextfeldArray[T_ZURUECK]->SetzeSignal(S_H_ZUHILFE);
+        TextItemArray[T_BACK]->Positioniere(8,.1,1,A_MITTE);
+        TextItemArray[T_BACK]->SetzeSignal(S_H_ZUHELP_);
     } break;
 
-    case HILFEREGELN1: {
+    case HELP_REGELN1: {
         MenuBackground.Positioning(.5,.7,15.5,11);
         logo.Positioning(0,11,4,12);
-        logo.VollSichtbar();
-        TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
-        TextfeldArray[T_HILFE]->VollSichtbar();
-        TextfeldArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
-        TextfeldArray[T_H_BILLARDREGELN]->VollSichtbar();
+        logo.FullyVisible();
+        TextItemArray[T_HELP_]->Positioniere(4,11.4,.6,A_LINKS);
+        TextItemArray[T_HELP_]->VollSichtbar();
+        TextItemArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
+        TextItemArray[T_H_BILLARDREGELN]->VollSichtbar();
 
-        TextfeldArray[710]->Positioniere(1,10,1,A_LINKS);
+        TextItemArray[710]->Positioniere(1,10,1,A_LINKS);
 
-        TextfeldArray[711]->Positioniere(1.25,9.5,.7,A_LINKS);
-        TextfeldArray[712]->Positioniere(1.5,9.166666,.5,A_LINKS);
-        TextfeldArray[713]->Positioniere(1.25,8.5,.7,A_LINKS);
-        TextfeldArray[714]->Positioniere(1.5,8.166666,.5,A_LINKS);
-        TextfeldArray[715]->Positioniere(1.25,7.5,.7,A_LINKS);
-        TextfeldArray[716]->Positioniere(1.5,7.166666,.5,A_LINKS);
-        TextfeldArray[717]->Positioniere(1.25,6.5,.7,A_LINKS);
-        TextfeldArray[718]->Positioniere(1.5,6.166666,.5,A_LINKS);
-        TextfeldArray[719]->Positioniere(1.25,5.5,.7,A_LINKS);
-        TextfeldArray[720]->Positioniere(1.5,5.166666,.5,A_LINKS);
-        TextfeldArray[721]->Positioniere(1.25,4.5,.7,A_LINKS);
-        TextfeldArray[722]->Positioniere(1.5,4.166666,.5,A_LINKS);
-        TextfeldArray[723]->Positioniere(1.25,3.5,.7,A_LINKS);
-        TextfeldArray[724]->Positioniere(1.5,3.166666,.5,A_LINKS);
-        TextfeldArray[725]->Positioniere(1.25,2.5,.7,A_LINKS);
-        TextfeldArray[726]->Positioniere(1.5,2.166666,.5,A_LINKS);
-        TextfeldArray[727]->Positioniere(1.25,1.5,.7,A_LINKS);
-        TextfeldArray[728]->Positioniere(1.5,1.166666,.5,A_LINKS);
+        TextItemArray[711]->Positioniere(1.25,9.5,.7,A_LINKS);
+        TextItemArray[712]->Positioniere(1.5,9.166666,.5,A_LINKS);
+        TextItemArray[713]->Positioniere(1.25,8.5,.7,A_LINKS);
+        TextItemArray[714]->Positioniere(1.5,8.166666,.5,A_LINKS);
+        TextItemArray[715]->Positioniere(1.25,7.5,.7,A_LINKS);
+        TextItemArray[716]->Positioniere(1.5,7.166666,.5,A_LINKS);
+        TextItemArray[717]->Positioniere(1.25,6.5,.7,A_LINKS);
+        TextItemArray[718]->Positioniere(1.5,6.166666,.5,A_LINKS);
+        TextItemArray[719]->Positioniere(1.25,5.5,.7,A_LINKS);
+        TextItemArray[720]->Positioniere(1.5,5.166666,.5,A_LINKS);
+        TextItemArray[721]->Positioniere(1.25,4.5,.7,A_LINKS);
+        TextItemArray[722]->Positioniere(1.5,4.166666,.5,A_LINKS);
+        TextItemArray[723]->Positioniere(1.25,3.5,.7,A_LINKS);
+        TextItemArray[724]->Positioniere(1.5,3.166666,.5,A_LINKS);
+        TextItemArray[725]->Positioniere(1.25,2.5,.7,A_LINKS);
+        TextItemArray[726]->Positioniere(1.5,2.166666,.5,A_LINKS);
+        TextItemArray[727]->Positioniere(1.25,1.5,.7,A_LINKS);
+        TextItemArray[728]->Positioniere(1.5,1.166666,.5,A_LINKS);
 
-        TextfeldArray[T_ZURUECK]->Positioniere(8,0,.7,A_MITTE);
-        TextfeldArray[T_ZURUECK]->SetzeSignal(S_H_ZUHILFE);
-        TextfeldArray[T_H_NAECHSTESEITE]->Positioniere(15.8,0,.7,A_RECHTS);
-        TextfeldArray[T_H_NAECHSTESEITE]->SetzeSignal(S_H_R1_N);
+        TextItemArray[T_BACK]->Positioniere(8,0,.7,A_MITTE);
+        TextItemArray[T_BACK]->SetzeSignal(S_H_ZUHELP_);
+        TextItemArray[T_H_NAECHSTESEITE]->Positioniere(15.8,0,.7,A_RECHTS);
+        TextItemArray[T_H_NAECHSTESEITE]->SetzeSignal(S_H_R1_N);
         //TextfeldArray[T_H_LETZTESEITE]->Positioniere(.2,0,.7,A_LINKS);
         //TextfeldArray[T_H_LETZTESEITE]->SetzeSignal(S_H_R1_L);
     } break;
 
-    case HILFEREGELN2: {
+    case HELP_REGELN2: {
         MenuBackground.Positioning(.5,.7,15.5,11);
         logo.Positioning(0,11,4,12);
-        logo.VollSichtbar();
-        TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
-        TextfeldArray[T_HILFE]->VollSichtbar();
-        TextfeldArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
-        TextfeldArray[T_H_BILLARDREGELN]->VollSichtbar();
+        logo.FullyVisible();
+        TextItemArray[T_HELP_]->Positioniere(4,11.4,.6,A_LINKS);
+        TextItemArray[T_HELP_]->VollSichtbar();
+        TextItemArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
+        TextItemArray[T_H_BILLARDREGELN]->VollSichtbar();
 
         GLfloat ypos=10;
-        TextfeldArray[740]->Positioniere(1,ypos,1,A_LINKS);
-        ypos-=.7*TextfeldArray[740]->TextboxHeight();
-        TextfeldArray[741]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[741]->TextboxHeight();
-        TextfeldArray[742]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[742]->TextboxHeight()+.5;
-        TextfeldArray[743]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[743]->TextboxHeight();
-        TextfeldArray[744]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[744]->TextboxHeight()+.5;
-        TextfeldArray[745]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[745]->TextboxHeight();
-        TextfeldArray[746]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[746]->TextboxHeight()+.5;
+        TextItemArray[740]->Positioniere(1,ypos,1,A_LINKS);
+        ypos-=.7*TextItemArray[740]->TextboxHeight();
+        TextItemArray[741]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[741]->TextboxHeight();
+        TextItemArray[742]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[742]->TextboxHeight()+.5;
+        TextItemArray[743]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[743]->TextboxHeight();
+        TextItemArray[744]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[744]->TextboxHeight()+.5;
+        TextItemArray[745]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[745]->TextboxHeight();
+        TextItemArray[746]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[746]->TextboxHeight()+.5;
 
-        TextfeldArray[T_ZURUECK]->Positioniere(8,0,.7,A_MITTE);
-        TextfeldArray[T_ZURUECK]->SetzeSignal(S_H_ZUHILFE);
-        TextfeldArray[T_H_NAECHSTESEITE]->Positioniere(15.8,0,.7,A_RECHTS);
-        TextfeldArray[T_H_NAECHSTESEITE]->SetzeSignal(S_H_R2_N);
-        TextfeldArray[T_H_LETZTESEITE]->Positioniere(.2,0,.7,A_LINKS);
-        TextfeldArray[T_H_LETZTESEITE]->SetzeSignal(S_H_R2_L);
+        TextItemArray[T_BACK]->Positioniere(8,0,.7,A_MITTE);
+        TextItemArray[T_BACK]->SetzeSignal(S_H_ZUHELP_);
+        TextItemArray[T_H_NAECHSTESEITE]->Positioniere(15.8,0,.7,A_RECHTS);
+        TextItemArray[T_H_NAECHSTESEITE]->SetzeSignal(S_H_R2_N);
+        TextItemArray[T_H_LETZTESEITE]->Positioniere(.2,0,.7,A_LINKS);
+        TextItemArray[T_H_LETZTESEITE]->SetzeSignal(S_H_R2_L);
     } break;
 
-    case HILFEREGELN3: {
+    case HELP_REGELN3: {
         MenuBackground.Positioning(.5,.7,15.5,11);
         logo.Positioning(0,11,4,12);
-        logo.VollSichtbar();
-        TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
-        TextfeldArray[T_HILFE]->VollSichtbar();
-        TextfeldArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
-        TextfeldArray[T_H_BILLARDREGELN]->VollSichtbar();
+        logo.FullyVisible();
+        TextItemArray[T_HELP_]->Positioniere(4,11.4,.6,A_LINKS);
+        TextItemArray[T_HELP_]->VollSichtbar();
+        TextItemArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
+        TextItemArray[T_H_BILLARDREGELN]->VollSichtbar();
 
         GLfloat ypos=10;
-        TextfeldArray[747]->Positioniere(1,ypos,1,A_LINKS);
-        ypos-=.7*TextfeldArray[747]->TextboxHeight();
-        TextfeldArray[748]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[748]->TextboxHeight();
-        TextfeldArray[749]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[749]->TextboxHeight()+.5;
-        TextfeldArray[750]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[750]->TextboxHeight();
-        TextfeldArray[751]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[751]->TextboxHeight()+.2;
-        TextfeldArray[752]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[752]->TextboxHeight()+.2;
-        TextfeldArray[753]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[753]->TextboxHeight()+.2;
-        TextfeldArray[754]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[754]->TextboxHeight()+.5;
+        TextItemArray[747]->Positioniere(1,ypos,1,A_LINKS);
+        ypos-=.7*TextItemArray[747]->TextboxHeight();
+        TextItemArray[748]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[748]->TextboxHeight();
+        TextItemArray[749]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[749]->TextboxHeight()+.5;
+        TextItemArray[750]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[750]->TextboxHeight();
+        TextItemArray[751]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[751]->TextboxHeight()+.2;
+        TextItemArray[752]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[752]->TextboxHeight()+.2;
+        TextItemArray[753]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[753]->TextboxHeight()+.2;
+        TextItemArray[754]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[754]->TextboxHeight()+.5;
 
-        TextfeldArray[T_ZURUECK]->Positioniere(8,0,.7,A_MITTE);
-        TextfeldArray[T_ZURUECK]->SetzeSignal(S_H_ZUHILFE);
-        TextfeldArray[T_H_NAECHSTESEITE]->Positioniere(15.8,0,.7,A_RECHTS);
-        TextfeldArray[T_H_NAECHSTESEITE]->SetzeSignal(S_H_R3_N);
-        TextfeldArray[T_H_LETZTESEITE]->Positioniere(.2,0,.7,A_LINKS);
-        TextfeldArray[T_H_LETZTESEITE]->SetzeSignal(S_H_R3_L);
+        TextItemArray[T_BACK]->Positioniere(8,0,.7,A_MITTE);
+        TextItemArray[T_BACK]->SetzeSignal(S_H_ZUHELP_);
+        TextItemArray[T_H_NAECHSTESEITE]->Positioniere(15.8,0,.7,A_RECHTS);
+        TextItemArray[T_H_NAECHSTESEITE]->SetzeSignal(S_H_R3_N);
+        TextItemArray[T_H_LETZTESEITE]->Positioniere(.2,0,.7,A_LINKS);
+        TextItemArray[T_H_LETZTESEITE]->SetzeSignal(S_H_R3_L);
     } break;
 
-    case HILFEREGELN4: {
+    case HELP_REGELN4: {
         MenuBackground.Positioning(.5,.7,15.5,11);
         logo.Positioning(0,11,4,12);
-        logo.VollSichtbar();
-        TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
-        TextfeldArray[T_HILFE]->VollSichtbar();
-        TextfeldArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
-        TextfeldArray[T_H_BILLARDREGELN]->VollSichtbar();
+        logo.FullyVisible();
+        TextItemArray[T_HELP_]->Positioniere(4,11.4,.6,A_LINKS);
+        TextItemArray[T_HELP_]->VollSichtbar();
+        TextItemArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
+        TextItemArray[T_H_BILLARDREGELN]->VollSichtbar();
 
         GLfloat ypos=10;
-        TextfeldArray[747]->Positioniere(1,ypos,1,A_LINKS);
-        ypos-=.7*TextfeldArray[747]->TextboxHeight();
-        TextfeldArray[755]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[755]->TextboxHeight();
-        TextfeldArray[756]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[756]->TextboxHeight()+.5;
-        TextfeldArray[757]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[757]->TextboxHeight();
-        TextfeldArray[758]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[758]->TextboxHeight()+.5;
-        TextfeldArray[759]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[759]->TextboxHeight();
-        TextfeldArray[760]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[760]->TextboxHeight()+.5;
-        TextfeldArray[761]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[761]->TextboxHeight();
-        TextfeldArray[762]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[762]->TextboxHeight()+.5;
+        TextItemArray[747]->Positioniere(1,ypos,1,A_LINKS);
+        ypos-=.7*TextItemArray[747]->TextboxHeight();
+        TextItemArray[755]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[755]->TextboxHeight();
+        TextItemArray[756]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[756]->TextboxHeight()+.5;
+        TextItemArray[757]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[757]->TextboxHeight();
+        TextItemArray[758]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[758]->TextboxHeight()+.5;
+        TextItemArray[759]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[759]->TextboxHeight();
+        TextItemArray[760]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[760]->TextboxHeight()+.5;
+        TextItemArray[761]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[761]->TextboxHeight();
+        TextItemArray[762]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[762]->TextboxHeight()+.5;
 
-        TextfeldArray[T_ZURUECK]->Positioniere(8,0,.7,A_MITTE);
-        TextfeldArray[T_ZURUECK]->SetzeSignal(S_H_ZUHILFE);
-        TextfeldArray[T_H_NAECHSTESEITE]->Positioniere(15.8,0,.7,A_RECHTS);
-        TextfeldArray[T_H_NAECHSTESEITE]->SetzeSignal(S_H_R4_N);
-        TextfeldArray[T_H_LETZTESEITE]->Positioniere(.2,0,.7,A_LINKS);
-        TextfeldArray[T_H_LETZTESEITE]->SetzeSignal(S_H_R4_L);
+        TextItemArray[T_BACK]->Positioniere(8,0,.7,A_MITTE);
+        TextItemArray[T_BACK]->SetzeSignal(S_H_ZUHELP_);
+        TextItemArray[T_H_NAECHSTESEITE]->Positioniere(15.8,0,.7,A_RECHTS);
+        TextItemArray[T_H_NAECHSTESEITE]->SetzeSignal(S_H_R4_N);
+        TextItemArray[T_H_LETZTESEITE]->Positioniere(.2,0,.7,A_LINKS);
+        TextItemArray[T_H_LETZTESEITE]->SetzeSignal(S_H_R4_L);
     } break;
 
-    case HILFEREGELN5: {
+    case HELP_REGELN5: {
         MenuBackground.Positioning(.5,.7,15.5,11);
         logo.Positioning(0,11,4,12);
-        logo.VollSichtbar();
-        TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
-        TextfeldArray[T_HILFE]->VollSichtbar();
-        TextfeldArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
-        TextfeldArray[T_H_BILLARDREGELN]->VollSichtbar();
+        logo.FullyVisible();
+        TextItemArray[T_HELP_]->Positioniere(4,11.4,.6,A_LINKS);
+        TextItemArray[T_HELP_]->VollSichtbar();
+        TextItemArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
+        TextItemArray[T_H_BILLARDREGELN]->VollSichtbar();
 
         GLfloat ypos=10;
-        TextfeldArray[770]->Positioniere(1,ypos,1,A_LINKS);
-        ypos-=.7*TextfeldArray[770]->TextboxHeight();
-        TextfeldArray[771]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[771]->TextboxHeight();
-        TextfeldArray[772]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[772]->TextboxHeight()+.5;
-        TextfeldArray[773]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[773]->TextboxHeight();
-        TextfeldArray[774]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[774]->TextboxHeight()+.2;
-        TextfeldArray[775]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[775]->TextboxHeight();
+        TextItemArray[770]->Positioniere(1,ypos,1,A_LINKS);
+        ypos-=.7*TextItemArray[770]->TextboxHeight();
+        TextItemArray[771]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[771]->TextboxHeight();
+        TextItemArray[772]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[772]->TextboxHeight()+.5;
+        TextItemArray[773]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[773]->TextboxHeight();
+        TextItemArray[774]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[774]->TextboxHeight()+.2;
+        TextItemArray[775]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[775]->TextboxHeight();
 
 
-        TextfeldArray[T_ZURUECK]->Positioniere(8,0,.7,A_MITTE);
-        TextfeldArray[T_ZURUECK]->SetzeSignal(S_H_ZUHILFE);
-        TextfeldArray[T_H_NAECHSTESEITE]->Positioniere(15.8,0,.7,A_RECHTS);
-        TextfeldArray[T_H_NAECHSTESEITE]->SetzeSignal(S_H_R5_N);
-        TextfeldArray[T_H_LETZTESEITE]->Positioniere(.2,0,.7,A_LINKS);
-        TextfeldArray[T_H_LETZTESEITE]->SetzeSignal(S_H_R5_L);
+        TextItemArray[T_BACK]->Positioniere(8,0,.7,A_MITTE);
+        TextItemArray[T_BACK]->SetzeSignal(S_H_ZUHELP_);
+        TextItemArray[T_H_NAECHSTESEITE]->Positioniere(15.8,0,.7,A_RECHTS);
+        TextItemArray[T_H_NAECHSTESEITE]->SetzeSignal(S_H_R5_N);
+        TextItemArray[T_H_LETZTESEITE]->Positioniere(.2,0,.7,A_LINKS);
+        TextItemArray[T_H_LETZTESEITE]->SetzeSignal(S_H_R5_L);
     } break;
 
-    case HILFEREGELN6: {
+    case HELP_REGELN6: {
         MenuBackground.Positioning(.5,.7,15.5,11);
         logo.Positioning(0,11,4,12);
-        logo.VollSichtbar();
-        TextfeldArray[T_HILFE]->Positioniere(4,11.4,.6,A_LINKS);
-        TextfeldArray[T_HILFE]->VollSichtbar();
-        TextfeldArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
-        TextfeldArray[T_H_BILLARDREGELN]->VollSichtbar();
+        logo.FullyVisible();
+        TextItemArray[T_HELP_]->Positioniere(4,11.4,.6,A_LINKS);
+        TextItemArray[T_HELP_]->VollSichtbar();
+        TextItemArray[T_H_BILLARDREGELN]->Positioniere(4,11,.6,A_LINKS);
+        TextItemArray[T_H_BILLARDREGELN]->VollSichtbar();
 
         GLfloat ypos=10;
-        TextfeldArray[770]->Positioniere(1,ypos,1,A_LINKS);
-        ypos-=.7*TextfeldArray[770]->TextboxHeight();
-        TextfeldArray[776]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[776]->TextboxHeight();
-        TextfeldArray[777]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[777]->TextboxHeight()+.5;
-        TextfeldArray[778]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[778]->TextboxHeight();
-        TextfeldArray[779]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[779]->TextboxHeight()+.5;
-        TextfeldArray[780]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[780]->TextboxHeight();
-        TextfeldArray[781]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[781]->TextboxHeight()+.5;
-        TextfeldArray[782]->Positioniere(1.25,ypos,.7,A_LINKS);
-        ypos-=.5*TextfeldArray[782]->TextboxHeight();
-        TextfeldArray[783]->Positioniere(1.5,ypos,.5,A_LINKS);
-        ypos-=.5*TextfeldArray[783]->TextboxHeight()+.5;
+        TextItemArray[770]->Positioniere(1,ypos,1,A_LINKS);
+        ypos-=.7*TextItemArray[770]->TextboxHeight();
+        TextItemArray[776]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[776]->TextboxHeight();
+        TextItemArray[777]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[777]->TextboxHeight()+.5;
+        TextItemArray[778]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[778]->TextboxHeight();
+        TextItemArray[779]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[779]->TextboxHeight()+.5;
+        TextItemArray[780]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[780]->TextboxHeight();
+        TextItemArray[781]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[781]->TextboxHeight()+.5;
+        TextItemArray[782]->Positioniere(1.25,ypos,.7,A_LINKS);
+        ypos-=.5*TextItemArray[782]->TextboxHeight();
+        TextItemArray[783]->Positioniere(1.5,ypos,.5,A_LINKS);
+        ypos-=.5*TextItemArray[783]->TextboxHeight()+.5;
 
-        TextfeldArray[T_ZURUECK]->Positioniere(8,0,.7,A_MITTE);
-        TextfeldArray[T_ZURUECK]->SetzeSignal(S_H_ZUHILFE);
+        TextItemArray[T_BACK]->Positioniere(8,0,.7,A_MITTE);
+        TextItemArray[T_BACK]->SetzeSignal(S_H_ZUHELP_);
         //TextfeldArray[T_H_NAECHSTESEITE]->Positioniere(15.8,0,.7,A_RECHTS);
         //TextfeldArray[T_H_NAECHSTESEITE]->SetzeSignal(S_H_R5_N);
-        TextfeldArray[T_H_LETZTESEITE]->Positioniere(.2,0,.7,A_LINKS);
-        TextfeldArray[T_H_LETZTESEITE]->SetzeSignal(S_H_R6_L);
+        TextItemArray[T_H_LETZTESEITE]->Positioniere(.2,0,.7,A_LINKS);
+        TextItemArray[T_H_LETZTESEITE]->SetzeSignal(S_H_R6_L);
     } break;
 
     case EXIT: {
         MenuBackground.Positioning(4.5,4.5,11.5,8.5);
         logo.Positioning(4,9,12,11);
-        logo.VollSichtbar();
-        TextfeldArray[T_BEENDEN]->Positioniere(8,8,1,A_MITTE);
-        TextfeldArray[T_BEENDEN]->VollSichtbar();
-        TextfeldArray[T_JABEENDEN]->Positioniere(8,6,1,A_MITTE);
-        TextfeldArray[T_JABEENDEN]->SetzeSignal(S_BE_JABEENDEN);
-        TextfeldArray[T_ZURUECK]->Positioniere(8,1,1,A_MITTE);
+        logo.FullyVisible();
+        TextItemArray[T_EXIT]->Positioniere(8,8,1,A_MITTE);
+        TextItemArray[T_EXIT]->VollSichtbar();
+        TextItemArray[T_JAEXIT]->Positioniere(8,6,1,A_MITTE);
+        TextItemArray[T_JAEXIT]->SetzeSignal(S_BE_JAEXIT);
+        TextItemArray[T_BACK]->Positioniere(8,1,1,A_MITTE);
         if (AusSpiel) {
-            TextfeldArray[T_ZURUECK]->SetzeSignal(S_BE_ZURUECK_AS);
+            TextItemArray[T_BACK]->SetzeSignal(S_BE_BACK_AS);
         } else {
-            TextfeldArray[T_ZURUECK]->SetzeSignal(S_BE_ZURUECK);
+            TextItemArray[T_BACK]->SetzeSignal(S_BE_BACK);
         }
 
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
 
     } break;
 
     case OFF_GAME: {
         MenuBackground.Positioning(3.5,0.5,12.5,8.5);
         logo.Positioning(4,9,12,11);
-        logo.VollSichtbar();
-        TextfeldArray[T_WEITERSPIELEN]->Positioniere(8,7,1,A_MITTE);
-        TextfeldArray[T_WEITERSPIELEN]->SetzeSignal(S_AS_WEITERSPIELEN);
-        TextfeldArray[T_HILFE]->Positioniere(8,5.5,1,A_MITTE);
-        TextfeldArray[T_HILFE]->SetzeSignal(S_AS_HILFE);
-        TextfeldArray[T_TISCHVERLASSEN]->Positioniere(8,4,1,A_MITTE);
-        TextfeldArray[T_TISCHVERLASSEN]->SetzeSignal(S_AS_HAUPTMENU);
-        TextfeldArray[T_EINSTELLUNGEN]->Positioniere(8,2.5,1,A_MITTE);
-        TextfeldArray[T_EINSTELLUNGEN]->SetzeSignal(S_AS_EINSTELLUNGEN);
-        TextfeldArray[T_BEENDEN]->Positioniere(8,1,1,A_MITTE);
-        TextfeldArray[T_BEENDEN]->SetzeSignal(S_AS_BEENDEN);
+        logo.FullyVisible();
+        TextItemArray[T_WEITERSPIELEN]->Positioniere(8,7,1,A_MITTE);
+        TextItemArray[T_WEITERSPIELEN]->SetzeSignal(S_AS_WEITERSPIELEN);
+        TextItemArray[T_HELP_]->Positioniere(8,5.5,1,A_MITTE);
+        TextItemArray[T_HELP_]->SetzeSignal(S_AS_HELP);
+        TextItemArray[T_TABLE_VERLASSEN]->Positioniere(8,4,1,A_MITTE);
+        TextItemArray[T_TABLE_VERLASSEN]->SetzeSignal(S_AS_MAIN_MENU);
+        TextItemArray[T_SETUP_]->Positioniere(8,2.5,1,A_MITTE);
+        TextItemArray[T_SETUP_]->SetzeSignal(S_AS_SETUP);
+        TextItemArray[T_EXIT]->Positioniere(8,1,1,A_MITTE);
+        TextItemArray[T_EXIT]->SetzeSignal(S_AS_EXIT);
 
-        TextfeldArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
-        TextfeldArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
+        TextItemArray[T_HOMEPAGE]->Positioniere(15.9,0,.5,A_RECHTS);
+        TextItemArray[T_VERSION]->Positioniere(.1,0,.5,A_LINKS);
 
     } break;
 
-    case SPIEL: {
+    case PLAYING: {
         //    menuhintergrund.Positioniere(0,11,16,12);
 
         if (GameMode==TRAINING_MODE) {
@@ -1230,27 +1230,27 @@ void Menu::NewMenuState(){
             } break;
             }
             for (GLint i=Bereich;i<Bereich+10;i++) {
-                if (TextfeldArray[i]) {
-                    TextfeldArray[i]->Positioniere(0.2,posy,.5,A_LINKS);
-                    TextfeldArray[i]->VollSichtbar();
-                    posy-=.5*TextfeldArray[i]->TextboxHeight()+.2;
+                if (TextItemArray[i]) {
+                    TextItemArray[i]->Positioniere(0.2,posy,.5,A_LINKS);
+                    TextItemArray[i]->VollSichtbar();
+                    posy-=.5*TextItemArray[i]->TextboxHeight()+.2;
                 }
             }
             MenuBackground.Positioning(0,posy+.5,16,12);
         } break;
 
         case TRAINING_MODE: {
-            TextfeldArray[T_TRAINING]->Positioniere(15.75,0,1,A_RECHTS);//
-            TextfeldArray[T_NEUEEIGHT_BALLAUFSTELLUNG]->Positioniere(15.75,11.5,.5,A_RECHTS);
-            TextfeldArray[T_NEUEEIGHT_BALLAUFSTELLUNG]->SetzeSignal(S_SP_NEUEEIGHT_BALLAUFSTELLUNG);
-            TextfeldArray[T_NEUENEUNBALLAUFSTELLUNG]->Positioniere(15.75,11.2,.5,A_RECHTS);
-            TextfeldArray[T_NEUENEUNBALLAUFSTELLUNG]->SetzeSignal(S_SP_NEUENEUNBALLAUFSTELLUNG);
+            TextItemArray[T_TRAINING]->Positioniere(15.75,0,1,A_RECHTS);//
+            TextItemArray[T_NEWEIGHT_BALLAUFSTELLUNG]->Positioniere(15.75,11.5,.5,A_RECHTS);
+            TextItemArray[T_NEWEIGHT_BALLAUFSTELLUNG]->SetzeSignal(S_SP_NEWEIGHT_BALLAUFSTELLUNG);
+            TextItemArray[T_NEWNINE_BALLAUFSTELLUNG]->Positioniere(15.75,11.2,.5,A_RECHTS);
+            TextItemArray[T_NEWNINE_BALLAUFSTELLUNG]->SetzeSignal(S_SP_NEWNINE_BALLAUFSTELLUNG);
         } break;
-        case ZWEISPIELERSPIEL: {
-            TextfeldArray[T_ZWEISPIELER]->Positioniere(15.75,0,1,A_RECHTS);//12,11,16,12);
+        case TWO_PLAYERS: {
+            TextItemArray[T_TWO_PLAYERS]->Positioniere(15.75,0,1,A_RECHTS);//12,11,16,12);
             if (Judge.FrageNachSpielerAmStoss()==0) {
-                TextfeldArray[T_SPIELER1NAME]->Positioniere(0.2,11,1,A_LINKS);
-                TextfeldArray[T_SPIELER2NAME]->Positioniere(15.9,11.5,.5,A_RECHTS);
+                TextItemArray[T_SPIELER1NAME]->Positioniere(0.2,11,1,A_LINKS);
+                TextItemArray[T_SPIELER2NAME]->Positioniere(15.9,11.5,.5,A_RECHTS);
                 if (GameType==EIGHT_BALL) {
                     if (Judge.FrageNachGruppenVerteilung()==1) {
                         volle.Positioning(0.2,10,1.2,11);
@@ -1261,35 +1261,35 @@ void Menu::NewMenuState(){
                         volle.Positioning(15.4,11,15.9,11.5);
                     }
                 }
-                if (GameType==NEUNBALL) {
+                if (GameType==NINE_BALL) {
                     if (Judge.FrageNachFouls(0)==1) {
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("1 Foul");
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
+                        TextItemArray[T_ZUSATZTEXTLINKS]->SetText("1 Foul");
+                        TextItemArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
                     }
                     if (Judge.FrageNachFouls(0)==2) {
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("2 Fouls");
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
+                        TextItemArray[T_ZUSATZTEXTLINKS]->SetText("2 Fouls");
+                        TextItemArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
                     }
                     if (Judge.FrageNachFouls(0)==3) {
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("3 Fouls");
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
+                        TextItemArray[T_ZUSATZTEXTLINKS]->SetText("3 Fouls");
+                        TextItemArray[T_ZUSATZTEXTLINKS]->Positioniere(.2,10,1,A_LINKS);
                     }
                     if (Judge.FrageNachFouls(1)==1) {
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("1 Foul");
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->SetText("1 Foul");
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
                     }
                     if (Judge.FrageNachFouls(1)==2) {
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("2 Fouls");
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->SetText("2 Fouls");
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
                     }
                     if (Judge.FrageNachFouls(1)==3) {
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("3 Fouls");
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->SetText("3 Fouls");
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.9,11,.5,A_RECHTS);
                     }
                 }
             } else {
-                TextfeldArray[T_SPIELER1NAME]->Positioniere(0.1,11.5,.5,A_LINKS);
-                TextfeldArray[T_SPIELER2NAME]->Positioniere(15.8,11,1,A_RECHTS);
+                TextItemArray[T_SPIELER1NAME]->Positioniere(0.1,11.5,.5,A_LINKS);
+                TextItemArray[T_SPIELER2NAME]->Positioniere(15.8,11,1,A_RECHTS);
                 if (GameType==EIGHT_BALL) {
                     if (Judge.FrageNachGruppenVerteilung()==1) {
                         volle.Positioning(0.1,11,.5,11.5);
@@ -1300,37 +1300,37 @@ void Menu::NewMenuState(){
                         volle.Positioning(14.8,10,15.8,11);
                     }
                 }
-                if (GameType==NEUNBALL) {
+                if (GameType==NINE_BALL) {
                     if (Judge.FrageNachFouls(0)==1) {
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("1 Foul");
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
+                        TextItemArray[T_ZUSATZTEXTLINKS]->SetText("1 Foul");
+                        TextItemArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
                     }
                     if (Judge.FrageNachFouls(0)==2) {
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("2 Fouls");
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
+                        TextItemArray[T_ZUSATZTEXTLINKS]->SetText("2 Fouls");
+                        TextItemArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
                     }
                     if (Judge.FrageNachFouls(0)==3) {
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->SetzeText("3 Fouls");
-                        TextfeldArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
+                        TextItemArray[T_ZUSATZTEXTLINKS]->SetText("3 Fouls");
+                        TextItemArray[T_ZUSATZTEXTLINKS]->Positioniere(.1,11,.5,A_LINKS);
                     }
                     if (Judge.FrageNachFouls(1)==1) {
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("1 Foul");
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->SetText("1 Foul");
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
                     }
                     if (Judge.FrageNachFouls(1)==2) {
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("2 Fouls");
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->SetText("2 Fouls");
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
                     }
                     if (Judge.FrageNachFouls(1)==3) {
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->SetzeText("3 Fouls");
-                        TextfeldArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->SetText("3 Fouls");
+                        TextItemArray[T_ZUSATZTEXTRECHTS]->Positioniere(15.8,10,1,A_RECHTS);
                     }
                 }
             }
         } break;
 
             /*
-                                                      case NETZWERKSPIEL: {
+                                                      case NETWORK_PLAYER: {
                                                       netzwerkspiel.Positioniere(12,0,16,1);//12,11,16,12);
                                                       if (Schiedsrichter.FrageNachSpielerAmStoss()==0) {
                                                       spieler1.Positioniere(0,11,4,12);
@@ -1346,102 +1346,102 @@ void Menu::NewMenuState(){
 
         switch (StateMachine) {
         case VIEWING: {
-            TextfeldArray[T_VIEWING]->Positioniere(0.25,0,1,A_LINKS);
+            TextItemArray[T_VIEWING]->Positioniere(0.25,0,1,A_LINKS);
         } break;
         case AIMING: {
-            TextfeldArray[T_ZIELEN]->Positioniere(0.25,0,1,A_LINKS);
+            TextItemArray[T_ZIELEN]->Positioniere(0.25,0,1,A_LINKS);
         } break;
         case AUSHOLEN: {
-            TextfeldArray[T_AUSHOLEN]->Positioniere(0.25,0,1,A_LINKS);
+            TextItemArray[T_AUSHOLEN]->Positioniere(0.25,0,1,A_LINKS);
         } break;
         case SHOCK: {
-            TextfeldArray[T_STOSS]->Positioniere(0.25,0,1,A_LINKS);
+            TextItemArray[T_STOSS]->Positioniere(0.25,0,1,A_LINKS);
         } break;
         case NEW_WHITE: {
-            TextfeldArray[T_WEISSENEUSETZEN]->Positioniere(0.25,0,1,A_LINKS);
+            TextItemArray[T_WEISSENEUSETZEN]->Positioniere(0.25,0,1,A_LINKS);
         } break;
         case JUDGEING: {
-            TextfeldArray[T_STOSS]->Positioniere(0.25,0,1,A_LINKS);
+            TextItemArray[T_STOSS]->Positioniere(0.25,0,1,A_LINKS);
             if (Foul) {
-                TextfeldArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);
+                TextItemArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);
                 if (Judge.FrageNachBegruendung())
-                    TextfeldArray[Judge.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
+                    TextItemArray[Judge.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
             }
             if (!Player1Win && !Player2Win) {
-                TextfeldArray[T_ISTAMTISCH]->Positioniere(8,5,1,A_MITTE);
+                TextItemArray[T_ISTAMTISCH]->Positioniere(8,5,1,A_MITTE);
                 if (Judge.FrageNachSpielerAmStoss()==0) {
-                    TextfeldArray[T_SPIELER1NAME]->Positioniere(8,6,1.5,A_MITTE);
-                    TextfeldArray[T_SPIELER1NAME]->VollSichtbar();
+                    TextItemArray[T_SPIELER1NAME]->Positioniere(8,6,1.5,A_MITTE);
+                    TextItemArray[T_SPIELER1NAME]->VollSichtbar();
                 } else {
-                    TextfeldArray[T_SPIELER2NAME]->Positioniere(8,6,1.5,A_MITTE);
-                    TextfeldArray[T_SPIELER2NAME]->VollSichtbar();
+                    TextItemArray[T_SPIELER2NAME]->Positioniere(8,6,1.5,A_MITTE);
+                    TextItemArray[T_SPIELER2NAME]->VollSichtbar();
                 }
                 if (!NeuAufbauenOderWeiterspielen &&
                         !NeuAufbauenOderAchtEinsetzen) {
                     if (LageVerbesserungKopffeld) {
-                        TextfeldArray[T_IMKOPFFELD]->Positioniere(8,3,1,A_MITTE);
+                        TextItemArray[T_IMKOPFFELD]->Positioniere(8,3,1,A_MITTE);
                     }
                     if (LageVerbesserung|LageVerbesserungKopffeld) {
-                        TextfeldArray[T_UNDHATLAGEVERBESSERUNG]->Positioniere(8,4,1,A_MITTE);
+                        TextItemArray[T_UNDHATLAGEVERBESSERUNG]->Positioniere(8,4,1,A_MITTE);
                     }
                 } else if (NeuAufbauenOderAchtEinsetzen) {
                     MenuGesperrt=1;
                     if (Foul) {
-                        TextfeldArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);
+                        TextItemArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);
                         if (Judge.FrageNachBegruendung())
-                            TextfeldArray[Judge.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
+                            TextItemArray[Judge.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
                     }
-                    TextfeldArray[T_ISTAMTISCH]->Positioniere(8,6,1,A_MITTE);
+                    TextItemArray[T_ISTAMTISCH]->Positioniere(8,6,1,A_MITTE);
                     if (Judge.FrageNachSpielerAmStoss()==0) {
-                        TextfeldArray[T_SPIELER1NAME]->Positioniere(8,7,1.5,A_MITTE);
-                        TextfeldArray[T_SPIELER1NAME]->VollSichtbar();
+                        TextItemArray[T_SPIELER1NAME]->Positioniere(8,7,1.5,A_MITTE);
+                        TextItemArray[T_SPIELER1NAME]->VollSichtbar();
                     } else {
-                        TextfeldArray[T_SPIELER2NAME]->Positioniere(8,7,1.5,A_MITTE);
-                        TextfeldArray[T_SPIELER2NAME]->VollSichtbar();
+                        TextItemArray[T_SPIELER2NAME]->Positioniere(8,7,1.5,A_MITTE);
+                        TextItemArray[T_SPIELER2NAME]->VollSichtbar();
                     }
-                    TextfeldArray[T_WOLLENSIE]->Positioniere(8,4,1,A_MITTE);
-                    TextfeldArray[T_NEUAUFBAUEN]->Positioniere(5.5,2.5,1,A_MITTE);
-                    TextfeldArray[T_NEUAUFBAUEN]->SetzeSignal(S_SP_NEUAUFBAUEN);
-                    TextfeldArray[T_DIEACHTEINSETZEN]->Positioniere(10.5,2.5,1,A_MITTE);
-                    TextfeldArray[T_DIEACHTEINSETZEN]->SetzeSignal(S_SP_ACHTEINSETZEN);
+                    TextItemArray[T_WOLLENSIE]->Positioniere(8,4,1,A_MITTE);
+                    TextItemArray[T_NEUAUFBAUEN]->Positioniere(5.5,2.5,1,A_MITTE);
+                    TextItemArray[T_NEUAUFBAUEN]->SetzeSignal(S_SP_NEUAUFBAUEN);
+                    TextItemArray[T_DIEACHTEINSETZEN]->Positioniere(10.5,2.5,1,A_MITTE);
+                    TextItemArray[T_DIEACHTEINSETZEN]->SetzeSignal(S_SP_ACHTEINSETZEN);
                 } else if (NeuAufbauenOderWeiterspielen) {
                     MenuGesperrt=1;
                     if (Foul) {
-                        TextfeldArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);
+                        TextItemArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);
                         if (Judge.FrageNachBegruendung())
-                            TextfeldArray[Judge.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
+                            TextItemArray[Judge.FrageNachBegruendung()]->Positioniere(8,8.5,.75,A_MITTE);
                     }
-                    TextfeldArray[T_ISTAMTISCH]->Positioniere(8,6,1,A_MITTE);
+                    TextItemArray[T_ISTAMTISCH]->Positioniere(8,6,1,A_MITTE);
                     if (Judge.FrageNachSpielerAmStoss()==0) {
-                        TextfeldArray[T_SPIELER1NAME]->Positioniere(8,7,1.5,A_MITTE);
-                        TextfeldArray[T_SPIELER1NAME]->VollSichtbar();
+                        TextItemArray[T_SPIELER1NAME]->Positioniere(8,7,1.5,A_MITTE);
+                        TextItemArray[T_SPIELER1NAME]->VollSichtbar();
                     } else {
-                        TextfeldArray[T_SPIELER2NAME]->Positioniere(8,7,1.5,A_MITTE);
-                        TextfeldArray[T_SPIELER2NAME]->VollSichtbar();
+                        TextItemArray[T_SPIELER2NAME]->Positioniere(8,7,1.5,A_MITTE);
+                        TextItemArray[T_SPIELER2NAME]->VollSichtbar();
                     }
-                    TextfeldArray[T_WOLLENSIE]->Positioniere(8,4,1,A_MITTE);
-                    TextfeldArray[T_NEUAUFBAUEN]->Positioniere(5.5,2.5,1,A_MITTE);
-                    TextfeldArray[T_NEUAUFBAUEN]->SetzeSignal(S_SP_NEUAUFBAUEN);
-                    TextfeldArray[T_WEITERSPIELEN]->Positioniere(10.5,2.5,1,A_MITTE);
-                    TextfeldArray[T_WEITERSPIELEN]->SetzeSignal(S_SP_WEITERSPIELEN);
+                    TextItemArray[T_WOLLENSIE]->Positioniere(8,4,1,A_MITTE);
+                    TextItemArray[T_NEUAUFBAUEN]->Positioniere(5.5,2.5,1,A_MITTE);
+                    TextItemArray[T_NEUAUFBAUEN]->SetzeSignal(S_SP_NEUAUFBAUEN);
+                    TextItemArray[T_WEITERSPIELEN]->Positioniere(10.5,2.5,1,A_MITTE);
+                    TextItemArray[T_WEITERSPIELEN]->SetzeSignal(S_SP_WEITERSPIELEN);
                 }
             }
             if (Player1Win||Player2Win) {
                 MenuGesperrt=1;
-                TextfeldArray[T_HATGEWONNEN]->Positioniere(8,5,1,A_MITTE);
+                TextItemArray[T_HATGEWONNEN]->Positioniere(8,5,1,A_MITTE);
 
-                TextfeldArray[T_NEUESSPIEL]->Positioniere(5.5,3,1,A_MITTE);
-                TextfeldArray[T_NEUESSPIEL]->SetzeSignal(S_SP_NEUESSPIEL);
-                TextfeldArray[T_TISCHVERLASSEN]->Positioniere(10.5,3,1,A_MITTE);
-                TextfeldArray[T_TISCHVERLASSEN]->SetzeSignal(S_SP_HAUPTMENU);
+                TextItemArray[T_NEW_GAME]->Positioniere(5.5,3,1,A_MITTE);
+                TextItemArray[T_NEW_GAME]->SetzeSignal(S_SP_NEW_GAME);
+                TextItemArray[T_TABLE_VERLASSEN]->Positioniere(10.5,3,1,A_MITTE);
+                TextItemArray[T_TABLE_VERLASSEN]->SetzeSignal(S_SP_MAIN_MENU);
 
                 if (Player1Win) {
-                    TextfeldArray[T_SPIELER1NAME]->Positioniere(8,6,1.5,A_MITTE);
-                    TextfeldArray[T_SPIELER1NAME]->VollSichtbar();
+                    TextItemArray[T_SPIELER1NAME]->Positioniere(8,6,1.5,A_MITTE);
+                    TextItemArray[T_SPIELER1NAME]->VollSichtbar();
                 }
                 if (Player2Win) {
-                    TextfeldArray[T_SPIELER2NAME]->Positioniere(8,6,1.5,A_MITTE);
-                    TextfeldArray[T_SPIELER2NAME]->VollSichtbar();
+                    TextItemArray[T_SPIELER2NAME]->Positioniere(8,6,1.5,A_MITTE);
+                    TextItemArray[T_SPIELER2NAME]->VollSichtbar();
                 }
             }
         } break;
@@ -1485,26 +1485,26 @@ void Menu::SignalExecution(GLint Signal) {
     DelayCompensation=1;
     switch (Signal) {
     case S_LOGO: {
-        setMenuState(STARTBILDSCHIRM);
+        setMenuState(HOME_SCREEN);
     } break;
-    case S_HM_TRAINING: {
+    case S_MAINMENU_TRAINING: {
         setMenuState(TRAINING);
     } break;
-    case S_HM_ZWEISPIELER: {
+    case S_MAINMENU_TWO_PLAYERS: {
         setMenuState(TWO_PLAYERS);
     } break;
-    case S_HM_NETZWERKSPIEL: {
+    case S_MAINMENU_NETWORK_PLAYER: {
         setMenuState(NETWORK_MAIN);
     } break;
-    case S_HM_EINSTELLUNGEN: {
+    case S_MAINMENU_SETUP_: {
         AusSpiel=0;
-        setMenuState(SETTINGS);
+        setMenuState(SETUP);
     } break;
-    case S_HM_HILFE: {
+    case S_MAINMENU_HELP: {
         AusSpiel=0;
-        setMenuState(HILFE);
+        setMenuState(HELP);
     } break;
-    case S_HM_BEENDEN: {
+    case S_MAINMENU_EXIT: {
         AusSpiel=0;
         setMenuState(EXIT);
     } break;
@@ -1524,9 +1524,9 @@ void Menu::SignalExecution(GLint Signal) {
         Judge.NewGame(GameType);
         JudgeDecision=0;
         Camera.loadPosition(4);
-        setMenuState(SPIEL);
+        setMenuState(PLAYING);
     } break;
-    case S_TR_NEUNBALL: {
+    case S_TR_NINE_BALL: {
         Foul=0;
         LageVerbesserungKopffeld=1;
         LageVerbesserung=0;
@@ -1537,21 +1537,21 @@ void Menu::SignalExecution(GLint Signal) {
         MenuGesperrt=0;
         GameMode=TRAINING_MODE;
         StateMachine=NEW_WHITE;
-        GameType=NEUNBALL;
+        GameType=NINE_BALL;
         BoardLayout();
         Judge.NewGame(GameType);
         JudgeDecision=0;
         Camera.loadPosition(4);
-        setMenuState(SPIEL);
+        setMenuState(PLAYING);
     } break;
     case S_TR_VIERZEHNPLUSEINS: {
     } break;
-    case S_TR_ZURUECK: {
+    case S_TR_BACK: {
         setMenuState(MAIN_MENU);
     } break;
     case S_ZW_EIGHT_BALL: {
-        sprintf(Player1,"%s",TextfeldArray[T_SPIELER1NAME]->Text());
-        sprintf(Player2,"%s",TextfeldArray[T_SPIELER2NAME]->Text());
+        sprintf(Player1,"%s",TextItemArray[T_SPIELER1NAME]->Text());
+        sprintf(Player2,"%s",TextItemArray[T_SPIELER2NAME]->Text());
         WriteConfig();
         Foul=0;
         LageVerbesserungKopffeld=1;
@@ -1561,18 +1561,18 @@ void Menu::SignalExecution(GLint Signal) {
         Player1Win=0;
         Player2Win=0;
         MenuGesperrt=0;
-        GameMode=ZWEISPIELERSPIEL;
+        GameMode=TWO_PLAYERS;
         StateMachine=JUDGEING;
         GameType=EIGHT_BALL;
         BoardLayout();
         Judge.NewGame(GameType);
         JudgeDecision=0;
         Camera.loadPosition(4);
-        setMenuState(SPIEL);
+        setMenuState(PLAYING);
     } break;
-    case S_ZW_NEUNBALL: {
-        sprintf(Player1,"%s",TextfeldArray[T_SPIELER1NAME]->Text());
-        sprintf(Player2,"%s",TextfeldArray[T_SPIELER2NAME]->Text());
+    case S_ZW_NINE_BALL: {
+        sprintf(Player1,"%s",TextItemArray[T_SPIELER1NAME]->Text());
+        sprintf(Player2,"%s",TextItemArray[T_SPIELER2NAME]->Text());
         WriteConfig();
         Foul=0;
         LageVerbesserungKopffeld=1;
@@ -1582,168 +1582,168 @@ void Menu::SignalExecution(GLint Signal) {
         Player1Win=0;
         Player2Win=0;
         MenuGesperrt=0;
-        GameMode=ZWEISPIELERSPIEL;
+        GameMode=TWO_PLAYERS;
         StateMachine=JUDGEING;
-        GameType=NEUNBALL;
+        GameType=NINE_BALL;
         BoardLayout();
         Judge.NewGame(GameType);
         JudgeDecision=0;
         Camera.loadPosition(4);
-        setMenuState(SPIEL);
+        setMenuState(PLAYING);
     } break;
     case S_ZW_VIERZEHNPLUSEINS: {
     } break;
-    case S_ZW_ZURUECK: {
+    case S_ZW_BACK: {
         setMenuState(MAIN_MENU);
     } break;
-    case S_NE_BEGINNEN: {
+    case S_NE_BEGIN: {
         setMenuState(NETWORK_NEW);
     } break;
     case S_NE_TEILNEHMEN: {
         setMenuState(NETWORK_JOIN);
     } break;
-    case S_NE_ZURUECK: {
+    case S_NE_BACK: {
         setMenuState(MAIN_MENU);
     } break;
     case S_NB_EIGHT_BALL: {
     } break;
-    case S_NB_NEUNBALL: {
+    case S_NB_NINE_BALL: {
     } break;
     case S_NB_VIERZEHNPLUSEINS: {
     } break;
-    case S_NB_ZURUECK: {
+    case S_NB_BACK: {
     } break;
     case S_NT_IPADRESSE: {
     } break;
-    case S_NT_VERBINDEN: {
+    case S_NT_CONNECT: {
     } break;
-    case S_NT_ZURUECK: {
+    case S_NT_BACK: {
     } break;
-    case S_EI_STEUERUNG: {
+    case S_SETUP_CONTROL: {
         E_MouseSpeed=MouseSpeed;
         E_InvertX=InvertX;
         E_InvertY=InvertY;
-        setMenuState(EINSTELLUNGENSTEUERUNG);
+        setMenuState(SETUP_CONTROL);
     } break;
-    case S_EI_SPRACHE: {
-        setMenuState(SPRACHAUSWAHL);
+    case S_SETUP_LANGUAGE: {
+        setMenuState(LANGUAGE);
     } break;
-    case S_EI_GRAFIK: {
-        E_Texturgroesse=TextureSize;
+    case S_SETUP_VIDEO: {
+        E_BallTextureSize=TextureSize;
         E_AnzeigeTexturgroesse=DisplayTextureSize;
-        E_TischTexturgroesse=TableTextureSize;
+        E_TableTextureSize=TableTextureSize;
         E_KugelAufloesung=BallResolution;
-        E_BildschirmAufloesung=ScreenResolution;
-        E_Farbtiefe=ColorDepth;
-        E_Reflektionen=Reflections;
-        E_Schatten=Shadow;
-        E_AmbientesLicht=AmbientLighting;
-        E_TischLampen=TableLamps;
-        E_GrueneLampe=GrueneLamp;
-        E_ZeigeFPS=ShowFPS;
+        E_ScreenResolution=ScreenResolution;
+        E_ColorDepth=ColorDepth;
+        E_Reflection=Reflections;
+        E_Shadows=Shadow;
+        E_AmbientLighting=AmbientLighting;
+        E_TableLampes=TableLamps;
+        E_GreenLampe=GreenLamp;
+        E_ShowFPS=ShowFPS;
         E_TexMMM=TexMMM;
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_BALLTEXTUREN: {
-        switch (E_Texturgroesse) {
-        case 1: E_Texturgroesse=2; break;
-        case 2: E_Texturgroesse=4; break;
-        case 4: E_Texturgroesse=8; break;
-        case 8: E_Texturgroesse=1; break;
+    case S_SETUP_BALLTEXTURES: {
+        switch (E_BallTextureSize) {
+        case 1: E_BallTextureSize=2; break;
+        case 2: E_BallTextureSize=4; break;
+        case 4: E_BallTextureSize=8; break;
+        case 8: E_BallTextureSize=1; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_TISCHTEXTUREN: {
-        switch (E_TischTexturgroesse) {
-        case 1: E_TischTexturgroesse=2; break;
-        case 2: E_TischTexturgroesse=4; break;
-        case 4: E_TischTexturgroesse=8; break;
-        case 8: E_TischTexturgroesse=0; break;
-        case 0: E_TischTexturgroesse=1; break;
-        default: E_TischTexturgroesse=4; break;
+    case S_SETUP_TABLE_TEXTURES: {
+        switch (E_TableTextureSize) {
+        case 1: E_TableTextureSize=2; break;
+        case 2: E_TableTextureSize=4; break;
+        case 4: E_TableTextureSize=8; break;
+        case 8: E_TableTextureSize=0; break;
+        case 0: E_TableTextureSize=1; break;
+        default: E_TableTextureSize=4; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_ANZEIGETEXTUREN: {
+    case S_SETUP_ANZEIGETEXTURES: {
         switch (E_AnzeigeTexturgroesse) {
         case 1: E_AnzeigeTexturgroesse=2; break;
         case 2: E_AnzeigeTexturgroesse=1; break;
         default: E_AnzeigeTexturgroesse=1; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_AUFLOESUNG: {
-        switch (E_BildschirmAufloesung) {
-        case 640: E_BildschirmAufloesung=1600; break;
-        case 800: E_BildschirmAufloesung=640; break;
-        case 1024: E_BildschirmAufloesung=800; break;
-        case 1280: E_BildschirmAufloesung=1024; break;
-        case 1600: E_BildschirmAufloesung=1280; break;
-        default: E_BildschirmAufloesung=800; break;
+    case S_SETUP_RESOLUTION: {
+        switch (E_ScreenResolution) {
+        case 640: E_ScreenResolution=1600; break;
+        case 800: E_ScreenResolution=640; break;
+        case 1024: E_ScreenResolution=800; break;
+        case 1280: E_ScreenResolution=1024; break;
+        case 1600: E_ScreenResolution=1280; break;
+        default: E_ScreenResolution=800; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_FARBTIEFE: {
-        switch (E_Farbtiefe) {
-        case 16: E_Farbtiefe=32; break;
-        default: E_Farbtiefe=16; break;
+    case S_SETUP_COLOR_DEPTH: {
+        switch (E_ColorDepth) {
+        case 16: E_ColorDepth=32; break;
+        default: E_ColorDepth=16; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_REFLEKTIONEN: {
-        switch (E_Reflektionen) {
-        case 0: E_Reflektionen=1; break;
-        default:  E_Reflektionen=0; break;
+    case S_SETUP_REFLEKTIONEN: {
+        switch (E_Reflection) {
+        case 0: E_Reflection=1; break;
+        default:  E_Reflection=0; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_SCHATTEN: {
-        switch (E_Schatten) {
-        case 0: E_Schatten=1; break;
-        default:  E_Schatten=0; break;
+    case S_SETUP_SHADOWS: {
+        switch (E_Shadows) {
+        case 0: E_Shadows=1; break;
+        default:  E_Shadows=0; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_TEXTURINTERPOLATION: {
+    case S_SETUP_TEXTURINTERPOLATION: {
         switch (E_TexMMM) {
         case 0: E_TexMMM=7; break;
         case 2: E_TexMMM=0; break;
         case 3: E_TexMMM=2; break;
         default:  E_TexMMM=3; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_AMBIENTESLICHT: {
-        switch (E_AmbientesLicht) {
-        case 1: E_AmbientesLicht=0; break;
-        default:  E_AmbientesLicht=1; break;
+    case S_SETUP_AMBIENCE_LIGHTING: {
+        switch (E_AmbientLighting) {
+        case 1: E_AmbientLighting=0; break;
+        default:  E_AmbientLighting=1; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_TISCHLAMPEN: {
-        switch (E_TischLampen) {
-        case 1: E_TischLampen=2; break;
-        case 2: E_TischLampen=3; break;
-        case 3: E_TischLampen=1; break;
-        default:  E_TischLampen=1; break;
+    case S_SETUP_TABLE_LAMPEN: {
+        switch (E_TableLampes) {
+        case 1: E_TableLampes=2; break;
+        case 2: E_TableLampes=3; break;
+        case 3: E_TableLampes=1; break;
+        default:  E_TableLampes=1; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_GRUENELAMPE: {
-        switch (E_GrueneLampe) {
-        case 1: E_GrueneLampe=0; break;
-        default:  E_GrueneLampe=1; break;
+    case S_SETUP_GRUENELAMPE: {
+        switch (E_GreenLampe) {
+        case 1: E_GreenLampe=0; break;
+        default:  E_GreenLampe=1; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_FPS: {
-        switch (E_ZeigeFPS) {
-        case 1: ShowFPS=E_ZeigeFPS=0; break;
-        default: ShowFPS=E_ZeigeFPS=1; break;
+    case S_SETUP_FPS: {
+        switch (E_ShowFPS) {
+        case 1: ShowFPS=E_ShowFPS=0; break;
+        default: ShowFPS=E_ShowFPS=1; break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_BALLGEOMETRIE: {
+    case S_SETUP_BALLGEOMETRIE: {
         switch (E_KugelAufloesung) {
         case 1: {
             E_KugelAufloesung=7;
@@ -1770,9 +1770,9 @@ void Menu::SignalExecution(GLint Signal) {
             E_KugelAufloesung=7;
         } break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
-    case S_EI_MOUSESPEED: {
+    case S_SETUP_MOUSESPEED: {
         if (E_MouseSpeed<=.21) {
             E_MouseSpeed=.8;
         } else if (E_MouseSpeed<=.29) {
@@ -1784,111 +1784,111 @@ void Menu::SignalExecution(GLint Signal) {
         } else {
             E_MouseSpeed=.565;
         }
-        setMenuState(EINSTELLUNGENSTEUERUNG);
+        setMenuState(SETUP_CONTROL);
     } break;
-    case S_EI_XINVERT: {
+    case S_SETUP_XINVERT: {
         if (E_InvertX) {
             E_InvertX=0;
         } else {
             E_InvertX=1;
         }
-        setMenuState(EINSTELLUNGENSTEUERUNG);
+        setMenuState(SETUP_CONTROL);
     } break;
-    case S_EI_YINVERT: {
+    case S_SETUP_YINVERT: {
         if (E_InvertY) {
             E_InvertY=0;
         } else {
             E_InvertY=1;
         }
-        setMenuState(EINSTELLUNGENSTEUERUNG);
+        setMenuState(SETUP_CONTROL);
     } break;
 
 
-    case S_EI_QUALITAET: {
-        switch(Qualitaet) {
+    case S_SETUP_QUALITAET: {
+        switch(Quality) {
         case 1: {
             E_KugelAufloesung=11;
-            E_Texturgroesse=1;
-            E_TischTexturgroesse=1;
+            E_BallTextureSize=1;
+            E_TableTextureSize=1;
             E_AnzeigeTexturgroesse=1;
-            E_Reflektionen=1;
-            E_BildschirmAufloesung=1024;
-            E_Farbtiefe=32;
-            E_Schatten=1;
-            E_TischLampen=3;
-            E_GrueneLampe=1;
+            E_Reflection=1;
+            E_ScreenResolution=1024;
+            E_ColorDepth=32;
+            E_Shadows=1;
+            E_TableLampes=3;
+            E_GreenLampe=1;
             E_TexMMM=7;
         } break;
         case 2: {
             E_KugelAufloesung=3;
-            E_Texturgroesse=8;
-            E_TischTexturgroesse=0;
+            E_BallTextureSize=8;
+            E_TableTextureSize=0;
             E_AnzeigeTexturgroesse=2;
-            E_Reflektionen=0;
-            E_BildschirmAufloesung=640;
-            E_Farbtiefe=16;
-            E_Schatten=0;
-            E_TischLampen=1;
-            E_GrueneLampe=0;
+            E_Reflection=0;
+            E_ScreenResolution=640;
+            E_ColorDepth=16;
+            E_Shadows=0;
+            E_TableLampes=1;
+            E_GreenLampe=0;
             E_TexMMM=0;
         } break;
         case 3: {
             E_KugelAufloesung=5;
-            E_Texturgroesse=4;
-            E_TischTexturgroesse=4;
+            E_BallTextureSize=4;
+            E_TableTextureSize=4;
             E_AnzeigeTexturgroesse=2;
-            E_Reflektionen=0;
-            E_BildschirmAufloesung=640;
-            E_Farbtiefe=16;
-            E_Schatten=1;
-            E_TischLampen=1;
-            E_GrueneLampe=0;
+            E_Reflection=0;
+            E_ScreenResolution=640;
+            E_ColorDepth=16;
+            E_Shadows=1;
+            E_TableLampes=1;
+            E_GreenLampe=0;
             E_TexMMM=2;
         } break;
         case 4: {
             E_KugelAufloesung=7;
-            E_Texturgroesse=2;
-            E_TischTexturgroesse=2;
+            E_BallTextureSize=2;
+            E_TableTextureSize=2;
             E_AnzeigeTexturgroesse=1;
-            E_Reflektionen=0;
-            E_BildschirmAufloesung=800;
-            E_Farbtiefe=16;
-            E_Schatten=1;
-            E_TischLampen=2;
-            E_GrueneLampe=0;
+            E_Reflection=0;
+            E_ScreenResolution=800;
+            E_ColorDepth=16;
+            E_Shadows=1;
+            E_TableLampes=2;
+            E_GreenLampe=0;
             E_TexMMM=3;
         } break;
         case 5: {
             E_KugelAufloesung=7;
-            E_Texturgroesse=2;
-            E_TischTexturgroesse=1;
+            E_BallTextureSize=2;
+            E_TableTextureSize=1;
             E_AnzeigeTexturgroesse=1;
-            E_Reflektionen=1;
-            E_BildschirmAufloesung=1024;
-            E_Farbtiefe=16;
-            E_Schatten=1;
-            E_TischLampen=2;
-            E_GrueneLampe=1;
+            E_Reflection=1;
+            E_ScreenResolution=1024;
+            E_ColorDepth=16;
+            E_Shadows=1;
+            E_TableLampes=2;
+            E_GreenLampe=1;
             E_TexMMM=7;
         } break;
         default: {
             E_KugelAufloesung=7;
-            E_Texturgroesse=2;
-            E_TischTexturgroesse=2;
+            E_BallTextureSize=2;
+            E_TableTextureSize=2;
             E_AnzeigeTexturgroesse=1;
-            E_Reflektionen=0;
-            E_BildschirmAufloesung=800;
-            E_Farbtiefe=16;
-            E_Schatten=1;
-            E_TischLampen=2;
-            E_GrueneLampe=0;
+            E_Reflection=0;
+            E_ScreenResolution=800;
+            E_ColorDepth=16;
+            E_Shadows=1;
+            E_TableLampes=2;
+            E_GreenLampe=0;
             E_TexMMM=3;
         } break;
         }
-        setMenuState(EINSTELLUNGENGRAFIK);
+        setMenuState(SETUP_VIDEO);
     } break;
 
-    case S_EI_GRAFIKUEBERNEHMEN: {
+    case S_SETUP_VIDEOUEBERNEHMEN: {
 
         GLint TexMMMgeaendert=0;
 
@@ -1897,28 +1897,28 @@ void Menu::SignalExecution(GLint Signal) {
             TexMMM=E_TexMMM;
         }
 
-        if (TextureSize!=E_Texturgroesse ||
+        if (TextureSize!=E_BallTextureSize ||
                 BallResolution!=E_KugelAufloesung ||
                 TexMMMgeaendert ||
-                Shadow!=E_Schatten) {
+                Shadow!=E_Shadows) {
 
             initializeBallTables(E_KugelAufloesung);
 
             for (GLint j=0;j<16;j++) {  // Initialisierung der Baelle + Laden der Texturen
-                Ball[j].Init(j,E_Texturgroesse,E_KugelAufloesung,E_Schatten);
+                Ball[j].Init(j,E_BallTextureSize,E_KugelAufloesung,E_Shadows);
             }
         }
 
-        if (TableTextureSize!=E_TischTexturgroesse ||
+        if (TableTextureSize!=E_TableTextureSize ||
                 TexMMMgeaendert){
-            Table.Init(E_TischTexturgroesse);
+            Table.Init(E_TableTextureSize);
         }
 
-        if (Reflections!=E_Reflektionen ||
-                AmbientLighting!=E_AmbientesLicht ||
-                TableLamps!=E_TischLampen ||
-                GrueneLamp!=E_GrueneLampe) {
-            Lighting.Init(E_AmbientesLicht,E_TischLampen,E_GrueneLampe,E_Reflektionen);
+        if (Reflections!=E_Reflection ||
+                AmbientLighting!=E_AmbientLighting ||
+                TableLamps!=E_TableLampes ||
+                GreenLamp!=E_GreenLampe) {
+            Lighting.Init(E_AmbientLighting,E_TableLampes,E_GreenLampe,E_Reflection);
         }
 
         if (DisplayTextureSize!=E_AnzeigeTexturgroesse||
@@ -1927,76 +1927,76 @@ void Menu::SignalExecution(GLint Signal) {
         }
 
         GLint NeueAufloesung=0;
-        if (ColorDepth!=E_Farbtiefe || ScreenResolution!=E_BildschirmAufloesung)
+        if (ColorDepth!=E_ColorDepth || ScreenResolution!=E_ScreenResolution)
             NeueAufloesung=1;
 
         BallResolution=E_KugelAufloesung;
-        TextureSize=E_Texturgroesse;
+        TextureSize=E_BallTextureSize;
         DisplayTextureSize=E_AnzeigeTexturgroesse;
-        TableTextureSize=E_TischTexturgroesse;
-        Reflections=E_Reflektionen;
-        ScreenResolution=E_BildschirmAufloesung;
-        ColorDepth=E_Farbtiefe;
-        Shadow=E_Schatten;
-        TableTextureSize=E_TischTexturgroesse;
-        AmbientLighting=E_AmbientesLicht;
-        TableLamps=E_TischLampen;
-        GrueneLamp=E_GrueneLampe;
-        ShowFPS=E_ZeigeFPS;
+        TableTextureSize=E_TableTextureSize;
+        Reflections=E_Reflection;
+        ScreenResolution=E_ScreenResolution;
+        ColorDepth=E_ColorDepth;
+        Shadow=E_Shadows;
+        TableTextureSize=E_TableTextureSize;
+        AmbientLighting=E_AmbientLighting;
+        TableLamps=E_TableLampes;
+        GreenLamp=E_GreenLampe;
+        ShowFPS=E_ShowFPS;
 
         WriteConfig();
 
         if (NeueAufloesung)
-            setMenuState(EINSTELLUNGENGRAFIKHINWEIS);
+            setMenuState(SETUP_VIDEO_NOTICE);
         else
-            setMenuState(EINSTELLUNGENGRAFIK);
+            setMenuState(SETUP_VIDEO);
 
     } break;
-    case S_EI_GRAFIKZURUECK: {
-        setMenuState(SETTINGS);
+    case S_SETUP_VIDEOBACK: {
+        setMenuState(SETUP);
     } break;
-    case S_EI_STEUERUNGUEBERNEHMEN: {
+    case S_SETUP_CONTROLUEBERNEHMEN: {
         InvertX=E_InvertX;
         InvertY=E_InvertY;
         MouseSpeed=E_MouseSpeed;
         WriteConfig();
-        setMenuState(SETTINGS);
+        setMenuState(SETUP);
     } break;
-    case S_EI_STEUERUNGZURUECK: {
-        setMenuState(SETTINGS);
+    case S_SETUP_CONTROLBACK: {
+        setMenuState(SETUP);
     } break;
-    case S_EI_ZURUECK: {
+    case S_SETUP_BACK: {
         setMenuState(MAIN_MENU);
     } break;
-    case S_EI_ZURUECK_AS: {
+    case S_SETUP_BACK_AS: {
         setMenuState(OFF_GAME);
     } break;
-    case S_BE_JABEENDEN: {
+    case S_BE_JAEXIT: {
         exit(0);
     } break;
-    case S_BE_ZURUECK: {
+    case S_BE_BACK: {
         setMenuState(MAIN_MENU);
     } break;
-    case S_BE_ZURUECK_AS: {
+    case S_BE_BACK_AS: {
         setMenuState(OFF_GAME);
     } break;
     case S_AS_WEITERSPIELEN: {
-        setMenuState(SPIEL);
+        setMenuState(PLAYING);
     } break;
-    case S_AS_HAUPTMENU: {
+    case S_AS_MAIN_MENU: {
         AusSpiel=0;
         StateMachine=START;
         setMenuState(MAIN_MENU);
     } break;
-    case S_AS_HILFE: {
+    case S_AS_HELP: {
         AusSpiel=1;
-        setMenuState(HILFE);
+        setMenuState(HELP);
     } break;
-    case S_AS_EINSTELLUNGEN: {
+    case S_AS_SETUP: {
         AusSpiel=1;
-        setMenuState(SETTINGS);
+        setMenuState(SETUP);
     } break;
-    case S_AS_BEENDEN: {
+    case S_AS_EXIT: {
         AusSpiel=1;
         setMenuState(EXIT);
     } break;
@@ -2167,12 +2167,12 @@ void Menu::SignalExecution(GLint Signal) {
         Camera.loadPosition(4);
         NewMenuState();
     } break;
-    case S_SP_HAUPTMENU:{
+    case S_SP_MAIN_MENU:{
         AusSpiel=0;
         StateMachine=START;
         setMenuState(MAIN_MENU);
     } break;
-    case S_SP_NEUESSPIEL:{
+    case S_SP_NEW_GAME:{
         Foul=0;
         LageVerbesserungKopffeld=1;
         LageVerbesserung=0;
@@ -2192,45 +2192,45 @@ void Menu::SignalExecution(GLint Signal) {
         Camera.loadPosition(4);
         NewMenuState();
     } break;
-    case S_SP_NEUEEIGHT_BALLAUFSTELLUNG:{
+    case S_SP_NEWEIGHT_BALLAUFSTELLUNG:{
         if (StateMachine==VIEWING||
                 StateMachine==NEW_WHITE) {
             GameType=EIGHT_BALL;
             BoardLayout();
         }
     } break;
-    case S_SP_NEUENEUNBALLAUFSTELLUNG:{
+    case S_SP_NEWNINE_BALLAUFSTELLUNG:{
         if (StateMachine==VIEWING||
                 StateMachine==NEW_WHITE) {
-            GameType=NEUNBALL;
+            GameType=NINE_BALL;
             BoardLayout();
         }
     } break;
     case S_SPIELER1HERHOEREN:{
         for (GLint TextfeldNr=0;TextfeldNr<1000;TextfeldNr++) {
-            if (TextfeldArray[TextfeldNr])
-                TextfeldArray[TextfeldNr]->Weghoeren();
+            if (TextItemArray[TextfeldNr])
+                TextItemArray[TextfeldNr]->Weghoeren();
         }
-        TextfeldArray[T_SPIELER1NAME]->Herhoeren();
+        TextItemArray[T_SPIELER1NAME]->Herhoeren();
     } break;
     case S_SPIELER2HERHOEREN:{
         for (GLint TextfeldNr=0;TextfeldNr<1000;TextfeldNr++) {
-            if (TextfeldArray[TextfeldNr])
-                TextfeldArray[TextfeldNr]->Weghoeren();
+            if (TextItemArray[TextfeldNr])
+                TextItemArray[TextfeldNr]->Weghoeren();
         }
-        TextfeldArray[T_SPIELER2NAME]->Herhoeren();
+        TextItemArray[T_SPIELER2NAME]->Herhoeren();
     } break;
-    case S_NETZWERKSPIELERHERHOEREN:{
+    case S_NETWORK_PLAYERERHERHOEREN:{
         //for (GLint TextfeldNr=0;TextfeldNr<TextfeldAnzahl;TextfeldNr++) {
         //  TextfeldArray[TextfeldNr]->Weghoeren();
         //}
         //T_NetzwerkSpielerName.Herhoeren();
     } break;
-    case S_H_TASTENBELEGUNGEN: {
-        setMenuState(HILFETASTENBELEGUNGEN);
+    case S_H_KEY_ASSIGNMENTS: {
+        setMenuState(HELP_KEY_SET);
     } break;
     case S_H_BILLARDREGELN: {
-        setMenuState(HILFEREGELN1);
+        setMenuState(HELP_REGELN1);
     } break;
     case S_H_TUTORIAL: {
         Foul=0;
@@ -2248,87 +2248,87 @@ void Menu::SignalExecution(GLint Signal) {
         Judge.NewGame(GameType);
         JudgeDecision=0;
         Camera.loadPosition(4);
-        setMenuState(SPIEL);
+        setMenuState(PLAYING);
     } break;
-    case S_H_ZUHILFE: {
-        setMenuState(HILFE);
+    case S_H_ZUHELP_: {
+        setMenuState(HELP);
     } break;
     case S_H_E1_N: {
-        setMenuState(HILFEEINFUEHRUNG2);
+        setMenuState(HELP_EINFUEHRUNG2);
     } break;
     case S_H_E2_N: {
-        setMenuState(HILFEEINFUEHRUNG3);
+        setMenuState(HELP_EINFUEHRUNG3);
     } break;
     case S_H_E2_L: {
-        setMenuState(HILFEEINFUEHRUNG1);
+        setMenuState(HELP_EINFUEHRUNG1);
     } break;
     case S_H_E3_N: {
-        setMenuState(HILFEEINFUEHRUNG4);
+        setMenuState(HELP_EINFUEHRUNG4);
     } break;
     case S_H_E3_L: {
-        setMenuState(HILFEEINFUEHRUNG2);
+        setMenuState(HELP_EINFUEHRUNG2);
     } break;
     case S_H_E4_N: {
-        setMenuState(HILFEEINFUEHRUNG5);
+        setMenuState(HELP_EINFUEHRUNG5);
     } break;
     case S_H_E4_L: {
-        setMenuState(HILFEEINFUEHRUNG3);
+        setMenuState(HELP_EINFUEHRUNG3);
     } break;
     case S_H_E5_N: {
-        setMenuState(HILFEEINFUEHRUNG6);
+        setMenuState(HELP_EINFUEHRUNG6);
     } break;
     case S_H_E5_L: {
-        setMenuState(HILFEEINFUEHRUNG4);
+        setMenuState(HELP_EINFUEHRUNG4);
     } break;
     case S_H_E6_N: {
-        setMenuState(HILFEEINFUEHRUNG7);
+        setMenuState(HELP_EINFUEHRUNG7);
     } break;
     case S_H_E6_L: {
-        setMenuState(HILFEEINFUEHRUNG5);
+        setMenuState(HELP_EINFUEHRUNG5);
     } break;
     case S_H_R1_N: {
-        setMenuState(HILFEREGELN2);
+        setMenuState(HELP_REGELN2);
     } break;
     case S_H_R2_N: {
-        setMenuState(HILFEREGELN3);
+        setMenuState(HELP_REGELN3);
     } break;
     case S_H_R2_L: {
-        setMenuState(HILFEREGELN1);
+        setMenuState(HELP_REGELN1);
     } break;
     case S_H_R3_N: {
-        setMenuState(HILFEREGELN4);
+        setMenuState(HELP_REGELN4);
     } break;
     case S_H_R3_L: {
-        setMenuState(HILFEREGELN2);
+        setMenuState(HELP_REGELN2);
     } break;
     case S_H_R4_N: {
-        setMenuState(HILFEREGELN5);
+        setMenuState(HELP_REGELN5);
     } break;
     case S_H_R4_L: {
-        setMenuState(HILFEREGELN3);
+        setMenuState(HELP_REGELN3);
     } break;
     case S_H_R5_N: {
-        setMenuState(HILFEREGELN6);
+        setMenuState(HELP_REGELN6);
     } break;
     case S_H_R5_L: {
-        setMenuState(HILFEREGELN4);
+        setMenuState(HELP_REGELN4);
     } break;
     case S_H_R6_N: {
-        setMenuState(HILFEREGELN7);
+        setMenuState(HELP_REGELN7);
     } break;
     case S_H_R6_L: {
-        setMenuState(HILFEREGELN5);
+        setMenuState(HELP_REGELN5);
     } break;
 
     default:{
         if (Signal>=900 && Signal<990) {
             LoadLanguage(Signal);
             for (GLint dl=0 ; dl < 1000 ; dl++ ) {
-                if (!TextfeldArray[dl]) continue;
-                TextfeldArray[dl]->GenerateDisplayList();
+                if (!TextItemArray[dl]) continue;
+                TextItemArray[dl]->GenerateDisplayList();
                 printf("."); fflush(stdout);
             }
-            if (Language) setMenuState(SETTINGS);
+            if (Language) setMenuState(SETUP);
             else SignalExecution(S_H_TUTORIAL);
             //SetzeMenuZustand(MAIN_MENU);
             Language=Signal;
@@ -2344,8 +2344,8 @@ GLint Menu::KeyboardButton (unsigned char Button,int,int){
     GLint TextfeldNr=0;
 
     while (!Reaktion && TextfeldNr<1000) {
-        if( TextfeldArray[TextfeldNr] )
-            Reaktion = TextfeldArray[TextfeldNr]->Scale(Button);
+        if( TextItemArray[TextfeldNr] )
+            Reaktion = TextItemArray[TextfeldNr]->Scale(Button);
 
         //if (Reaktion) {
         //  printf("\nReaktion von %i\n",TextfeldNr);
@@ -2358,7 +2358,7 @@ GLint Menu::KeyboardButton (unsigned char Button,int,int){
     if (Reaktion) return 1;
 
     if (MenuGesperrt ||
-            MenuState!=SPIEL) {
+            MenuState!=PLAYING) {
         return 1;
     }
 
@@ -2366,7 +2366,7 @@ GLint Menu::KeyboardButton (unsigned char Button,int,int){
 
     switch (MenuState) {
 
-    case STARTBILDSCHIRM: {
+    case HOME_SCREEN: {
         switch (Button) {
         case 27: {
             MenuState=MAIN_MENU;
@@ -2449,7 +2449,7 @@ GLint Menu::KeyboardButton (unsigned char Button,int,int){
     case OFF_GAME:{
     } break;
 
-    case SETTINGS:{
+    case SETUP:{
     } break;
 
     }
@@ -2460,5 +2460,5 @@ GLint Menu::KeyboardButton (unsigned char Button,int,int){
 void Menu::SetFPS(GLint fps) {
     char temp[]={0,0,0,0,0,0,0,0,0,0};
     sprintf(temp,"%i fps",fps);
-    TextfeldArray[T_FPS]->SetzeText(temp);
+    TextItemArray[T_FPS]->SetText(temp);
 }

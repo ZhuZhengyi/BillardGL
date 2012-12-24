@@ -25,7 +25,7 @@ extern class Menu Menu;
 extern class Judge Judge;
 
 extern GLint JudgeDecision;
-extern GLint SpielerAmStoss;
+extern GLint PlayerOnShock;
 extern GLint RecodingChanges;
 extern GLint Foul;
 extern GLint LageVerbesserungKopffeld;

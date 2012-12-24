@@ -1,15 +1,15 @@
-class Textfeld {
+class TextItem {
 	public:
-		Textfeld();
-		GLint dummyInitialisiere(GLint);
+		TextItem();
+		GLint dummyInit(GLint);
 		void Initialisiere(GLint);
 		void Initialisiere(GLint,char[]);
 		void InitialisiereKDL(GLint,char[]);
-		void male();
+		void draw();
 		void Positioniere(GLfloat,GLfloat,GLfloat,GLint);
 		void PositioniereFix(GLfloat,GLfloat,GLfloat,GLint);
-		void SetzeText(char[]);
-		void SetzeTextKDL(char[]);
+		void SetText(char[]);
+		void SetTextKDL(char[]);
 		GLint Scale(char);
 		char* Text();
 
@@ -21,7 +21,7 @@ class Textfeld {
 		void SetzeSignal(GLint);
 		GLint MouseButton(int,int,int,int);
 
-		void SetzeMaxBreite(GLfloat);
+		void SetMaxWidth(GLfloat);
 
 		void Weghoeren();
 		void Herhoeren();
@@ -42,8 +42,8 @@ class Textfeld {
 		GLint InAnimation;
 		GLint Signal;
 		GLint Zeit; 
-		GLint DisplayListAnfang;
-		GLuint TexturenAnfang[512];
+		GLint DisplayListArray;
+		GLuint TextureArray[512];
 		GLint TextfeldIndex;
 		GLint Horchen;
 		GLint Zeilen;
@@ -57,13 +57,13 @@ class Textfeld {
 #define A_MITTE  2
 #define A_RECHTS 3
 
-#define AUSGEBLENDET 0.0
+#define HIDDEN 0.0
 #define TRANSPARENT  0.2
 #define EINGEBLENDET 0.6
-#define ANGEWAEHLT   0.8
-#define VOLLSICHTBAR 1.0
+#define SELECTED   0.8
+#define FULL_VISIBLE 1.0
 
-#define ANIMATIONSDAUER 100
+#define ANIMATION_TIME 100
 
 
 #ifndef M_PI

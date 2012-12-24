@@ -25,8 +25,8 @@ Scale::Scale() {
 	alt_Alpha=0.0;
 	InAnimation=0;
 	Signal=0;
-	Zeit=0;
-	Textur=0;
+    ElapseTime=0;
+    Texture=0;
 	//
 }
 
@@ -37,18 +37,18 @@ void Scale::Init(GLint TexGr,
 	if (!SchildIndex) {
 		SchildIndex=glGenLists(1);
 	}
-	if (!Textur)
-		glGenTextures(1,&Textur);
+    if (!Texture)
+        glGenTextures(1,&Texture);
 	char DateiName[60];
 	sprintf(DateiName,"Texturen/%i/%s.bmp",TexGr,Name);   
 	loadBMP(texr,texg,texb,DateiName);
 	sprintf(DateiName,"Texturen/%i/%s.bmp",TexGr,AlphaName);   
 	loadBMP(texa,texa,texa,DateiName);
-	glBindTexture(GL_TEXTURE_2D,Textur);
+    glBindTexture(GL_TEXTURE_2D,Texture);
 	createTextureAlpha2(texr,texg,texb,texa);
 
 	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
-	glBindTexture(GL_TEXTURE_2D,Textur);
+    glBindTexture(GL_TEXTURE_2D,Texture);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	glBegin(GL_QUADS);
@@ -72,7 +72,7 @@ void Scale::Init(GLint TexGr,
 	bx=alt_bx=soll_bx=0;
 	by=alt_by=soll_by=0;
 
-	Alpha=alt_Alpha=soll_Alpha=AUSGEBLENDET;
+    Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	InAnimation=0; 
 
 	SchildTyp=1;
@@ -85,16 +85,16 @@ void Scale::Init(GLint TexGr,
 	if (!SchildIndex) {
 		SchildIndex=glGenLists(1);
 	}
-	if (!Textur)
-		glGenTextures(1,&Textur);
+    if (!Texture)
+        glGenTextures(1,&Texture);
 	char DateiName[60];
 	sprintf(DateiName,"Texturen/%i/%s.bmp",TexGr,Name); 
 	loadBMP(texr,texg,texb,DateiName);
-	glBindTexture(GL_TEXTURE_2D,Textur);
+    glBindTexture(GL_TEXTURE_2D,Texture);
 	createTextureAlpha(texr,texg,texb);
 
 	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
-	glBindTexture(GL_TEXTURE_2D,Textur);
+    glBindTexture(GL_TEXTURE_2D,Texture);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	glBegin(GL_QUADS);
@@ -117,7 +117,7 @@ void Scale::Init(GLint TexGr,
 	bx=0; alt_bx=0; soll_bx=0;
 	by=0; alt_by=0; soll_by=0;
 
-	Alpha=alt_Alpha=soll_Alpha=AUSGEBLENDET;
+    Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	InAnimation=0; 
 
 	SchildTyp=1;
@@ -127,9 +127,9 @@ void Scale::InitLogo() {
 	if (!SchildIndex) {
 		SchildIndex=glGenLists(1);
 	}
-	Textur=LogoTexture;
+    Texture=LogoTexture;
 	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
-	glBindTexture(GL_TEXTURE_2D,Textur);
+    glBindTexture(GL_TEXTURE_2D,Texture);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	glBegin(GL_QUADS);
@@ -148,28 +148,28 @@ void Scale::InitLogo() {
 	bx=0; alt_bx=0; soll_bx=0;
 	by=0; alt_by=0; soll_by=0;
 
-	Alpha=alt_Alpha=soll_Alpha=AUSGEBLENDET;
+    Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	InAnimation=0; 
 
 	SchildTyp=1;
 }
 
-void Scale::InitBuchstabe(GLint TexGr,
+void Scale::InitLetter(GLint TexGr,
 		char Name[]){
 	FMatrix texr,texg,texb;     // Matrix-Bilder, in die die Textur kommt
 	if (!SchildIndex) {
 		SchildIndex=glGenLists(1);
 	}
-	if (!Textur)
-		glGenTextures(1,&Textur);
+    if (!Texture)
+        glGenTextures(1,&Texture);
 	char DateiName[60];
 	sprintf(DateiName,"Texturen/buchstaben/%i/%s.bmp",TexGr,Name); 
 	loadBMP(texr,texg,texb,DateiName);
-	glBindTexture(GL_TEXTURE_2D,Textur);
+    glBindTexture(GL_TEXTURE_2D,Texture);
 	createTextureAlpha(texr,texg,texb);
 
 	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
-	glBindTexture(GL_TEXTURE_2D,Textur);
+    glBindTexture(GL_TEXTURE_2D,Texture);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	glBegin(GL_QUADS);
@@ -192,7 +192,7 @@ void Scale::InitBuchstabe(GLint TexGr,
 	bx=0; alt_bx=0; soll_bx=0;
 	by=0; alt_by=0; soll_by=0;
 
-	Alpha=alt_Alpha=soll_Alpha=AUSGEBLENDET;
+    Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	InAnimation=0; 
 
 	SchildTyp=1;
@@ -206,16 +206,16 @@ void Scale::Init(GLint TexGr,
 	if (!SchildIndex) {
 		SchildIndex=glGenLists(1);
 	}
-	if (!Textur)
-		glGenTextures(1,&Textur);
+    if (!Texture)
+        glGenTextures(1,&Texture);
 	char DateiName[60];
 	sprintf(DateiName,"Texturen/%i/%s.bmp",TexGr,Name); 
 	loadBMP(texr,texg,texb,DateiName);
-	glBindTexture(GL_TEXTURE_2D,Textur);
+    glBindTexture(GL_TEXTURE_2D,Texture);
 	createTexture(texr,texg,texb);
 
 	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
-	glBindTexture(GL_TEXTURE_2D,Textur);
+    glBindTexture(GL_TEXTURE_2D,Texture);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	glBegin(GL_QUADS);
@@ -238,7 +238,7 @@ void Scale::Init(GLint TexGr,
 	bx=0; alt_bx=0; soll_bx=0;
 	by=0; alt_by=0; soll_by=0;
 
-	Alpha=alt_Alpha=soll_Alpha=AUSGEBLENDET;
+    Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	InAnimation=0; 
 
 	SchildTyp=1;
@@ -262,7 +262,7 @@ void Scale::Init(){
 	bx=alt_bx=soll_bx=8.1;
 	by=alt_by=soll_by=6.1;
 
-	Alpha=alt_Alpha=soll_Alpha=AUSGEBLENDET;
+    Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	//Alpha=alt_Alpha=soll_Alpha=EINGEBLENDET;
 	InAnimation=0; 
 
@@ -279,7 +279,7 @@ void Scale::CopyFrom(Scale Vorbild) {
 	ay=alt_ay=soll_ay=0;
 	bx=alt_bx=soll_bx=0;
 	by=alt_by=soll_by=0;
-	Alpha=alt_Alpha=soll_Alpha=AUSGEBLENDET;
+    Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	InAnimation=0; 
 	Signal=0;
 }
@@ -325,7 +325,7 @@ void Scale::Positioning(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 			soll_Alpha=EINGEBLENDET;
 		}  
 
-		if (Alpha==AUSGEBLENDET) {
+        if (Alpha==HIDDEN) {
 
 			ax=((soll_ax-8)/1.5)+8;
 			ay=((soll_ay-6)/1.5)+6;
@@ -368,8 +368,8 @@ void Scale::PositionFix(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 }
 
 //deactivated
-void Scale::Desaktiviere() {
-	soll_Alpha=AUSGEBLENDET;
+void Scale::Disactive() {
+    soll_Alpha=HIDDEN;
 
 	soll_ax=((ax-8)*1.5)+8;
 	soll_ay=((ay-6)*1.5)+6;
@@ -386,8 +386,8 @@ void Scale::Desaktiviere() {
 }
 
 //selected
-void Scale::Angewaehlt() {
-	Alpha=ANGEWAEHLT;
+void Scale::Selected() {
+    Alpha=SELECTED;
 	soll_Alpha=EINGEBLENDET;
     if (soll_Alpha!=Alpha) StartAnimation();
 }
@@ -399,14 +399,14 @@ void Scale::Eingeblendet() {
 }
 
 //fully Visible
-void Scale::VollSichtbar() {
-	soll_Alpha=VOLLSICHTBAR;
+void Scale::FullyVisible() {
+    soll_Alpha=FULL_VISIBLE;
     if (soll_Alpha!=Alpha) StartAnimation();
 }
 
 void Scale::StartAnimation(){
 	InAnimation=1;
-	Zeit=0;
+    ElapseTime=0;
 	alt_ax=ax;
 	alt_ay=ay;
 	alt_bx=bx;
@@ -416,7 +416,7 @@ void Scale::StartAnimation(){
 /*
    GLint Schild::Animiere(GLint Zeit){
    if (!InAnimation) {return 0;}
-   if (Zeit>=ANIMATIONSDAUER) {
+   if (Zeit>=ANIMATION_TIME) {
    ax=soll_ax;
    ay=soll_ay;
    bx=soll_bx;
@@ -425,7 +425,7 @@ void Scale::StartAnimation(){
    InAnimation=0;
    return 1;
    } else {
-   GLfloat Faktor=(.5-.5*cos(M_PI*Zeit/ANIMATIONSDAUER));
+   GLfloat Faktor=(.5-.5*cos(M_PI*Zeit/ANIMATION_TIME));
    ax=(soll_ax-alt_ax)*Faktor+alt_ax;
    ay=(soll_ay-alt_ay)*Faktor+alt_ay;
    bx=(soll_bx-alt_bx)*Faktor+alt_bx;
@@ -437,8 +437,8 @@ void Scale::StartAnimation(){
    */
 GLint Scale::Animate(GLint Faktor){
 	if (!InAnimation) {return 0;}
-	Zeit+=Faktor;
-	if (Zeit>=ANIMATIONSDAUER) {
+    ElapseTime+=Faktor;
+    if (ElapseTime>=ANIMATION_TIME) {
 		ax=soll_ax;
 		ay=soll_ay;
 		bx=soll_bx;
@@ -447,7 +447,7 @@ GLint Scale::Animate(GLint Faktor){
 		InAnimation=0;
 		return 1;
 	} else {
-		GLfloat Faktor=(.5-.5*cos(M_PI*Zeit/ANIMATIONSDAUER));
+        GLfloat Faktor=(.5-.5*cos(M_PI*ElapseTime/ANIMATION_TIME));
 		ax=(soll_ax-alt_ax)*Faktor+alt_ax;
 		ay=(soll_ay-alt_ay)*Faktor+alt_ay;
 		bx=(soll_bx-alt_bx)*Faktor+alt_bx;
@@ -468,7 +468,7 @@ GLint Scale::MouseButton(int Taste,int Richtung,int x,int y) {
 			ax<=xf && xf<=bx && ay<=yf && yf<=by) {
 		if (Taste==GLUT_LEFT_BUTTON) {
 			if (Richtung==GLUT_DOWN) {
-				Angewaehlt();
+                Selected();
 				return -1;
 			} else {
 				return Signal;

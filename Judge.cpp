@@ -36,7 +36,7 @@ void Judge::NewGame(GLint _Spiel){
 			KugelnImSpiel[i]=JA;
 		}
 	} 
-    if (Game==NEUNBALL) {
+    if (Game==NINE_BALL) {
 		for (GLint i=0;i<10;i++) {
 			KugelnImSpiel[i]=JA;
 		}
@@ -83,7 +83,7 @@ void Judge::NewStoke(){
 	Spieler1Gewonnen=NEIN;
 	Spieler2Gewonnen=NEIN;
 
-    if (Game==NEUNBALL) {
+    if (Game==NINE_BALL) {
 		for (GLint i2=9;i2>0;i2--) {
 			if (KugelnImSpiel[i2]) {
 				NiedrigsteKugel=i2;
@@ -253,7 +253,7 @@ GLint Judge::Entscheidung(){
 			}
 		}
 
-        if (Game==NEUNBALL) {
+        if (Game==NINE_BALL) {
 			if (Foul && KugelnVersenkt[9]) {
                 NineChosen();
 				KugelnVersenkt[9]=NEIN;
@@ -394,7 +394,7 @@ GLint Judge::CorrectBallWithPlay(GLint Kugel){
 							   }
 						   } 
 					   } break;
-		case NEUNBALL: {
+		case NINE_BALL: {
 						   if (Kugel==NiedrigsteKugel) {
 							   return JA;
 						   }
@@ -466,7 +466,7 @@ GLint Judge::CorrectBallSunk(GLint Kugel){
 							   }
 						   } 
 					   } break;
-		case NEUNBALL: {
+		case NINE_BALL: {
 						   return JA;
 					   } break;
 	}
@@ -489,7 +489,7 @@ GLint Judge::ColoredBall(GLint Kugel){
 			return JA;
 		}
 	}
-    if (Game==NEUNBALL) {
+    if (Game==NINE_BALL) {
 		if (0<Kugel && Kugel<10){
 			return JA;
 		}

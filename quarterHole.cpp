@@ -1,21 +1,23 @@
 #include <GL/glut.h>
 #include <math.h>
 #include <stdlib.h>
-#include "viertelLoch.h"
+#include "quarterHole.h"
 
 //quarter hole
-void viertelLoch(GLfloat x, GLfloat y, GLint xd, GLint yd,
+/*
+ * x = Width of the rectangle
+ * y = Heigh of the rectangle
+ * xd = Number of parts of the x-distance
+ * yd = Number of parts of the y-distance
+ * z1 = Tiefe 鋟遝rer circle
+ * z2 = Depth of inner circle
+ * r1 = innerer Radius
+ * r2 = 鋟遝rer Radius
+ */
+
+void quarterHole(GLfloat x, GLfloat y, GLint xd, GLint yd,
 		GLfloat z1, GLfloat z2, GLfloat r1, GLfloat r2) {
 
-	/* x = Breite des Rechtecks
-	   y = H鰄e des Rechtecks
-	   xd = Anzahl der Teile der x-Strecke
-	   yd = Anzahl der Teile der y-Stecke
-	   z1 = Tiefe 鋟遝rer Kreis
-	   z2 = Tiefe innerer Kreis
-	   r1 = innerer Radius
-	   r2 = 鋟遝rer Radius
-	   */
 
 	GLfloat *vertices;
 	GLfloat *normals;
@@ -131,7 +133,7 @@ void viertelLoch(GLfloat x, GLfloat y, GLint xd, GLint yd,
 }
 
 //quarter hole
-void viertelLoch(GLfloat x, GLfloat y, GLint xd, GLint yd,
+void quarterHole(GLfloat x, GLfloat y, GLint xd, GLint yd,
 		GLfloat z1, GLfloat z2, GLfloat r1, GLfloat r2,
 		GLfloat xo,GLfloat yo,GLfloat m00,GLfloat m01,GLfloat m10,GLfloat m11) {
 
