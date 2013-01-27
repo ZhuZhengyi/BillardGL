@@ -46,16 +46,16 @@ void Judge::NewGame(GLint _Spiel){
 	} 
 }
 
-void Judge::NewStoke(){
+void Judge::NewShot(){
 	//printf(" Schiedsrichter: NeuerStoss\n");
 
-	SchiedsrichterEntscheidung=-1;
+    RefereeDecision=-1;
 
     FirstTouchedBall =0;
 	ErsteBeruehrteBande=0;
 	ErsteVersenkteKugel=0;
 	ErsteBeruehrung=0;
-	ErsteBeruehrteKugelImKopffeld=NEIN;
+    FirstTouchedBallHeadField=NEIN;
 	ErsteBeruehrungImKopffeld=NEIN;
 
     Substantiation = 0;
@@ -100,12 +100,12 @@ void Judge::NewStoke(){
 
 }
 
-void Judge::KugelKugel(GLint,GLfloat,
+void Judge::BallBall(GLint,GLfloat,
 		GLint Kugel2,GLfloat Kugel2x){
     if (!FirstTouchedBall ) {
         FirstTouchedBall =Kugel2;
 		if (Kugel2x<-63.5) {
-			ErsteBeruehrteKugelImKopffeld=JA;
+            FirstTouchedBallHeadField=JA;
 		}
 	}
 }
@@ -130,9 +130,9 @@ void Judge::BallHole(GLint Kugel,GLint){
 }
 
 
-GLint Judge::Entscheidung(){
+GLint Judge::Decision(){
 
-	if (SchiedsrichterEntscheidung==-1) {
+    if (RefereeDecision==-1) {
 
 		if (Eroeffnungsstoss) {
 			//printf("check %i %i\n",FarbigeKugelDabei(KugelnVersenkt),FarbigeKugelSumme(KugelnAnBande));
@@ -180,7 +180,7 @@ GLint Judge::Entscheidung(){
 		} 
 
 		if (AusKopffeld && 
-				ErsteBeruehrteKugelImKopffeld &&
+                FirstTouchedBallHeadField &&
 				!BandeAusserhalbKopffeldvorKugelBeruehrt) {
 			Foul = JA;
             if (!Substantiation) Substantiation=455;
@@ -306,7 +306,7 @@ GLint Judge::Entscheidung(){
 			}
 		}
 
-		SchiedsrichterEntscheidung=(AufnahmeWechsel |
+        RefereeDecision=(AufnahmeWechsel |
 				(Foul * 2) |
 				(LageVerbesserungKopffeld * 4) |
 				(LageVerbesserung * 8) |
@@ -327,7 +327,7 @@ GLint Judge::Entscheidung(){
 
 	}
 
-	return SchiedsrichterEntscheidung;
+    return RefereeDecision;
 
 }
 

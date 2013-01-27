@@ -5,7 +5,7 @@
 ****************************************************************************/  
 
 void updateGL();
-void Stoke(GLfloat,GLfloat);
+void Shot(GLfloat,GLfloat);
 void timerEvent();
 void Visible(int);
 int main(int,char**);

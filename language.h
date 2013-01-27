@@ -62,7 +62,7 @@
 #define T_WEISSENEUSETZEN 180
 #define T_VIEWING 181
 #define T_ZIELEN 182
-#define T_AUSHOLEN 183
+#define T_SWING 183
 #define T_STOSS 184
 #define T_HATGEWONNEN 185
 #define T_ISTAMTISCH 186

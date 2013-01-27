@@ -1219,10 +1219,10 @@ void Menu::NewMenuState(){
             case AIMING: {
                 Bereich=650;
             } break;
-            case AUSHOLEN: {
+            case SWING: {
                 Bereich=660;
             } break;
-            case SHOCK: {
+            case SHOT: {
                 Bereich=670;
             } break;
             case NEW_WHITE: {
@@ -1351,10 +1351,10 @@ void Menu::NewMenuState(){
         case AIMING: {
             TextItemArray[T_ZIELEN]->Positioniere(0.25,0,1,A_LINKS);
         } break;
-        case AUSHOLEN: {
-            TextItemArray[T_AUSHOLEN]->Positioniere(0.25,0,1,A_LINKS);
+        case SWING: {
+            TextItemArray[T_SWING]->Positioniere(0.25,0,1,A_LINKS);
         } break;
-        case SHOCK: {
+        case SHOT: {
             TextItemArray[T_STOSS]->Positioniere(0.25,0,1,A_LINKS);
         } break;
         case NEW_WHITE: {
@@ -2008,7 +2008,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(0);
         }
     } break;
@@ -2016,7 +2016,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[1].Pos_xCM(),Ball[1].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(1);
         }
     } break;
@@ -2024,7 +2024,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[2].Pos_xCM(),Ball[2].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(2);
         }
     } break;
@@ -2032,7 +2032,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[3].Pos_xCM(),Ball[3].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(3);
         }
     } break;
@@ -2040,7 +2040,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[4].Pos_xCM(),Ball[4].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(4);
         }
     } break;
@@ -2048,7 +2048,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[5].Pos_xCM(),Ball[5].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(5);
         }
     } break;
@@ -2056,7 +2056,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[6].Pos_xCM(),Ball[6].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(6);
         }
     } break;
@@ -2064,7 +2064,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[7].Pos_xCM(),Ball[7].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(7);
         }
     } break;
@@ -2072,7 +2072,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[8].Pos_xCM(),Ball[8].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(8);
         }
     } break;
@@ -2080,7 +2080,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[9].Pos_xCM(),Ball[9].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(9);
         }
     } break;
@@ -2088,7 +2088,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[10].Pos_xCM(),Ball[10].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(10);
         }
     } break;
@@ -2096,7 +2096,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[11].Pos_xCM(),Ball[11].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(11);
         }
     } break;
@@ -2104,7 +2104,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[12].Pos_xCM(),Ball[12].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(12);
         }
     } break;
@@ -2112,7 +2112,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[13].Pos_xCM(),Ball[13].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(13);
         }
     } break;
@@ -2120,7 +2120,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[14].Pos_xCM(),Ball[14].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(14);
         }
     } break;
@@ -2128,7 +2128,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (StateMachine==VIEWING ||
                 StateMachine==NEW_WHITE) {
             Camera.EyesOn3(Ball[15].Pos_xCM(),Ball[15].Pos_yCM());
-        } else if (StateMachine==SHOCK) {
+        } else if (StateMachine==SHOT) {
             Camera.Track(15);
         }
     } break;

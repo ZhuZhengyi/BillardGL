@@ -23,9 +23,14 @@ GLfloat VerlustTasche = 1.0;  //loss pocket
 
 // ---------------- Kugel versenken ----------------------------------------
 
-//下沉
+/*
+ * 下沉
+ * 第nr号球进洞下沉过程
+ *
+ */
 void sink(GLint nr){
-    if (newPos[nr][2] <= -2.0) { // Kugel ist unten und verschwindet
+    //球落到底部
+    if (newPos[nr][2] <= -2.0) {
         newPos[nr][0]=1500;
         newPos[nr][1]=1500;
         newPos[nr][2]=0;
@@ -34,34 +39,42 @@ void sink(GLint nr){
 
 	}
 
+    //球开始下落
     if ((newPos[nr][2]==0)&&(newPos[nr][0]!=1500)) { // Kugel beginnt zu fallen
         newPos[nr][2] = -0.05;
         BallSpeed[nr][0] = BallSpeed[nr][0]*0.95; // abbremsen
         BallSpeed[nr][1] = BallSpeed[nr][1]*0.95;
 	}
+    //球下落中
 	else           // Kugel faellt bereits
 	{
-
-        if (newPos[nr][0]>10){                            // rechts
-            if (newPos[nr][1]>0){                             // oben
+        //right
+        if (newPos[nr][0]>10){
+            //above
+            if (newPos[nr][1]>0){
                 BallSpeed[nr][0] = 23.322-newPos[nr][0]+BallSpeed[nr][0]*0.5;
                 BallSpeed[nr][1] = 12.211-newPos[nr][1]+BallSpeed[nr][1]*0.5;
 			}
-			else{                                              // unten
+            //blew
+            else{
                 BallSpeed[nr][0] = 23.322-newPos[nr][0]+BallSpeed[nr][0]*0.5;
                 BallSpeed[nr][1] = -12.211-newPos[nr][1]+BallSpeed[nr][1]*0.5;
 			}
 		}
-        if (newPos[nr][0]<-10){                            // links
+        //left
+        if (newPos[nr][0]<-10){
+            //above
             if (newPos[nr][1]>0){                             // oben
                 BallSpeed[nr][0] = -23.322-newPos[nr][0]+BallSpeed[nr][0]*0.5;
                 BallSpeed[nr][1] = 12.211-newPos[nr][1]+BallSpeed[nr][1]*0.5;
 			}
+            //blew
 			else{                                              // unten
                 BallSpeed[nr][0] = -23.322-newPos[nr][0]+BallSpeed[nr][0]*0.5;
                 BallSpeed[nr][1] = -12.211-newPos[nr][1]+BallSpeed[nr][1]*0.5;
 			}
 		}	
+        //middle
         if ((newPos[nr][0]>-2)&&(newPos[nr][0]<2)){               // Mitte
             if (newPos[nr][1]>0){                             // oben
                 BallSpeed[nr][0] = 0-newPos[nr][0]+BallSpeed[nr][0]*0.5;
@@ -76,96 +89,91 @@ void sink(GLint nr){
 
 }
 
-
-// ----------------------------- Kollisionsberechnung ---------------------------
-
-//碰撞
-void Collision(GLfloat neu1[],GLfloat neu2[],GLint erste,GLint zweite){
+/*
+ * 碰撞
+ *
+ *
+ *
+ */
+void Collision(GLfloat newPos1[],
+               GLfloat newPos2[],
+               GLint first_ball,
+               GLint second_ball)
+{
 
 	GLfloat verlust = CollisionFactor; 
+    newPos[first_ball][0] = newPos1[0]; // neue Position wird festgelegt
+    newPos[first_ball][1] = newPos1[1];
+    newPos[second_ball][0] = newPos2[0];
+    newPos[second_ball][1] = newPos2[1];
 
-
-
-    newPos[erste][0] = neu1[0]; // neue Position wird festgelegt
-    newPos[erste][1] = neu1[1];
-    newPos[zweite][0] = neu2[0];
-    newPos[zweite][1] = neu2[1];
-
-	GLfloat dx2 = neu2[0]-neu1[0];
-	GLfloat dy2 = neu2[1]-neu1[1];
+    GLfloat dx2 = newPos2[0]-newPos1[0];
+    GLfloat dy2 = newPos2[1]-newPos1[1];
 	GLfloat Abstand2=sqrt(dx2*dx2+dy2*dy2);
 	GLfloat dx = dx2/Abstand2;
 	GLfloat dy = dy2/Abstand2;
 
 
-    GLfloat richtung = (BallSpeed[zweite][0]-BallSpeed[erste][0])*dx2 + (BallSpeed[zweite][1]-BallSpeed[erste][1])*dy2;
+    GLfloat direction = (BallSpeed[second_ball][0]-BallSpeed[first_ball][0])*dx2
+            + (BallSpeed[second_ball][1]-BallSpeed[first_ball][1])*dy2;
 
-	if (richtung < 0){
-
-        GLfloat skalarp = .9*(BallSpeed[erste][0]*dx+BallSpeed[erste][1]*dy)-
-            (BallSpeed[zweite][0]*dx+BallSpeed[zweite][1]*dy);
+    if (direction < 0){
+        GLfloat skalarp = .9*(BallSpeed[first_ball][0]*dx+BallSpeed[first_ball][1]*dy)-
+            (BallSpeed[second_ball][0]*dx+BallSpeed[second_ball][1]*dy);
 		GLfloat Kraftx = dx * skalarp;
 		GLfloat Krafty = dy * skalarp;
-        BallSpeed[erste][0] = (BallSpeed[erste][0] - Kraftx) * verlust; // neuer Geschw.-Vektor
-        BallSpeed[erste][1] = (BallSpeed[erste][1] - Krafty) * verlust;
-        BallSpeed[zweite][0] = (BallSpeed[zweite][0] + Kraftx) * verlust;
-        BallSpeed[zweite][1] = (BallSpeed[zweite][1] + Krafty) * verlust;
+        BallSpeed[first_ball][0] = (BallSpeed[first_ball][0] - Kraftx) * verlust; // neuer Geschw.-Vektor
+        BallSpeed[first_ball][1] = (BallSpeed[first_ball][1] - Krafty) * verlust;
+        BallSpeed[second_ball][0] = (BallSpeed[second_ball][0] + Kraftx) * verlust;
+        BallSpeed[second_ball][1] = (BallSpeed[second_ball][1] + Krafty) * verlust;
 	}
 }
 
-
-
-
-
-
-
-
-void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
+/*
+ *
+ *
+ *
+ */
+void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 
 	//printf(" Berechne Stoss ...");
 	fflush(stdout);
-	// ------------------------ Variablen initialisieren ------------------------  
+    // ------------------------ 变量初始化 ------------------------
 
 	GLint Aufloesung = PhysicsFrequenz; // min. 100
-	GLfloat Tischlaenge = 22.22; // x-Achse
-	GLfloat Tischbreite = 11.11; // y-Achse
+    GLfloat TableLen = 22.22; // x-Achse
+    GLfloat TableWidth = 11.11; // y-Achse
 
 	GLfloat reibung =  FrictionFactor; // Geschw.-Abzug durch Reibung
+    GLfloat band_factor = GangsFactor; // Verlust an Banden
 
-	GLfloat bandenfaktor = GangsFactor; // Verlust an Banden
-
-
-
-
-
-
-
-	// --------------------------- Kugelpositionen auslesen und Speed setzen ----------
-
-	for (GLint i=0;i<16;i++) {  // erster Tabelleneintrag enthaellt Startposition
+    // ---------------------------Ball positions read and speed set  ----------
+    // first Tabelleneintrag enthaellt Start position
+    for (GLint i=0;i<16;i++) {
 		LightingTable[0][i][0]=Ball[i].Pos_xD(); 
 		LightingTable[0][i][1]=Ball[i].Pos_yD();
 		LightingTable[0][i][2]=0;
+
         oldPos[i][0]=Ball[i].Pos_xD();
         oldPos[i][1]=Ball[i].Pos_yD();
         oldPos[i][2]=0;
+
         newPos[i][2]=0; //Kugel liegt noch auf dem Tisch
+
         BallSpeed[i][0]=0.0;
         BallSpeed[i][1]=0.0;
 	}
-    BallSpeed[0][0] = Stoss_x; // Startgeschw. der weissen Kugel
-    BallSpeed[0][1] = Stoss_y;
 
+    //白球速度
+    BallSpeed[0][0] = ShotSpeed_x; //击球速度
+    BallSpeed[0][1] = ShotSpeed_y;
 
-
-	// ------------------------------ Berechnung nach diskreten Zeitschritten ---------------------
-    int beweg = 0;  //moving
+    // ------------- Calculation by discrete time steps ---------------------
+    int moving = 0;  //moving
 	for (int zeit=0;zeit<(20*Aufloesung);zeit++){
-		beweg = 0; // noch keine Bewegung
+        moving = 0; // noch keine Bewegung
 
 		// neue Position berechnen
-
-
 		for (int nr=0;nr<16;nr++){
             if (oldPos[nr][0] == 1500.0) {
                 newPos[nr][0] = 1500.0;
@@ -175,7 +183,7 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
                 newPos[nr][1] = oldPos[nr][1]+BallSpeed[nr][1]/Aufloesung;
                 if (oldPos[nr][2]<0){
                     newPos[nr][2] = oldPos[nr][2]*(1+FallFaktor/Aufloesung);   // Kugel faellt
-					//beweg = 1;                                                   // und bewegt sich damit
+                    //moving = 1;                                                   // und movingt sich damit
 				}
 				else
 				{
@@ -184,12 +192,7 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 			}
 		}
 
-
-
-
-
-
-		// ------------------------ Kollision mit anderer Kugel? ----------------------------------
+        // ------------------------ 与另一个球碰撞 ----------------------------------
 
 		{
 			for (int i=0;i<15;i++){          //letzte Kugel wird nicht betrachtet
@@ -200,11 +203,9 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
                             GLfloat dy = newPos[i][1] - newPos[i2][1];
 							GLfloat dBetraghoch2 = dx*dx + dy*dy; // Quadratwurzel sparen
 							if (dBetraghoch2 <= 1){
-								// Kollision
-
+                                // Collision
                                 Collision(newPos[i],newPos[i2],i,i2);
-
-                                Judge.KugelKugel(i,newPos[i][0],i2,newPos[i2][0]);
+                                Judge.BallBall(i,newPos[i][0],i2,newPos[i2][0]);
 							}
 						}
 					}
@@ -212,18 +213,27 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 			}
 		}
 
-		// ------------------ Kugel in Loch? --------------------------
-
+        // ------------------ 进洞--------------------------
 		GLfloat Betrax,Betray;
-
 		for (int i=0;i<16;i++){
             if (newPos[i][0]!=1500){
                 if (newPos[i][2]<0){
                     sink(i);
 				} else {
-
                     GLfloat x=newPos[i][0];
                     GLfloat y=newPos[i][1];
+
+                  /*   O--------23.32------O--------23.32------O
+                   *   |                   |                   |
+                   * 12.21               12.55               12.21
+                   *   |                   |                   |
+                   *   |-------------------|-------------------|
+                   *   |                   |                   |
+                   * 12.21               12.55               12.21
+                   *   |                   |                   |
+                   *   O--------23.32------O--------23.32------O
+                   */
+
 					if ((x-23.32)*(x-23.32)+(y-12.21)*(y-12.21)<2.808) {
                         Judge.BallHole(i,33);
 					}
@@ -245,11 +255,11 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 
                     Betrax=fabs(newPos[i][0]);
                     Betray=fabs(newPos[i][1]);
-					if ((Betrax-23.32)*(Betrax-23.32)+(Betray-12.21)*(Betray-12.21)<2.808) {     // Ecke
+                    if ((Betrax-23.32)*(Betrax-23.32)+(Betray-12.21)*(Betray-12.21)<2.808) {     // edge
                         sink(i);
 						//printf("\nKugel %i versenkt",i);
 					}
-					if ((Betrax)*(Betrax)+(Betray-12.55)*(Betray-12.55)<1.617){                  // Mitte
+                    if ((Betrax)*(Betrax)+(Betray-12.55)*(Betray-12.55)<1.617){                  // middle
                         sink(i);
 						//printf("\nKugel %i versenkt",i);
 					}
@@ -258,37 +268,32 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 		}
 
 
-
-
-
-		// ------------------- Kollision mit Bande? ---------------------
-
-		// der Kuerzungsfaktor ist 1-bandenfaktor*cosinus Ausfallwinkel
-		// somit stellt der bandenfaktor den max. moeglichen Faktor dar (bei senkrechter Reflexion)
-
-
+        // ------------------- 撞边 ---------------------
+        // der Kuerzungsfaktor ist 1-band_factor*cosinus Ausfallwinkel
+        // somit stellt der band_factor den max. moeglichen Faktor dar (bei senkrechter Reflexion)
 		{
 			for (int i=0;i<16;i++){
                 if (newPos[i][0] != 1500.0) {
-					GLfloat laenge = 1;
+                    GLfloat length = 1;
 					GLfloat faktor = 1;
 
-					//unten
+                    //below
 
-                    if (newPos[i][1]<(-Tischbreite+0.5)) {
-                        if (((newPos[i][0]>-20.53)&&(newPos[i][0]<-1.137))||((newPos[i][0]<20.53)&&(newPos[i][0]>1.137))){
+                    if (newPos[i][1]<(-TableWidth+0.5)) {
+                        if (((newPos[i][0]>-20.53)&&(newPos[i][0]<-1.137))
+                                ||((newPos[i][0]<20.53)&&(newPos[i][0]>1.137))){
                             Judge.BallBand(i,newPos[i][0],21);
-                            newPos[i][1]=(-Tischbreite+0.5);
-                            laenge=sqrt(BallSpeed[i][0]*BallSpeed[i][0]+BallSpeed[i][1]*BallSpeed[i][1]);
-                            faktor = 1-bandenfaktor*(-BallSpeed[i][1]/laenge);
+                            newPos[i][1]=(-TableWidth+0.5);
+                            length=sqrt(BallSpeed[i][0]*BallSpeed[i][0]+BallSpeed[i][1]*BallSpeed[i][1]);
+                            faktor = 1-band_factor*(-BallSpeed[i][1]/length);
                             BallSpeed[i][1]=-BallSpeed[i][1]* faktor;
                             BallSpeed[i][0]=BallSpeed[i][0]* faktor;
 						} else {
-							// rechts
+                            // right
                             if (newPos[i][0]>=20.53){
-                                if (newPos[i][1] <= -0.75355 * (newPos[i][0]-20.53) + (-Tischbreite+0.62)){
+                                if (newPos[i][1] <= -0.75355 * (newPos[i][0]-20.53) + (-TableWidth+0.62)){
                                     Judge.BallBand(i,newPos[i][0],21);
-									//neuePos[i][1] = -0.75355 * (neuePos[i][0]-20.53) + (-Tischbreite+0.62);
+                                    //neuePos[i][1] = -0.75355 * (neuePos[i][0]-20.53) + (-TableWidth+0.62);
 									GLfloat cos37 = 0.798636;
 									GLfloat sin37 = -0.601815;
                                     GLfloat xstrich = BallSpeed[i][0] * cos37 + BallSpeed[i][1] * sin37;
@@ -302,11 +307,11 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
                                     newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
 								}
 							}
-							// links
+                            // left
                             if (newPos[i][0]<=-20.53){
-                                if (newPos[i][1] <= 0.75355 * (newPos[i][0]+20.53) + (-Tischbreite+0.62)){
+                                if (newPos[i][1] <= 0.75355 * (newPos[i][0]+20.53) + (-TableWidth+0.62)){
                                     Judge.BallBand(i,newPos[i][0],21);
-									//neuePos[i][1] = 0.75355 * (neuePos[i][0]+20.53) + (-Tischbreite+0.62);
+                                    //neuePos[i][1] = 0.75355 * (neuePos[i][0]+20.53) + (-TableWidth+0.62);
 									GLfloat cos37 = 0.798636;
 									GLfloat sin37 = 0.601815;
                                     GLfloat xstrich = BallSpeed[i][0] * cos37 + BallSpeed[i][1] * sin37;
@@ -320,11 +325,11 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
                                     newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
 								}
 							}
-							// Mitte rechts
+                            // middle right
                             if ((newPos[i][0]>0)&&(newPos[i][0]<=1.137)){
-                                if (newPos[i][1] <= 5.671 * (newPos[i][0]-1.137) + (-Tischbreite+2.879)){
+                                if (newPos[i][1] <= 5.671 * (newPos[i][0]-1.137) + (-TableWidth+2.879)){
                                     Judge.BallBand(i,newPos[i][0],21);
-									//neuePos[i][1] = 5.671 * (neuePos[i][0]-1.137) + (-Tischbreite+2.879);
+                                    //neuePos[i][1] = 5.671 * (neuePos[i][0]-1.137) + (-TableWidth+2.879);
 									GLfloat cos80 = 0.173648;
 									GLfloat sin80 = 0.984808;
                                     GLfloat xstrich = BallSpeed[i][0] * cos80 + BallSpeed[i][1] * sin80;
@@ -338,11 +343,11 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
                                     newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
 								}
 							}
-							// Mitte links
+                            // middle left
                             if ((newPos[i][0]<=0)&&(newPos[i][0]>=-1.137)){
-                                if (newPos[i][1] <= -5.671 * (newPos[i][0]+1.137) + (-Tischbreite+2.879)){
+                                if (newPos[i][1] <= -5.671 * (newPos[i][0]+1.137) + (-TableWidth+2.879)){
                                     Judge.BallBand(i,newPos[i][0],21);
-									//neuePos[i][1] = -5.671 * (neuePos[i][0]+1.137) + (-Tischbreite+2.879);
+                                    //neuePos[i][1] = -5.671 * (neuePos[i][0]+1.137) + (-TableWidth+2.879);
 									GLfloat cos80 = 0.173648;
 									GLfloat sin80 = -0.984808;
                                     GLfloat xstrich = BallSpeed[i][0] * cos80 + BallSpeed[i][1] * sin80;
@@ -359,22 +364,21 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 						}
 					}
 
-					//oben
-
-                    if (newPos[i][1]>(Tischbreite-0.5)){
+                    //above
+                    if (newPos[i][1]>(TableWidth-0.5)){
                         if (((newPos[i][0]>-20.53)&&(newPos[i][0]<-1.137))||((newPos[i][0]<20.53)&&(newPos[i][0]>1.137))){
                             Judge.BallBand(i,newPos[i][0],23);
-                            newPos[i][1]=(Tischbreite-0.5);
-                            laenge=sqrt(BallSpeed[i][0]*BallSpeed[i][0]+BallSpeed[i][1]*BallSpeed[i][1]);
-                            faktor = 1-bandenfaktor*(BallSpeed[i][1]/laenge);
+                            newPos[i][1]=(TableWidth-0.5);
+                            length=sqrt(BallSpeed[i][0]*BallSpeed[i][0]+BallSpeed[i][1]*BallSpeed[i][1]);
+                            faktor = 1-band_factor*(BallSpeed[i][1]/length);
                             BallSpeed[i][1]=-BallSpeed[i][1]*faktor;
                             BallSpeed[i][0]=BallSpeed[i][0]*faktor;
 						} else {
 							// rechts
                             if (newPos[i][0]>=20.53){
-                                if (newPos[i][1] >= 0.75355 * (newPos[i][0]-20.53) + (Tischbreite-0.62)){
+                                if (newPos[i][1] >= 0.75355 * (newPos[i][0]-20.53) + (TableWidth-0.62)){
                                     Judge.BallBand(i,newPos[i][0],23);
-									//neuePos[i][1] = 0.75355 * (neuePos[i][0]-20.53) + (Tischbreite-0.62);
+                                    //neuePos[i][1] = 0.75355 * (neuePos[i][0]-20.53) + (TableWidth-0.62);
 									GLfloat cos37 = 0.798636;
 									GLfloat sin37 = 0.601815;
                                     GLfloat xstrich = BallSpeed[i][0] * cos37 + BallSpeed[i][1] * sin37;
@@ -390,9 +394,9 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 							}
 							// links
                             if (newPos[i][0]<=-20.53){
-                                if (newPos[i][1] >= -0.75355 * (newPos[i][0]+20.53) + (Tischbreite-0.62)){
+                                if (newPos[i][1] >= -0.75355 * (newPos[i][0]+20.53) + (TableWidth-0.62)){
                                     Judge.BallBand(i,newPos[i][0],23);
-									//neuePos[i][1] = -0.75355 * (neuePos[i][0]+20.53) + (Tischbreite-0.62);
+                                    //neuePos[i][1] = -0.75355 * (neuePos[i][0]+20.53) + (TableWidth-0.62);
 									GLfloat cos37 = 0.798636;
 									GLfloat sin37 = -0.601815;
                                     GLfloat xstrich = BallSpeed[i][0] * cos37 + BallSpeed[i][1] * sin37;
@@ -408,9 +412,9 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 							}
 							// Mitte rechts
                             if ((newPos[i][0]>0)&&(newPos[i][0]<=1.137)){
-                                if (newPos[i][1] >= -5.671 * (newPos[i][0]-1.137) + (Tischbreite-2.879)){
+                                if (newPos[i][1] >= -5.671 * (newPos[i][0]-1.137) + (TableWidth-2.879)){
                                     Judge.BallBand(i,newPos[i][0],23);
-									//neuePos[i][1] = -5.671 * (neuePos[i][0]-1.137) + (Tischbreite-2.879);
+                                    //neuePos[i][1] = -5.671 * (neuePos[i][0]-1.137) + (TableWidth-2.879);
 									GLfloat cos80 = 0.173648;
 									GLfloat sin80 = -0.984808;		   
                                     GLfloat xstrich = BallSpeed[i][0] * cos80 + BallSpeed[i][1] * sin80;
@@ -426,9 +430,9 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 							}
 							// Mitte links
                             if ((newPos[i][0]<=0)&&(newPos[i][0]>=-1.137)){
-                                if (newPos[i][1] >=  5.671 * (newPos[i][0]+1.137) + (Tischbreite-2.879)){
+                                if (newPos[i][1] >=  5.671 * (newPos[i][0]+1.137) + (TableWidth-2.879)){
                                     Judge.BallBand(i,newPos[i][0],23);
-									//neuePos[i][1] =  5.671 * (neuePos[i][0]+1.137) + (Tischbreite-2.879);
+                                    //neuePos[i][1] =  5.671 * (neuePos[i][0]+1.137) + (TableWidth-2.879);
 									GLfloat cos80 = 0.173648;
 									GLfloat sin80 = 0.984808;	
                                     GLfloat xstrich = BallSpeed[i][0] * cos80 + BallSpeed[i][1] * sin80;
@@ -445,22 +449,21 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 						}
 					}
 
-					//links
-
-                    if (newPos[i][0]<(-Tischlaenge+0.5)) {
+                    //left
+                    if (newPos[i][0]<(-TableLen+0.5)) {
                         if ((newPos[i][1]>-9.37)&&(newPos[i][1]<9.37)){
                             Judge.BallBand(i,newPos[i][0],20);
-                            newPos[i][0]=(-Tischlaenge+0.5);
-                            laenge=sqrt(BallSpeed[i][0]*BallSpeed[i][0]+BallSpeed[i][1]*BallSpeed[i][1]);
-                            faktor = 1-bandenfaktor*(-BallSpeed[i][0]/laenge);
+                            newPos[i][0]=(-TableLen+0.5);
+                            length=sqrt(BallSpeed[i][0]*BallSpeed[i][0]+BallSpeed[i][1]*BallSpeed[i][1]);
+                            faktor = 1-band_factor*(-BallSpeed[i][0]/length);
                             BallSpeed[i][0]=-BallSpeed[i][0]*faktor;
                             BallSpeed[i][1]=BallSpeed[i][1]*faktor;
 						} else {
 							// oben
                             if (newPos[i][1]>=9.37){
-                                if (newPos[i][0] <= -0.75355 * (newPos[i][1]-9.37) + (-Tischlaenge+0.62)){
+                                if (newPos[i][0] <= -0.75355 * (newPos[i][1]-9.37) + (-TableLen+0.62)){
                                     Judge.BallBand(i,newPos[i][0],20);
-									//neuePos[i][0] = -0.75355 * (neuePos[i][1]-9.37) + (-Tischlaenge+0.62);
+                                    //neuePos[i][0] = -0.75355 * (neuePos[i][1]-9.37) + (-TableLen+0.62);
 									GLfloat cos37 = 0.798636;
 									GLfloat sin37 = 0.601815;
                                     GLfloat xstrich = BallSpeed[i][0] * cos37 + BallSpeed[i][1] * sin37;
@@ -476,9 +479,9 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 							}
 							// unten
                             if (newPos[i][1]<=-9.37){
-                                if (newPos[i][0] <= 0.75355 * (newPos[i][1]+9.37) + (-Tischlaenge+0.62)){
+                                if (newPos[i][0] <= 0.75355 * (newPos[i][1]+9.37) + (-TableLen+0.62)){
                                     Judge.BallBand(i,newPos[i][0],20);
-									//neuePos[i][0] = 0.75355 * (neuePos[i][1]+9.37) + (-Tischlaenge+0.62);
+                                    //neuePos[i][0] = 0.75355 * (neuePos[i][1]+9.37) + (-TableLen+0.62);
 									GLfloat cos37 = 0.798636;
 									GLfloat sin37 = -0.601815;
                                     GLfloat xstrich = BallSpeed[i][0] * cos37 + BallSpeed[i][1] * sin37;
@@ -495,22 +498,21 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 						}
 					}
 
-					//rechts
-
-                    if (newPos[i][0]>(Tischlaenge-0.5)){
+                    //right
+                    if (newPos[i][0]>(TableLen-0.5)){
                         if ((newPos[i][1]>-9.37)&&(newPos[i][1]<9.37)){
                             Judge.BallBand(i,newPos[i][0],22);
-                            newPos[i][0]=(Tischlaenge-0.5);
-                            laenge=sqrt(BallSpeed[i][0]*BallSpeed[i][0]+BallSpeed[i][1]*BallSpeed[i][1]);
-                            faktor = 1-bandenfaktor*(BallSpeed[i][0]/laenge);
+                            newPos[i][0]=(TableLen-0.5);
+                            length=sqrt(BallSpeed[i][0]*BallSpeed[i][0]+BallSpeed[i][1]*BallSpeed[i][1]);
+                            faktor = 1-band_factor*(BallSpeed[i][0]/length);
                             BallSpeed[i][0]=-BallSpeed[i][0]*faktor;
                             BallSpeed[i][1]=BallSpeed[i][1]*faktor;
 						} else {
 							// oben
                             if (newPos[i][1]>=9.37){
-                                if (newPos[i][0] >= 0.75355 * (newPos[i][1]-9.37) + (Tischlaenge-0.62)){
+                                if (newPos[i][0] >= 0.75355 * (newPos[i][1]-9.37) + (TableLen-0.62)){
                                     Judge.BallBand(i,newPos[i][0],22);
-									//neuePos[i][0] = 0.75355 * (neuePos[i][1]-9.37) + (Tischlaenge-0.62);
+                                    //neuePos[i][0] = 0.75355 * (neuePos[i][1]-9.37) + (TableLen-0.62);
 									GLfloat cos37 = 0.798636;
 									GLfloat sin37 = -0.601815;
                                     GLfloat xstrich = BallSpeed[i][0] * cos37 + BallSpeed[i][1] * sin37;
@@ -526,9 +528,9 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 							}
 							// unten
                             if (newPos[i][1]<=-9.37){
-                                if (newPos[i][0] >= -0.75355 * (newPos[i][1]+9.37) + (Tischlaenge-0.62)){
+                                if (newPos[i][0] >= -0.75355 * (newPos[i][1]+9.37) + (TableLen-0.62)){
                                     Judge.BallBand(i,newPos[i][0],22);
-									//neuePos[i][0] = -0.75355 * (neuePos[i][1]+9.37) + (Tischlaenge-0.62);
+                                    //neuePos[i][0] = -0.75355 * (neuePos[i][1]+9.37) + (TableLen-0.62);
 									GLfloat cos37 = 0.798636;
 									GLfloat sin37 = 0.601815;
                                     GLfloat xstrich = BallSpeed[i][0] * cos37 + BallSpeed[i][1] * sin37;
@@ -549,10 +551,7 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 		}
 
 
-
-
-		// ------------------------------- Tabelle aktualisieren -------------------------------
-
+        // ------------------------------- table update -------------------------------
 		GLint zeitpunkt = zeit*100/Aufloesung; // aktuelle Zeit berechnen (fuer Tabelle)
 		{
 			for (int i=0;i<16;i++){
@@ -564,14 +563,13 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 
 
 
-		// -------------------------- neue Geschwindigkeit berechnen ----------------------------
-
+        // -------------------------- 计算新速度 ----------------------------
 		{
 			for (int i=0;i<16;i++){
                 if (newPos[i][0] != 1500.0){
                     GLfloat geschw = sqrt(BallSpeed[i][0]* BallSpeed[i][0] +  BallSpeed[i][1]* BallSpeed[i][1]);
 					GLfloat geschwneu = geschw - (reibung/Aufloesung);
-                    if (newPos[i][2]<0){beweg=1;} // Kugel faellt und bewegt sich damit
+                    if (newPos[i][2]<0){ moving=1;  } // Kugel faellt und movingt sich damit
 					if (geschwneu <= 0.0) {  // Kugel bleibt stehen
                         BallSpeed[i][0] = 0.0;
                         BallSpeed[i][1] = 0.0;
@@ -579,20 +577,21 @@ void Physics(GLfloat Stoss_x,GLfloat Stoss_y) {
 					else {
                         BallSpeed[i][0] = (BallSpeed[i][0] / geschw) * geschwneu; // neue Geschw. wird gesetzt
                         BallSpeed[i][1] = (BallSpeed[i][1] / geschw) * geschwneu;
-						beweg = 1; // Es bewegt sich noch was...
+                        moving = 1; // Es movingt sich noch was...
 					}
 				}
 			}
 		}
 
 
-		// ---------------------------------- Stossdauer setzen ------------------------------------
+        // -------------------- Stossdauer setzen ------------------------------------
 
-		if (beweg) {
+        if (moving) {
 			Stossdauer = (zeitpunkt<1999)?zeitpunkt+1:1999;
 		}
 
-		{ //  Daten umschreiben
+        //  Daten umschreiben
+        {
 			for (int i=0;i<16;i++){
                 oldPos[i][0]=newPos[i][0];
                 oldPos[i][1]=newPos[i][1];

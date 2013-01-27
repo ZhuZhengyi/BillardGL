@@ -152,7 +152,7 @@ void ShockHandling() {
                 Display.setShockStaerke(0.0);
                 Menu.NewMenuState();
 			}
-        } else if (Judge.Entscheidung()) {
+        } else if (Judge.Decision()) {
             StateMachine=JUDGEING;
             Display.setShockStaerke(0.0);
 		} else {
@@ -229,7 +229,7 @@ void NewWhiteHandling() {
 
 void JudgeHandling() {
 	if (JudgeDecision == -1) {
-        JudgeDecision = Judge.Entscheidung();
+        JudgeDecision = Judge.Decision();
 
 		RecodingChanges = JudgeDecision & 1;
 		Foul = JudgeDecision & 2;

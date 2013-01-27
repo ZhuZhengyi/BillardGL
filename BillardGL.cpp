@@ -242,9 +242,9 @@ void timerEvent()
 
             case AIMING: AimHandling();break;
 
-            case AUSHOLEN: BackswingHandling();break;
+            case SWING: BackswingHandling();break;
 
-            case SHOCK: ShockHandling();break;      //击球
+            case SHOT: ShockHandling();break;      //击球
 
             case NEW_WHITE: NewWhiteHandling();break;
 
@@ -310,12 +310,12 @@ int main(int argc, char **argv)
 }
 
 /* -------------------- Stoss -------------------- */
-void Stoke(GLfloat Stoss_x, GLfloat Stoss_y) {
+void Shot(GLfloat Shot_x, GLfloat Shot_y) {
 
-    Judge.NewStoke();
+    Judge.NewShot();
     JudgeDecision=-1;
 
-    Physics(Stoss_x, Stoss_y);               // Physik-Simulation
+    Physics(Shot_x, Shot_y);               // Physik-Simulation
 
     StartTime=ElapsedTime();               // Startzeit bestimmen
 

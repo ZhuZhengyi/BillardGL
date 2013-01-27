@@ -4,8 +4,8 @@
 #define START       0          //
 #define VIEWING     1          //VIEW
 #define AIMING      2          //OBJECTIVES
-#define AUSHOLEN    3          //reach back
-#define SHOCK       4          //shock
+#define SWING    3          //swing
+#define SHOT       4          //shock
 #define NEW_WHITE   5          //
 #define JUDGEING    6        //refree
 

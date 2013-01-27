@@ -2,14 +2,14 @@
 class Judge {
 	public:
 		Judge();
-		void KugelKugel(GLint,GLfloat,GLint,GLfloat);
+		void BallBall(GLint,GLfloat,GLint,GLfloat);
 		void BallBand(GLint,GLfloat,GLint);
 		void BallHole(GLint,GLint);
 		void NewGame(GLint);
-		void NewStoke();
+		void NewShot();
 		void SetPlayerToStock(GLint);
 		void SetzeFouls(GLint,GLint);
-		GLint Entscheidung();
+		GLint Decision();
 
 		GLint CorrectBallWithPlay(GLint);
 		GLint CorrectBallSunk(GLint);
@@ -30,7 +30,7 @@ class Judge {
 		GLint ErsteBeruehrteBande;
 		GLint ErsteVersenkteKugel;
 		GLint ErsteBeruehrung;
-		GLint ErsteBeruehrteKugelImKopffeld;
+		GLint FirstTouchedBallHeadField;
 		GLint ErsteBeruehrungImKopffeld;
 		GLint KugelnImSpiel[16];
 		GLint KugelnVersenkt[16];
@@ -39,7 +39,7 @@ class Judge {
 		GLint FoulsHintereinanderSpieler1;
 		GLint FoulsHintereinanderSpieler2;
 
-		GLint SchiedsrichterEntscheidung;
+		GLint RefereeDecision;
 
 		GLint PlayerToStock;
 

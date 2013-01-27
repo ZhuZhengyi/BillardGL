@@ -62,12 +62,12 @@ void MouseClick(int button, int state, int x, int y)
            StateMaschin=VIEWING;
            Menu.NeuerMenuZustand();
            break;
-           case AUSHOLEN:
+           case SWING:
            StateMaschin=AIMING;
            Menu.NeuerMenuZustand();
            Anzeige.setzeStossStaerke(0);
            break;
-           case SHOCK: {
+           case SHOT: {
            if (xnor) {
            StateMaschin=VIEWING;
            Menu.NeuerMenuZustand();
@@ -97,10 +97,10 @@ void MouseClick(int button, int state, int x, int y)
             } break;
             case AIMING: {
                 AusholStartTime=ElapsedTime();
-                StateMachine=AUSHOLEN;
+                StateMachine=SWING;
                 Menu.NewMenuState();
             } break;
-            case SHOCK: {
+            case SHOT: {
                 if (xnor) {
                     for (int Kugelnr=0;Kugelnr<16;Kugelnr++) { // Alle Kugeln ans Ziel
                         Ball[Kugelnr].newPositionD(LightingTable[Stossdauer][Kugelnr]);
@@ -136,12 +136,12 @@ void MouseClick(int button, int state, int x, int y)
             }
         }
 
-        if (button == GLUT_MIDDLE_BUTTON && state == GLUT_UP && StateMachine==AUSHOLEN) {
+        if (button == GLUT_MIDDLE_BUTTON && state == GLUT_UP && StateMachine==SWING) {
             GLfloat dx=Ball[0].Pos_xCM()-Camera.Pos_xCM();
             GLfloat dy=Ball[0].Pos_yCM()-Camera.Pos_yCM();
             GLfloat Abstand=sqrt(dx*dx+dy*dy);
-            Stoke(dx*AusholStaerke/Abstand,dy*AusholStaerke/Abstand);
-            StateMachine=SHOCK;
+            Shot(dx*AusholStaerke/Abstand,dy*AusholStaerke/Abstand);
+            StateMachine=SHOT;
             Menu.NewMenuState();
             //Kamera.Verfolge(0);
             Camera.EyesOn2(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
@@ -159,7 +159,7 @@ void MouseMove(int x, int y) {
     if (MouseButtonIntercepted) return;
     if (StateMachine==START) return;
     if (MouseButton==GLUT_LEFT_BUTTON) {
-        if ((StateMachine==AIMING)||(StateMachine==AUSHOLEN)) {
+        if ((StateMachine==AIMING)||(StateMachine==SWING)) {
             if (InvertX) {
                 Camera.SwingRight(MouseSpeed*(x-MouseLookLast_x),Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
             } else {
@@ -183,7 +183,7 @@ void MouseMove(int x, int y) {
             }
         }
     } else if (MouseButton==GLUT_RIGHT_BUTTON) {
-        if ((StateMachine==AIMING)||(StateMachine==AUSHOLEN)) {
+        if ((StateMachine==AIMING)||(StateMachine==SWING)) {
             if (InvertX) {
                 Camera.SwingRight(MouseSpeed*(x-MouseLookLast_x),Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
             } else {
@@ -278,12 +278,12 @@ void KeyPress( unsigned char keyPressed, int x, int y )
                 StateMachine=VIEWING;
                 Menu.NewMenuState();
                 break;
-            case AUSHOLEN:
+            case SWING:
                 StateMachine=AIMING;
                 Menu.NewMenuState();
                 Display.setShockStaerke(0);
                 break;
-            case SHOCK: {
+            case SHOT: {
                 if (xnor) {
                     StateMachine=VIEWING;
                     Menu.NewMenuState();
@@ -305,7 +305,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
             } else if (!AllerersterStoss) {
                 StartTime=ElapsedTime();
                 //Frames=0;
-                StateMachine=SHOCK;
+                StateMachine=SHOT;
                 Menu.NewMenuState();
                 for (int Kugelnr=0;Kugelnr<16;Kugelnr++) {
                     Ball[Kugelnr].newPositionD(LightingTable[0][Kugelnr]);
@@ -431,7 +431,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
                 GLfloat dx=Ball[0].Pos_xCM()-Camera.Pos_xCM();
                 GLfloat dy=Ball[0].Pos_yCM()-Camera.Pos_yCM();
                 GLfloat Abstand=sqrt(dx*dx+dy*dy);
-                Stoke(dx*80.0/Abstand,dy*80.0/Abstand);
+                Shot(dx*80.0/Abstand,dy*80.0/Abstand);
             }
         } break;//d
         case 'e': {
@@ -439,8 +439,8 @@ void KeyPress( unsigned char keyPressed, int x, int y )
                 GLfloat dx=Ball[0].Pos_xCM()-Camera.Pos_xCM();
                 GLfloat dy=Ball[0].Pos_yCM()-Camera.Pos_yCM();
                 GLfloat Abstand=sqrt(dx*dx+dy*dy);
-                Stoke(dx*80.0/Abstand,dy*80.0/Abstand);
-                StateMachine=SHOCK;
+                Shot(dx*80.0/Abstand,dy*80.0/Abstand);
+                StateMachine=SHOT;
                 Menu.NewMenuState();
                 Camera.EyesOn2(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
                 //Kamera.Verfolge(0);
@@ -456,10 +456,10 @@ void KeyPress( unsigned char keyPressed, int x, int y )
                 break;
             case AIMING:
                 AusholStartTime=ElapsedTime();
-                StateMachine=AUSHOLEN;
+                StateMachine=SWING;
                 Menu.NewMenuState();
                 break;
-            case SHOCK: {
+            case SHOT: {
                 if (xnor) {
                     for (int Kugelnr=0;Kugelnr<16;Kugelnr++) { // Alle Kugeln ans Ziel
                         Ball[Kugelnr].newPositionD(LightingTable[Stossdauer][Kugelnr]);
@@ -498,12 +498,12 @@ void KeyPress( unsigned char keyPressed, int x, int y )
 void KeyRelease( unsigned char keyPressed, int,int) {
 
     if ((keyPressed==' ')&&
-            (StateMachine==AUSHOLEN)) {
+            (StateMachine==SWING)) {
         GLfloat dx=Ball[0].Pos_xCM()-Camera.Pos_xCM();
         GLfloat dy=Ball[0].Pos_yCM()-Camera.Pos_yCM();
         GLfloat Abstand=sqrt(dx*dx+dy*dy);
-        Stoke(dx*AusholStaerke/Abstand,dy*AusholStaerke/Abstand);
-        StateMachine=SHOCK;
+        Shot(dx*AusholStaerke/Abstand,dy*AusholStaerke/Abstand);
+        StateMachine=SHOT;
         Menu.NewMenuState();
         Camera.EyesOn2(Ball[0].Pos_xCM(),Ball[0].Pos_yCM());
         //Kamera.Verfolge(0);
@@ -528,8 +528,8 @@ void SpecialKeyPress(int Taste,int x, int y) {
 
         switch (Taste) {
         case GLUT_KEY_F1:
-            if (StateMachine!=AUSHOLEN) {
-                if (StateMachine!=SHOCK && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
+            if (StateMachine!=SWING) {
+                if (StateMachine!=SHOT && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
                     StateMachine=VIEWING;
                     Menu.NewMenuState();
                 }
@@ -537,8 +537,8 @@ void SpecialKeyPress(int Taste,int x, int y) {
             }
             break;
         case GLUT_KEY_F2:
-            if (StateMachine!=AUSHOLEN) {
-                if (StateMachine!=SHOCK && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
+            if (StateMachine!=SWING) {
+                if (StateMachine!=SHOT && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
                     StateMachine=VIEWING;
                     Menu.NewMenuState();
                 }
@@ -546,8 +546,8 @@ void SpecialKeyPress(int Taste,int x, int y) {
             }
             break;
         case GLUT_KEY_F3:
-            if (StateMachine!=AUSHOLEN) {
-                if (StateMachine!=SHOCK && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
+            if (StateMachine!=SWING) {
+                if (StateMachine!=SHOT && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
                     StateMachine=VIEWING;
                     Menu.NewMenuState();
                 }
@@ -555,8 +555,8 @@ void SpecialKeyPress(int Taste,int x, int y) {
             }
             break;
         case GLUT_KEY_F4:
-            if (StateMachine!=AUSHOLEN) {
-                if (StateMachine!=SHOCK && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
+            if (StateMachine!=SWING) {
+                if (StateMachine!=SHOT && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
                     StateMachine=VIEWING;
                     Menu.NewMenuState();
                 }
@@ -564,8 +564,8 @@ void SpecialKeyPress(int Taste,int x, int y) {
             }
             break;
         case GLUT_KEY_F5:
-            if (StateMachine!=AUSHOLEN) {
-                if (StateMachine!=SHOCK && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
+            if (StateMachine!=SWING) {
+                if (StateMachine!=SHOT && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
                     StateMachine=VIEWING;
                     Menu.NewMenuState();
                 }
@@ -573,8 +573,8 @@ void SpecialKeyPress(int Taste,int x, int y) {
             }
             break;
         case GLUT_KEY_F6:
-            if (StateMachine!=AUSHOLEN) {
-                if (StateMachine!=SHOCK && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
+            if (StateMachine!=SWING) {
+                if (StateMachine!=SHOT && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
                     StateMachine=VIEWING;
                     Menu.NewMenuState();
                 }
@@ -582,8 +582,8 @@ void SpecialKeyPress(int Taste,int x, int y) {
             }
             break;
         case GLUT_KEY_F7:
-            if (StateMachine!=AUSHOLEN) {
-                if (StateMachine!=SHOCK && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
+            if (StateMachine!=SWING) {
+                if (StateMachine!=SHOT && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
                     StateMachine=VIEWING;
                     Menu.NewMenuState();
                 }
@@ -591,8 +591,8 @@ void SpecialKeyPress(int Taste,int x, int y) {
             }
             break;
         case GLUT_KEY_F8:
-            if (StateMachine!=AUSHOLEN) {
-                if (StateMachine!=SHOCK && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
+            if (StateMachine!=SWING) {
+                if (StateMachine!=SHOT && StateMachine!=NEW_WHITE && StateMachine!=JUDGEING) {
                     StateMachine=VIEWING;
                     Menu.NewMenuState();
                 }
