@@ -24,7 +24,7 @@ extern GLfloat MouseSpeed,AusholStaerke;
 extern GLint   BackgroundColor;
 extern GLint PolygonMode_mode;
 extern GLint PolygonMode_view;
-extern GLint StartTime,AusholStartTime,Stossdauer,Ausholstaerke;
+extern GLint StartTime,AusholStartTime,shot_time,Ausholstaerke;
 extern GLint xnor;
 extern int OriginalWindow,CurrentWindow;
 extern GLint GameType,StateMachine, FullScreen;

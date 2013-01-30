@@ -11,7 +11,7 @@ extern GLint KEY_UP,KEY_DOWN,
 	   KEY_RIGHT,KEY_LEFT,KEY_SHIFT,
 	   KEY_CTRL,KEY_PAGE_UP,KEY_PAGE_DOWN,KEY_Pos1,
 	   KEY_END,Factor,AusholStartTime,StartTime,
-	   Stossdauer,StateMachine,FrameTimePoint,Anfangsstoss,
+	   shot_time,StateMachine,FrameTimePoint,Anfangsstoss,
 	   WeisseVersetzbar;
 extern GLfloat MaxAusholStaerke,AusholStaerke;
 extern GLint   BallsSunk[16];

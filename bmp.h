@@ -345,7 +345,7 @@ typedef struct tagBITMAPINFOX {  /* bmi */
 } BITMAPINFOX;
 
 
-// NOTE: Origin m[0][0] is in lower left corner.
+// NONETE: Origin m[0][0] is in lower left corner.
 //       Float values of red, green, and blue component 
 //       are in [0,1].
 bool loadBMP(FMatrix& r, FMatrix& g, FMatrix& b, const char* fname);

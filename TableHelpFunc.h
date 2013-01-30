@@ -1,5 +1,5 @@
-void Tischflaeche();
-void TischflaechemitTextur();
+void TableSurface();
+void TableSurfaceBindTexture();
 void MittelLochVerkleidung();
 void EckLochVerkleidung();
 void MittelLochInnenverkleidung();
@@ -9,4 +9,4 @@ void WoodBandOT(GLfloat, GLint);
 void Banden(GLint richtung, GLint Multiply);
 void MittelLochRand();
 void EckLochRand();
-void Diamant(GLfloat,GLfloat,GLfloat);
+void Diamod(GLfloat,GLfloat,GLfloat);

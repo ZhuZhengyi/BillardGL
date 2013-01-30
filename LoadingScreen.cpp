@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "Textfeld.h"
-#include "Schild.h"
+#include "TextItem.h"
+#include "Label.h"
 #include "Table.h"
 #include "Camera.h"
 #include "Ball.h"
@@ -153,7 +153,7 @@ void LSidle() {
 					 glutIgnoreKeyRepeat(1);
 					 glEnable(GL_DEPTH_TEST);
 					 glEnable(GL_CULL_FACE);
-					 glEnable(GL_NORMALIZE);
+                     glEnable(GL_NORMALIZE);
 					 glEnable(GL_BLEND);
 					 glShadeModel(GL_SMOOTH);
 					 glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);

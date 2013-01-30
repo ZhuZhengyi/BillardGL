@@ -13,8 +13,8 @@
 #include "Ball.h"
 #include "Camera.h"
 #include "ShotStrength.h"
-#include "Schild.h"
-#include "Textfeld.h"
+#include "Label.h"
+#include "TextItem.h"
 #include "Menu.h"
 #include "Judge.h"
 
@@ -103,7 +103,7 @@ void MouseClick(int button, int state, int x, int y)
             case SHOT: {
                 if (xnor) {
                     for (int Kugelnr=0;Kugelnr<16;Kugelnr++) { // Alle Kugeln ans Ziel
-                        Ball[Kugelnr].newPositionD(LightingTable[Stossdauer][Kugelnr]);
+                        Ball[Kugelnr].newPositionD(LightingTable[shot_time][Kugelnr]);
                         if (BallsInGame[Kugelnr] && !BallsSunk[Kugelnr] && (Ball[Kugelnr].Pos_x()==3000)) {
                             BallsSunk[Kugelnr]=1;
                         }
@@ -462,7 +462,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
             case SHOT: {
                 if (xnor) {
                     for (int Kugelnr=0;Kugelnr<16;Kugelnr++) { // Alle Kugeln ans Ziel
-                        Ball[Kugelnr].newPositionD(LightingTable[Stossdauer][Kugelnr]);
+                        Ball[Kugelnr].newPositionD(LightingTable[shot_time][Kugelnr]);
                     }
                     if (Ball[0].Pos_x()==3000) {
                         StateMachine=NEW_WHITE;

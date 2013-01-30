@@ -8,7 +8,7 @@ void Physics(GLfloat,GLfloat);
 void Collision(GLfloat[],GLfloat[],GLint,GLint);
 
 extern GLfloat CollisionFactor,FrictionFactor,GangsFactor;
-extern GLint PhysicsFrequenz, Stossdauer;
+extern GLint PhysicsFrequenz, shot_time;
 
 extern class Ball Ball[16];
 extern class Judge Judge;

@@ -3,12 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Textfeld.h"
+#include "TextItem.h"
 #include "Camera.h"
 #include "Ball.h"
 #include "ShotStrength.h"
 #include "Namen.h"
-#include "Schild.h"
+#include "Label.h"
 #include "Menu.h"
 #include "Judge.h"
 
@@ -96,7 +96,7 @@ void ShockHandling() {
     GLint Zeit=FrameTimePoint-StartTime;  //time
 
 	// Letzten Zustand noch zeichnen, wenn Stoss
-	if (Zeit>Stossdauer) {Zeit=Stossdauer;} // eigentlich schon vorbei
+    if (Zeit>shot_time) {Zeit=shot_time;} // eigentlich schon vorbei
 
 	//printf("%i-%i=%i: ",FrameZeitpunkt,Startzeit,Zeit);
 
@@ -125,7 +125,7 @@ void ShockHandling() {
 	}
 
 
-	if (Zeit==Stossdauer &&
+    if (Zeit==shot_time &&
 			!(GameMode == TUTORIAL && FrameTimePoint-StartTime < 1900)) {
 		// Animation schon fertig?
 

@@ -587,7 +587,7 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
         // -------------------- Stossdauer setzen ------------------------------------
 
         if (moving) {
-			Stossdauer = (zeitpunkt<1999)?zeitpunkt+1:1999;
+            shot_time = (zeitpunkt<1999)?zeitpunkt+1:1999;
 		}
 
         //  Daten umschreiben

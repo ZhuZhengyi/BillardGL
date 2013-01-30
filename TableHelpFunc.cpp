@@ -3,7 +3,7 @@
 #include "TableHelpFunc.h"
 
 //Table surface
-void Tischflaeche() {
+void TableSurface() {
 	GLint xteile=16;     // Anzahl muss gerade sein
 	GLint yteile=8;     // Anzahl muss gerade sein; 
 
@@ -16,7 +16,7 @@ void Tischflaeche() {
 	indices = (GLuint*) malloc (4*xteile*yteile* sizeof(GLuint));
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 	GLfloat widthx=264.0/xteile;
 	GLfloat widthy=137.0/yteile;
@@ -54,7 +54,7 @@ void Tischflaeche() {
 	glDrawElements(GL_QUADS,4*xteile*yteile-8*4 , GL_UNSIGNED_INT,indices);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 
 	free(vertices);
 	free(normals);
@@ -62,7 +62,7 @@ void Tischflaeche() {
 }
 
 //Table face Texture
-void TischflaechemitTextur() {
+void TableSurfaceBindTexture() {
 	GLint xteile=16;     // Anzahl muss gerade sein
 	GLint yteile=8;     // Anzahl muss gerade sein; 
 
@@ -77,7 +77,7 @@ void TischflaechemitTextur() {
 	indices = (GLuint*) malloc (4*xteile*yteile* sizeof(GLuint));
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	GLfloat widthx=264.0/xteile;
@@ -119,7 +119,7 @@ void TischflaechemitTextur() {
 	glDrawElements(GL_QUADS,4*xteile*yteile-8*4 , GL_UNSIGNED_INT,indices);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	free(vertices);
@@ -152,7 +152,7 @@ void MittelLochVerkleidung() {
 	//indices = (GLuint*) malloc (4*22*sizeof(GLint));
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 	GLint iv=0;
 	GLint in=0;
@@ -482,7 +482,7 @@ void MittelLochVerkleidung() {
 	glDrawElements(GL_QUADS,22*4 , GL_UNSIGNED_INT,indices);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 
 	free(vertices);
 	free(normals);
@@ -664,7 +664,7 @@ void EckLochVerkleidung() {
 	glMaterialf(GL_FRONT, GL_SHININESS,mat_shininess);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 	glNormalPointer(GL_FLOAT, 0, normals);
@@ -672,7 +672,7 @@ void EckLochVerkleidung() {
 	glDrawElements(GL_QUADS,42*4 , GL_UNSIGNED_INT,indices);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 }
 
 //Center hole inner panel
@@ -779,7 +779,7 @@ void MittelLochInnenverkleidung() {
 
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 	glNormalPointer(GL_FLOAT, 0, normals);
@@ -787,7 +787,7 @@ void MittelLochInnenverkleidung() {
 	glDrawElements(GL_QUADS,4*20, GL_UNSIGNED_INT,indices);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 
 }
 
@@ -879,7 +879,7 @@ void EckLochInnenverkleidung() {
 
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 	glNormalPointer(GL_FLOAT, 0, normals);
@@ -887,7 +887,7 @@ void EckLochInnenverkleidung() {
 	glDrawElements(GL_QUADS,4*16, GL_UNSIGNED_INT,indices);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 
 
 }
@@ -919,7 +919,7 @@ void WoodBand(GLfloat Breite, GLint Unterteilungen, GLfloat TexFaktorX, GLfloat 
 	int iv=0; int in=0; int ii=0; int it=0;
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	for (GLint u=0;u<=Unterteilungen;u++) {
@@ -1003,7 +1003,7 @@ void WoodBand(GLfloat Breite, GLint Unterteilungen, GLfloat TexFaktorX, GLfloat 
 	glDrawElements(GL_QUADS,4*6*Unterteilungen, GL_UNSIGNED_INT,indices);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	free(vertices);
@@ -1036,7 +1036,7 @@ void WoodBandOT(GLfloat Breite, GLint Unterteilungen) {
 	int iv=0; int in=0; int ii=0;
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 	for (GLint u=0;u<=Unterteilungen;u++) {
 		vertices[iv++]=u*TeilBreite;
@@ -1104,7 +1104,7 @@ void WoodBandOT(GLfloat Breite, GLint Unterteilungen) {
 	glDrawElements(GL_QUADS,4*6*Unterteilungen, GL_UNSIGNED_INT,indices);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 
 	free(vertices);
 	free(normals);
@@ -1344,7 +1344,7 @@ void Banden(GLint richtung, GLint Multiply){
 	}
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 	glNormalPointer(GL_FLOAT, 0, normals);
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
@@ -1352,7 +1352,7 @@ void Banden(GLint richtung, GLint Multiply){
 	glDrawElements(GL_QUADS, 16+8 , GL_UNSIGNED_INT,indices);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 
 	free(vertices);
 	free(normals);
@@ -1501,7 +1501,7 @@ void MittelLochRand() {
 
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 	glNormalPointer(GL_FLOAT, 0, normals);
@@ -1509,7 +1509,7 @@ void MittelLochRand() {
 	glDrawElements(GL_QUADS,4*32, GL_UNSIGNED_INT,indices);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 
 }
 
@@ -1641,7 +1641,7 @@ void EckLochRand() {
 
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
 
 	glVertexPointer(3, GL_FLOAT, 0, vertices);
 	glNormalPointer(GL_FLOAT, 0, normals);
@@ -1649,39 +1649,48 @@ void EckLochRand() {
 	glDrawElements(GL_QUADS,4*26, GL_UNSIGNED_INT,indices);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
 
 }
 
 
-//diamond
-void Diamant(GLfloat x, GLfloat y, GLfloat z) {
+/*
+ * 桌子边上的四角钻石嵌入物
+ *
+ */
+void Diamod(GLfloat x, GLfloat y, GLfloat z) {
 	glBegin(GL_QUADS);
+
 	glNormal3f(0,0,1);
 	glVertex3f(x+0.0,y+0.5,z);
 	glVertex3f(x-0.5,y+0.0,z);
 	glVertex3f(x+0.0,y-0.5,z);
 	glVertex3f(x+0.5,y+0.0,z);
+
 	glNormal3f(-0.235,0.235,0.94);
 	glVertex3f(x+0.0,y+0.5,z-0.0);
 	glVertex3f(x+0.0,y+1.5,z-0.3);
 	glVertex3f(x-1.5,y+0.0,z-0.3);
 	glVertex3f(x-0.5,y+0.0,z-0.0);
+
 	glNormal3f(-0.235,-0.235,0.94);
 	glVertex3f(x-0.5,y+0.0,z-0.0);
 	glVertex3f(x-1.5,y+0.0,z-0.3);
 	glVertex3f(x-0.0,y-1.5,z-0.3);
 	glVertex3f(x-0.0,y-0.5,z-0.0);
+
 	glNormal3f(0.235,-0.235,0.94);
 	glVertex3f(x+0.0,y-0.5,z-0.0);
 	glVertex3f(x+0.0,y-1.5,z-0.3);
 	glVertex3f(x+1.5,y+0.0,z-0.3);
 	glVertex3f(x+0.5,y+0.0,z-0.0);
+
 	glNormal3f(0.235,0.235,0.94);
 	glVertex3f(x+0.5,y+0.0,z-0.0);
 	glVertex3f(x+1.5,y+0.0,z-0.3);
 	glVertex3f(x-0.0,y+1.5,z-0.3);
 	glVertex3f(x-0.0,y+0.5,z-0.0);
+
 	glEnd();
 
 }

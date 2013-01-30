@@ -19,7 +19,7 @@
 #define SETUP 10
 #define SETUP_CONTROL 11
 #define SETUP_VIDEO 12
-#define SETUP_VIDEO_NOTICE 13
+#define SETUP_VIDEO_NONETICE 13
 #define SETUP_AUDIO 14
 #define LANGUAGE 15
 #define PLAYING 20
@@ -117,7 +117,7 @@
 #define S_AS_EXIT 233
 #define S_AS_HELP 234
 
-#define S_BE_JAEXIT       850
+#define S_BE_YESEXIT       850
 #define S_BE_BACK         851
 #define S_BE_BACK_AS       852
 
@@ -132,8 +132,8 @@
 #define S_SP_NEWEIGHT_BALLAUFSTELLUNG 550
 #define S_SP_NEWNINE_BALLAUFSTELLUNG 551
 
-#define S_SPIELER1HERHOEREN 601
-#define S_SPIELER2HERHOEREN 602
+#define S_PLAYER1HERHOEREN 601
+#define S_PLAYER2HERHOEREN 602
 #define S_NETWORK_PLAYERERHERHOEREN 603
 
 #define S_H_KEY_ASSIGNMENTS 300
@@ -188,19 +188,19 @@ class Menu {
         GLint MenuState;
         GLint AusSpiel; //fromGame
 
-        Scale MenuBackground;
+        Label MenuBackground;
 
-        Scale logo;
-        Scale namen;    //
+        Label logo;
+        Label namen;    //
 
-        Scale halbe;    //half
-        Scale volle;    //full
+        Label halbe;    //half
+        Label volle;    //full
 
-        Scale ball[16];
+        Label ball[16];
 
-        Scale GameStar;
+        Label GameStar;
 
-        Scale* SchildArray[300];
+        Label* SchildArray[300];
         TextItem* TextItemArray[1000];
 
         TextItem dummyTextfeld;

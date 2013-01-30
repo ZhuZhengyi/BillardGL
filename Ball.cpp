@@ -115,12 +115,12 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint MaxAufloesung, GLint Schatten
 				glMaterialfv(GL_FRONT, GL_SPECULAR,mat_specular);
 				glMaterialf(GL_FRONT, GL_SHININESS,mat_shininess);
 				glEnableClientState(GL_VERTEX_ARRAY);
-				glEnableClientState(GL_NORMAL_ARRAY);
+                glEnableClientState(GL_NORMAL_ARRAY);
 				glNormalPointer(GL_FLOAT, 0, ball_vertices[Aufloesung]);
 				glVertexPointer(3, GL_FLOAT, 0, ball_vertices[Aufloesung]);
 				glDrawElements(GL_TRIANGLES,20*3*Aufloesung*Aufloesung, GL_UNSIGNED_INT,ball_indices[Aufloesung]);
 				glDisableClientState(GL_VERTEX_ARRAY);
-				glDisableClientState(GL_NORMAL_ARRAY);
+                glDisableClientState(GL_NORMAL_ARRAY);
 				glEndList();
 
 			} else {                        // sonst
@@ -159,7 +159,7 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint MaxAufloesung, GLint Schatten
 				glEnable(GL_TEXTURE_2D);
 				glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 				glEnableClientState(GL_VERTEX_ARRAY);
-				glEnableClientState(GL_NORMAL_ARRAY);
+                glEnableClientState(GL_NORMAL_ARRAY);
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 				glNormalPointer(GL_FLOAT, 0, ball_vertices[Aufloesung]);
 				glVertexPointer(3, GL_FLOAT, 0, ball_vertices[Aufloesung]);
@@ -170,7 +170,7 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint MaxAufloesung, GLint Schatten
 				}
 				glDrawElements(GL_TRIANGLES,20*3*Aufloesung*Aufloesung, GL_UNSIGNED_INT,ball_indices[Aufloesung]);
 				glDisableClientState(GL_VERTEX_ARRAY);
-				glDisableClientState(GL_NORMAL_ARRAY);
+                glDisableClientState(GL_NORMAL_ARRAY);
 				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 				glDisable(GL_TEXTURE_2D);
 				glEndList();

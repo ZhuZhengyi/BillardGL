@@ -12,36 +12,36 @@ Judge::Judge() {
 void Judge::NewGame(GLint _Spiel){
 	//printf(" Schiedsrichter: NeuesSpiel %i\n",_Spiel);
 
-    Game=_Spiel;
+    gameType=_Spiel;
 
-	Eroeffnungsstoss=JA;
-	AusKopffeld=JA;
-	GruppenVerteilung=KEINE;
-	FoulsHintereinanderSpieler1=0;
-	FoulsHintereinanderSpieler2=0;
+    BeginShot=YES;
+    FromHeadField=YES;        //From header field
+    GroupAllocate=NO;
+    FoulsPlayer1=0;
+    FoulsPlayer2=0;
 
-	AufnahmeWechsel=NEIN;
-	Foul=NEIN;
-	LageVerbesserungKopffeld=NEIN;
-	LageVerbesserung=NEIN;
-	NeuAufbauenOderWeiterspielen=NEIN;
-	NeuAufbauenOderAchtEinsetzen=NEIN;
-	Spieler1Gewonnen=NEIN;
-	Spieler2Gewonnen=NEIN;
+    RecordChange=NONE;
+    Foul=NONE;
+    LageVerbesserungKopffeld=NONE;
+    LageVerbesserung=NONE;
+    NeuAufbauenOderWeiterspielen=NONE;
+    NeuAufbauenOderAchtEinsetzen=NONE;
+    Player1Wins=NONE;
+    Player2Wins=NONE;
 
     PlayerToStock=((rand()/(RAND_MAX+0.0))>.5)?1:0;
 
-    if (Game==EIGHT_BALL) {
+    if (gameType==EIGHT_BALL) {
 		for (GLint i=0;i<16;i++) {
-			KugelnImSpiel[i]=JA;
+            BallsInGame[i]=YES;
 		}
 	} 
-    if (Game==NINE_BALL) {
+    if (gameType==NINE_BALL) {
 		for (GLint i=0;i<10;i++) {
-			KugelnImSpiel[i]=JA;
+            BallsInGame[i]=YES;
 		}
 		for (GLint i2=10;i2<16;i2++) {
-			KugelnImSpiel[i2]=NEIN;
+            BallsInGame[i2]=NONE;
 		}    
 	} 
 }
@@ -52,41 +52,41 @@ void Judge::NewShot(){
     RefereeDecision=-1;
 
     FirstTouchedBall =0;
-	ErsteBeruehrteBande=0;
-	ErsteVersenkteKugel=0;
-	ErsteBeruehrung=0;
-    FirstTouchedBallHeadField=NEIN;
-	ErsteBeruehrungImKopffeld=NEIN;
+    FirstTouchedBand=0;
+    FirstSunkBall=0;
+    FirstTouching=0;
+    FirstTouchedBallHeadField=NONE;
+    FirstTouchedInHeadField=NONE;
 
     Substantiation = 0;
 
-	BandeAusserhalbKopffeldvorKugelBeruehrt = NEIN;
+    BandOutsideBeforeBallTouched = NONE;
 
 	for (GLint i=0;i<16;i++) {
-		if (KugelnVersenkt[i]) {KugelnImSpiel[i]=NEIN;}
-		KugelnVersenkt[i]=NEIN;
-		KugelnAnBande[i]=NEIN;
+        if (BallsSunk[i]) {BallsInGame[i]=NONE;}
+        BallsSunk[i]=NONE;
+        BallsBand[i]=NONE;
 	}
 
-	if (AufnahmeWechsel) {
+    if (RecordChange) {
         PlayerToStock=1-PlayerToStock;
 	}
 
-	AufnahmeWechsel=NEIN;
-	Foul=NEIN;
-	LageVerbesserungKopffeld=NEIN;
-	LageVerbesserung=NEIN;
-	NeuAufbauenOderWeiterspielen=NEIN;
-	NeuAufbauenOderAchtEinsetzen=NEIN;
-	Verloren=NEIN;
-	Gewonnen=NEIN;
-	Spieler1Gewonnen=NEIN;
-	Spieler2Gewonnen=NEIN;
+    RecordChange=NONE;
+    Foul=NONE;
+    LageVerbesserungKopffeld=NONE;      //Situation improving header
+    LageVerbesserung=NONE;              //Situation improving
+    NeuAufbauenOderWeiterspielen=NONE;  //Rebuild Or Next play
+    NeuAufbauenOderAchtEinsetzen=NONE;  //Rebuild Or Eight insertion
+    Losts=NONE;
+    Wins=NONE;
+    Player1Wins=NONE;
+    Player2Wins=NONE;
 
-    if (Game==NINE_BALL) {
+    if (gameType==NINE_BALL) {
 		for (GLint i2=9;i2>0;i2--) {
-			if (KugelnImSpiel[i2]) {
-				NiedrigsteKugel=i2;
+            if (BallsInGame[i2]) {
+                LowestBall=i2;
 			}
 		}
 	}
@@ -96,36 +96,36 @@ void Judge::NewShot(){
 	//printf(" SpielerAmStoss   : %i\n",SpielerAmStoss);
 	//printf(" Spiel            : %i\n",Spiel);
 	//printf(" GruppenVerteilung: %i\n",GruppenVerteilung);
-	//printf(" NiedrigsteKugel  : %i\n",NiedrigsteKugel);
+    //printf(" NiedrigsteBall  : %i\n",NiedrigsteBall);
 
 }
 
 void Judge::BallBall(GLint,GLfloat,
-		GLint Kugel2,GLfloat Kugel2x){
+        GLint Ball2,GLfloat Ball2x){
     if (!FirstTouchedBall ) {
-        FirstTouchedBall =Kugel2;
-		if (Kugel2x<-63.5) {
-            FirstTouchedBallHeadField=JA;
+        FirstTouchedBall =Ball2;
+        if (Ball2x<-63.5) {
+            FirstTouchedBallHeadField=YES;
 		}
 	}
 }
 
-void Judge::BallBand(GLint Kugel,GLfloat Kugelx,
+void Judge::BallBand(GLint Ball,GLfloat Ballx,
 		GLint Bande){
-	KugelnAnBande[Kugel]=JA;
+    BallsBand[Ball]=YES;
 
     if (!FirstTouchedBall  && ((Bande==20) ||
-				(Bande==21) && (Kugelx<-63.5) ||
-				(Bande==23) && (Kugelx<-63.5))) {
-		BandeAusserhalbKopffeldvorKugelBeruehrt = JA;
+                (Bande==21) && (Ballx<-63.5) ||
+                (Bande==23) && (Ballx<-63.5))) {
+        BandOutsideBeforeBallTouched = YES;
 	}
 }
 
-void Judge::BallHole(GLint Kugel,GLint){
-	KugelnVersenkt[Kugel]=JA;
+void Judge::BallHole(GLint Ball,GLint){
+    BallsSunk[Ball]=YES;
 
-	if (!ErsteVersenkteKugel) {
-		ErsteVersenkteKugel=Kugel;
+    if (!FirstSunkBall) {
+        FirstSunkBall=Ball;
 	}
 }
 
@@ -134,186 +134,186 @@ GLint Judge::Decision(){
 
     if (RefereeDecision==-1) {
 
-		if (Eroeffnungsstoss) {
-			//printf("check %i %i\n",FarbigeKugelDabei(KugelnVersenkt),FarbigeKugelSumme(KugelnAnBande));
-            if (!ColoredBallHere(KugelnVersenkt) &&
-                    ColoredBallSum(KugelnAnBande)<4) {
-				Foul = JA; 
+        if (BeginShot) {
+            //printf("check %i %i\n",FarbigeBallDabei(BallnVersenkt),FarbigeBallSumme(BallnAnBande));
+            if (!ColoredBallHere(BallsSunk) &&
+                    ColoredBallSum(BallsBand)<4) {
+                Foul = YES;
                 Substantiation=450;
 				//printf("Foul kein gescheiter eroeff\n");
-				NeuAufbauenOderWeiterspielen = JA;
+                NeuAufbauenOderWeiterspielen = YES;
 				//printf("NeuAufbauenOderWeiterspielen kein gescheiter eroeff\n");
 			}
-            if ((ColoredBallHere(KugelnVersenkt) ||
-                        (ColoredBallSum(KugelnAnBande)>=4)) &&
-					KugelnVersenkt[0]) {
-				Foul = JA;
+            if ((ColoredBallHere(BallsSunk) ||
+                        (ColoredBallSum(BallsBand)>=4)) &&
+                    BallsSunk[0]) {
+                Foul = YES;
                 if (!Substantiation) Substantiation=451;
 				//printf("Foul weiss bei eroff versenkt\n");
-                if (Game==EIGHT_BALL) {
-					LageVerbesserungKopffeld = JA;
+                if (gameType==EIGHT_BALL) {
+                    LageVerbesserungKopffeld = YES;
 					//printf("LageVerbesserungKopffeld weiss bei eroff versenkt\n");
 				}
 			}
 		}
 
         if (!FirstTouchedBall ) {
-			Foul=JA;
+            Foul=YES;
             if (!Substantiation) Substantiation=452;
 		}
 
         if (!CorrectBallWithPlay(FirstTouchedBall )) {
-			Foul = JA;
+            Foul = YES;
             if (!Substantiation) Substantiation=453;
 			//printf("Foul keine korrekte kugel angespielt\n");
 		}
 
         if (CorrectBallWithPlay(FirstTouchedBall ) &&
-                !CorrectBallSunkHere(KugelnVersenkt)) {
-			AufnahmeWechsel = JA;
+                !CorrectBallSunkHere(BallsSunk)) {
+            RecordChange = YES;
 			//printf("AufnahmeWechsel nix gescheites versenkt\n");
-            if (!Sum(KugelnAnBande)) {
-				Foul = JA;
+            if (!Sum(BallsBand)) {
+                Foul = YES;
                 if (!Substantiation) Substantiation=454;
 				//printf("Foul nix gescheites versenkt, keine Bande\n");
 			}
 		} 
 
-		if (AusKopffeld && 
+        if (FromHeadField &&
                 FirstTouchedBallHeadField &&
-				!BandeAusserhalbKopffeldvorKugelBeruehrt) {
-			Foul = JA;
+                !BandOutsideBeforeBallTouched) {
+            Foul = YES;
             if (!Substantiation) Substantiation=455;
 			//printf("Foul im kopff angespielt\n");
 		}
 
-		if (! Eroeffnungsstoss && KugelnVersenkt[0]) {
-			Foul = JA;
+        if (! BeginShot && BallsSunk[0]) {
+            Foul = YES;
 			//printf("Foul weiss versenkt\n");
             if (!Substantiation) Substantiation=456;
-			LageVerbesserung = JA;
+            LageVerbesserung = YES;
 			//printf("LageVerbesserung weiss bei eroeff1\n");
 		}
 
 		if (Foul) {
-			AufnahmeWechsel = JA;
+            RecordChange = YES;
 			if (!LageVerbesserungKopffeld) {
-				LageVerbesserung = JA;
+                LageVerbesserung = YES;
 			}
 			//printf("AufnahmeWechsel wegen Foul\n");
 		}
 
-        if (Game==EIGHT_BALL) {
+        if (gameType==EIGHT_BALL) {
 
-			if (Eroeffnungsstoss && KugelnVersenkt[8]) {
-				NeuAufbauenOderAchtEinsetzen = JA;
-				KugelnVersenkt[8]=NEIN;
-				KugelnImSpiel[8]=JA;
+            if (BeginShot && BallsSunk[8]) {
+                NeuAufbauenOderAchtEinsetzen = YES;
+                BallsSunk[8]=NONE;
+                BallsInGame[8]=YES;
 				//printf("NeuAufbauenOderAchtEinsetzen 8 bei eroeff vers\n");
 			}	
 
 			if (NeuAufbauenOderAchtEinsetzen) {
-				NeuAufbauenOderWeiterspielen=NEIN;
+                NeuAufbauenOderWeiterspielen=NONE;
 			}
 
-            if (KugelnVersenkt[8] && !CorrectBallSunk(8) && !Eroeffnungsstoss) {
-				Verloren = JA;
+            if (BallsSunk[8] && !CorrectBallSunk(8) && !BeginShot) {
+                Losts = YES;
 				//printf("Verloren 8\n");
 			}
 
             if (FirstTouchedBall ==8 && !CorrectBallWithPlay(8)){
-				LageVerbesserung = JA;
+                LageVerbesserung = YES;
 			}
 
-            if (KugelnVersenkt[8] && CorrectBallSunk(8) && !Foul) {
-				Gewonnen = JA;
+            if (BallsSunk[8] && CorrectBallSunk(8) && !Foul) {
+                Wins = YES;
 				//printf("Gewonnen\n");
 			}
 
 			if (!Foul && //Gruppenbestimung
-					!GruppenVerteilung && 
-					!Eroeffnungsstoss && 
-					ErsteVersenkteKugel &&
+                    !GroupAllocate &&
+                    !BeginShot &&
+                    FirstSunkBall &&
                     FirstTouchedBall  != 8 &&
-					ErsteVersenkteKugel != 8) {
-                if ((PlayerToStock == SPIELER1) &&
-						(ErsteVersenkteKugel < 8) ||
-                        (PlayerToStock == SPIELER2) &&
-						(ErsteVersenkteKugel > 8)) {
-					GruppenVerteilung = S1_GANZE_S2_HALBE;
-					//printf("Gruppenverteilung:  S1_GANZE_S2_HALBE\n");
+                    FirstSunkBall != 8) {
+                if ((PlayerToStock == PLAYER1) &&
+                        (FirstSunkBall < 8) ||
+                        (PlayerToStock == PLAYER2) &&
+                        (FirstSunkBall > 8)) {
+                    GroupAllocate = P1_ALL_P2_HALF;
+                    //printf("Gruppenverteilung:  P1_ALL_P2_HALF\n");
 				}
-                if ((PlayerToStock == SPIELER1) &&
-						(ErsteVersenkteKugel > 8) ||
-                        (PlayerToStock == SPIELER2) &&
-						(ErsteVersenkteKugel < 8)) {
-					GruppenVerteilung = S1_HALBE_S2_GANZE;
-					//printf("Gruppenverteilung:  S1_HALBE_S2_GANZE\n");
+                if ((PlayerToStock == PLAYER1) &&
+                        (FirstSunkBall > 8) ||
+                        (PlayerToStock == PLAYER2) &&
+                        (FirstSunkBall < 8)) {
+                    GroupAllocate = P1_HALF_P2_ALL;
+                    //printf("Gruppenverteilung:  P1_HALF_P2_ALL\n");
 				}      
 			}
 		}
 
-        if (Game==NINE_BALL) {
-			if (Foul && KugelnVersenkt[9]) {
+        if (gameType==NINE_BALL) {
+            if (Foul && BallsSunk[9]) {
                 NineChosen();
-				KugelnVersenkt[9]=NEIN;
-				KugelnImSpiel[9]=JA;
+                BallsSunk[9]=NONE;
+                BallsInGame[9]=YES;
 			}
 
 			if (Foul) {
-                if (PlayerToStock==SPIELER1) {
-					FoulsHintereinanderSpieler1+=1;
+                if (PlayerToStock==PLAYER1) {
+                    FoulsPlayer1+=1;
 				} else {
-					FoulsHintereinanderSpieler2+=1;
+                    FoulsPlayer2+=1;
 				}
 			} else {
-                if (PlayerToStock==SPIELER1) {
-					FoulsHintereinanderSpieler1=0;
+                if (PlayerToStock==PLAYER1) {
+                    FoulsPlayer1=0;
 				} else {
-					FoulsHintereinanderSpieler2=0;
+                    FoulsPlayer2=0;
 				}
 			}
 
-            if ((PlayerToStock==SPIELER1) &&
-					(FoulsHintereinanderSpieler1 == 3) ||
-                    (PlayerToStock==SPIELER2) &&
-					(FoulsHintereinanderSpieler2 == 3)) {
-				Verloren = JA;
+            if ((PlayerToStock==PLAYER1) &&
+                    (FoulsPlayer1 == 3) ||
+                    (PlayerToStock==PLAYER2) &&
+                    (FoulsPlayer2 == 3)) {
+                Losts = YES;
 				//printf("Verloren durch drei Fouls hintereinander\n");
 			}
 
-			if (KugelnVersenkt[9] && !Foul) {
-				Gewonnen = JA;
+            if (BallsSunk[9] && !Foul) {
+                Wins = YES;
 				//printf("Gewonnen\n");
 			}
 		}
 
-		Eroeffnungsstoss = NEIN;
-		AusKopffeld = NEIN;
+        BeginShot = NONE;
+        FromHeadField = NONE;
 
-		if (Gewonnen) {
-            if (PlayerToStock==SPIELER1) {
-				Spieler1Gewonnen=JA;
+        if (Wins) {
+            if (PlayerToStock==PLAYER1) {
+                Player1Wins=YES;
 			} else {
-				Spieler2Gewonnen=JA;
+                Player2Wins=YES;
 			}
 		} 
-		if (Verloren){
-            if (PlayerToStock==SPIELER1) {
-				Spieler2Gewonnen=JA;
+        if (Losts){
+            if (PlayerToStock==PLAYER1) {
+                Player2Wins=YES;
 			} else {
-				Spieler1Gewonnen=JA;
+                Player1Wins=YES;
 			}
 		}
 
-        RefereeDecision=(AufnahmeWechsel |
+        RefereeDecision=(RecordChange |
 				(Foul * 2) |
 				(LageVerbesserungKopffeld * 4) |
 				(LageVerbesserung * 8) |
 				(NeuAufbauenOderWeiterspielen * 16) |
 				(NeuAufbauenOderAchtEinsetzen * 32) |
-				(Spieler1Gewonnen * 64) |
-				(Spieler2Gewonnen * 128));
+                (Player1Wins * 64) |
+                (Player2Wins * 128));
 
 		//printf("SchiedsrichterEntscheidung   :%i\n",SchiedsrichterEntscheidung);
 		//printf("AufnahmeWechsel              :%i\n",AufnahmeWechsel);
@@ -331,237 +331,238 @@ GLint Judge::Decision(){
 
 }
 
-GLint Judge::CorrectBallWithPlay(GLint Kugel){
-    switch (Game) {
+GLint Judge::CorrectBallWithPlay(GLint Ball){
+    switch (gameType) {
         case EIGHT_BALL: {
-						   if (GruppenVerteilung == KEINE && Kugel != 8 ) {
-							   return JA;
-						   }
-						   if (GruppenVerteilung == S1_GANZE_S2_HALBE) {
-                               if (PlayerToStock == SPIELER1) {
-								   if ((Kugel) < 8 ||
-										   (!KugelnImSpiel[1] &&
-											!KugelnImSpiel[2] &&
-											!KugelnImSpiel[3] &&
-											!KugelnImSpiel[4] &&
-											!KugelnImSpiel[5] &&
-											!KugelnImSpiel[6] &&
-											!KugelnImSpiel[7] &&
-											Kugel == 8)) {
-									   return JA;
-								   }
-							   }
-                               if (PlayerToStock == SPIELER2) {
-								   if (Kugel > 8 ||
-										   (!KugelnImSpiel[9] &&
-											!KugelnImSpiel[10] &&
-											!KugelnImSpiel[11] &&
-											!KugelnImSpiel[12] &&
-											!KugelnImSpiel[13] &&
-											!KugelnImSpiel[14] &&
-											!KugelnImSpiel[15] &&
-											Kugel == 8)) {
-									   return JA;
-								   }
-							   }
-						   }
-						   if (GruppenVerteilung == S1_HALBE_S2_GANZE) {
-                               if (PlayerToStock == SPIELER2) {
-								   if (Kugel < 8 ||
-										   (!KugelnImSpiel[1] &&
-											!KugelnImSpiel[2] &&
-											!KugelnImSpiel[3] &&
-											!KugelnImSpiel[4] &&
-											!KugelnImSpiel[5] &&
-											!KugelnImSpiel[6] &&
-											!KugelnImSpiel[7] &&
-											Kugel == 8)) {
-									   return JA;
-								   }
-							   }
-                               if (PlayerToStock == SPIELER1) {
-								   if (Kugel > 8 ||
-										   (!KugelnImSpiel[9] &&
-											!KugelnImSpiel[10] &&
-											!KugelnImSpiel[11] &&
-											!KugelnImSpiel[12] &&
-											!KugelnImSpiel[13] &&
-											!KugelnImSpiel[14] &&
-											!KugelnImSpiel[15] &&
-											Kugel == 8)) {
-									   return JA;
-								   }
-							   }
-						   } 
-					   } break;
-		case NINE_BALL: {
-						   if (Kugel==NiedrigsteKugel) {
-							   return JA;
-						   }
-					   } break;
-	}
-	return NEIN;
+           if (GroupAllocate == NO && Ball != 8 ) {
+               return YES;
+           }
+           if (GroupAllocate == P1_ALL_P2_HALF) {
+               if (PlayerToStock == PLAYER1) {
+                   if ((Ball) < 8 ||
+                           (!BallsInGame[1] &&
+                            !BallsInGame[2] &&
+                            !BallsInGame[3] &&
+                            !BallsInGame[4] &&
+                            !BallsInGame[5] &&
+                            !BallsInGame[6] &&
+                            !BallsInGame[7] &&
+                            Ball == 8)) {
+                       return YES;
+                   }
+               }
+               if (PlayerToStock == PLAYER2) {
+                   if (Ball > 8 ||
+                           (!BallsInGame[9] &&
+                            !BallsInGame[10] &&
+                            !BallsInGame[11] &&
+                            !BallsInGame[12] &&
+                            !BallsInGame[13] &&
+                            !BallsInGame[14] &&
+                            !BallsInGame[15] &&
+                            Ball == 8)) {
+                       return YES;
+                   }
+               }
+           }
+           if (GroupAllocate == P1_HALF_P2_ALL) {
+               if (PlayerToStock == PLAYER2) {
+                   if (Ball < 8 ||
+                           (!BallsInGame[1] &&
+                            !BallsInGame[2] &&
+                            !BallsInGame[3] &&
+                            !BallsInGame[4] &&
+                            !BallsInGame[5] &&
+                            !BallsInGame[6] &&
+                            !BallsInGame[7] &&
+                            Ball == 8)) {
+                       return YES;
+                   }
+               }
+               if (PlayerToStock == PLAYER1) {
+                   if (Ball > 8 ||
+                           (!BallsInGame[9] &&
+                            !BallsInGame[10] &&
+                            !BallsInGame[11] &&
+                            !BallsInGame[12] &&
+                            !BallsInGame[13] &&
+                            !BallsInGame[14] &&
+                            !BallsInGame[15] &&
+                            Ball == 8)) {
+                       return YES;
+                   }
+               }
+           }
+        } break;
+        case NINE_BALL:
+        {
+           if (Ball==LowestBall) {
+               return YES;
+           }
+        } break;
+    }
+    return NONE;
 }
 
-GLint Judge::CorrectBallSunk(GLint Kugel){
-    switch (Game) {
+GLint Judge::CorrectBallSunk(GLint Ball){
+    switch (gameType) {
         case EIGHT_BALL: {
-						   if (GruppenVerteilung == KEINE && Kugel != 8 ) {
-							   return JA;
-						   }
-						   if (GruppenVerteilung == S1_GANZE_S2_HALBE) {
-                               if (PlayerToStock == SPIELER1) {
-								   if (Kugel < 8 ||
-										   (!KugelnImSpiel[1] &&
-											!KugelnImSpiel[2] &&
-											!KugelnImSpiel[3] &&
-											!KugelnImSpiel[4] &&
-											!KugelnImSpiel[5] &&
-											!KugelnImSpiel[6] &&
-											!KugelnImSpiel[7] &&
-											Kugel == 8)) {
-									   return JA;
-								   }
-							   }
-                               if (PlayerToStock == SPIELER2) {
-								   if (Kugel > 8 ||
-										   (!KugelnImSpiel[9] &&
-											!KugelnImSpiel[10] &&
-											!KugelnImSpiel[11] &&
-											!KugelnImSpiel[12] &&
-											!KugelnImSpiel[13] &&
-											!KugelnImSpiel[14] &&
-											!KugelnImSpiel[15] &&
-											Kugel == 8)) {
-									   return JA;
-								   }
-							   }
-						   }
-						   if (GruppenVerteilung == S1_HALBE_S2_GANZE) {
-                               if (PlayerToStock == SPIELER2) {
-								   if (Kugel < 8 || 
-										   (!KugelnImSpiel[1] &&
-											!KugelnImSpiel[2] &&
-											!KugelnImSpiel[3] &&
-											!KugelnImSpiel[4] &&
-											!KugelnImSpiel[5] &&
-											!KugelnImSpiel[6] &&
-											!KugelnImSpiel[7] &&
-											Kugel == 8)) {
-									   return JA;
-								   }
-							   }
-                               if (PlayerToStock == SPIELER1) {
-								   if (Kugel > 8 || 
-										   (!KugelnImSpiel[9] &&
-											!KugelnImSpiel[10] &&
-											!KugelnImSpiel[11] &&
-											!KugelnImSpiel[12] &&
-											!KugelnImSpiel[13] &&
-											!KugelnImSpiel[14] &&
-											!KugelnImSpiel[15] &&
-											Kugel == 8)) {
-									   return JA;
-								   }
-							   }
-						   } 
-					   } break;
+           if (GroupAllocate == NO && Ball != 8 ) {
+               return YES;
+           }
+           if (GroupAllocate == P1_ALL_P2_HALF) {
+               if (PlayerToStock == PLAYER1) {
+                   if (Ball < 8 ||
+                           (!BallsInGame[1] &&
+                            !BallsInGame[2] &&
+                            !BallsInGame[3] &&
+                            !BallsInGame[4] &&
+                            !BallsInGame[5] &&
+                            !BallsInGame[6] &&
+                            !BallsInGame[7] &&
+                            Ball == 8)) {
+                       return YES;
+                   }
+               }
+               if (PlayerToStock == PLAYER2) {
+                   if (Ball > 8 ||
+                           (!BallsInGame[9] &&
+                            !BallsInGame[10] &&
+                            !BallsInGame[11] &&
+                            !BallsInGame[12] &&
+                            !BallsInGame[13] &&
+                            !BallsInGame[14] &&
+                            !BallsInGame[15] &&
+                            Ball == 8)) {
+                       return YES;
+                   }
+               }
+           }
+           if (GroupAllocate == P1_HALF_P2_ALL) {
+               if (PlayerToStock == PLAYER2) {
+                   if (Ball < 8 ||
+                           (!BallsInGame[1] &&
+                            !BallsInGame[2] &&
+                            !BallsInGame[3] &&
+                            !BallsInGame[4] &&
+                            !BallsInGame[5] &&
+                            !BallsInGame[6] &&
+                            !BallsInGame[7] &&
+                            Ball == 8)) {
+                       return YES;
+                   }
+               }
+               if (PlayerToStock == PLAYER1) {
+                   if (Ball > 8 ||
+                           (!BallsInGame[9] &&
+                            !BallsInGame[10] &&
+                            !BallsInGame[11] &&
+                            !BallsInGame[12] &&
+                            !BallsInGame[13] &&
+                            !BallsInGame[14] &&
+                            !BallsInGame[15] &&
+                            Ball == 8)) {
+                       return YES;
+                   }
+               }
+           }
+       } break;
 		case NINE_BALL: {
-						   return JA;
+                           return YES;
 					   } break;
 	}
-	return NEIN;
+    return NONE;
 }
 
-GLint Judge::CorrectBallSunkHere(GLint Kugel[16]){
-	GLint Dabei=NEIN;
+GLint Judge::CorrectBallSunkHere(GLint Ball[16]){
+    GLint Dabei=NONE;
 	for (GLint i=0;i<16;i++) {
-		if (Kugel[i]) {
+        if (Ball[i]) {
             Dabei|=CorrectBallSunk(i);
 		}
 	}
 	return Dabei;
 }
 
-GLint Judge::ColoredBall(GLint Kugel){
-    if (Game==EIGHT_BALL) {
-		if (0<Kugel && Kugel<8 || 8<Kugel && Kugel<16) {
-			return JA;
+GLint Judge::ColoredBall(GLint Ball){
+    if (gameType==EIGHT_BALL) {
+        if (0<Ball && Ball<8 || 8<Ball && Ball<16) {
+            return YES;
 		}
 	}
-    if (Game==NINE_BALL) {
-		if (0<Kugel && Kugel<10){
-			return JA;
+    if (gameType==NINE_BALL) {
+        if (0<Ball && Ball<10){
+            return YES;
 		}
 	}
-	return NEIN;
+    return NONE;
 }
 
-GLint Judge::ColoredBallHere(GLint Kugel[16]){
-	GLint Dabei=NEIN;
+GLint Judge::ColoredBallHere(GLint Ball[16]){
+    GLint Dabei=NONE;
 	for (GLint i=0;i<16;i++) {
-		if (Kugel[i]) {
+        if (Ball[i]) {
             Dabei|=ColoredBall(i);
 		}
 	}
 	return Dabei;
 }
 
-GLint Judge::ColoredBallSum(GLint Kugel[16]){
-	GLint S=NEIN;
+GLint Judge::ColoredBallSum(GLint Ball[16]){
+    GLint S=NONE;
 	for (GLint i=0;i<16;i++) {
-		if (Kugel[i]) {
+        if (Ball[i]) {
             S+=ColoredBall(i);
 		}
 	}
 	return S;
 }
 
-GLint Judge::Sum(GLint Kugel[16]){
+GLint Judge::Sum(GLint Ball[16]){
 	GLint S=0;
 	for (GLint i=0;i<16;i++) {
-		S+=Kugel[i];
+        S+=Ball[i];
 	}
 	return S;
 }
 
 //Question After players at kick
-GLint Judge::FrageNachSpielerAmStoss(){
-    if (AufnahmeWechsel) { //To measure change
+GLint Judge::AfterPlayerShot(){
+    if (RecordChange) { //To measure change
         return 1-PlayerToStock;
 	}
     return PlayerToStock;
 }
 
 //Question After distribution groups
-GLint Judge::FrageNachGruppenVerteilung(){
-	return GruppenVerteilung;
+GLint Judge::AfterGroupAllocated(){
+    return GroupAllocate;
 }
 
 //Question After Substantiation
-GLint Judge::FrageNachBegruendung(){
+GLint Judge::AfterSubstantiation(){
     return Substantiation;
 }
 
 //Question After Fouls
-GLint Judge::FrageNachFouls(GLint Spieler){
-	if (Spieler==SPIELER1) {
-		return FoulsHintereinanderSpieler1;
+GLint Judge::AfterFoul(GLint player){
+    if (player==PLAYER1) {
+        return FoulsPlayer1;
 	}
-	if (Spieler==SPIELER2) {
-		return FoulsHintereinanderSpieler2;
+    if (player==PLAYER2) {
+        return FoulsPlayer2;
 	}
 	return 0;
 }
 
-void Judge::SetPlayerToStock(GLint Spieler) {
-    PlayerToStock=Spieler;
+void Judge::SetPlayerToShot(GLint player) {
+    PlayerToStock=player;
 }
 
-void Judge::SetzeFouls(GLint Spieler,GLint Fouls) {
-	if (Spieler==SPIELER1) {
-		FoulsHintereinanderSpieler1=Fouls;
+void Judge::SetFouls(GLint player,GLint Fouls) {
+    if (player==PLAYER1) {
+        FoulsPlayer1=Fouls;
 	} else {
-		FoulsHintereinanderSpieler2=Fouls;
+        FoulsPlayer2=Fouls;
 	}
 }

@@ -1,7 +1,7 @@
 
-class Scale {
+class Label {
 	public:
-		Scale();
+		Label();
 		void Init();
 		void InitLogo();
 		void Init(GLint,char[]);
@@ -20,9 +20,9 @@ class Scale {
 		GLint MouseButton(int,int,int,int);
 		void SetzeZielZustand(GLint);
 		void SetSignal(GLint);
-		void CopyFrom(Scale);
-		GLint SchildIndex;
-		GLint SchildTyp;
+		void CopyFrom(Label);
+        GLint LabelIndex;
+        GLint labelType;
 		GLfloat Aspect;
 	private:
 		GLfloat ax,ay,bx,by;
@@ -39,7 +39,7 @@ class Scale {
 
 #define HIDDEN 0.0    //HIDDEN
 #define TRANSPARENT  0.2    //
-#define EINGEBLENDET 0.6    //AGREED HIDDEN
+#define APPEAR 0.6    //AGREED HIDDEN
 #define SELECTED   0.8    //selected
 #define FULL_VISIBLE 1.0    //FULL VISIBLE
 

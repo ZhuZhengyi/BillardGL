@@ -10,15 +10,15 @@ class TextItem {
 		void PositioniereFix(GLfloat,GLfloat,GLfloat,GLint);
 		void SetText(char[]);
 		void SetTextKDL(char[]);
-		GLint Scale(char);
+        GLint Label(char);
 		char* Text();
 
-		void Desaktiviere();
-		void Angewaehlt();
-		void Eingeblendet();
-		void VollSichtbar();
+        void DisActivated();
+        void Selected();
+        void Appear();
+        void FullyVisible();
 		GLint Animiere(GLint);
-		void SetzeSignal(GLint);
+        void SetSignal(GLint);
 		GLint MouseButton(int,int,int,int);
 
 		void SetMaxWidth(GLfloat);
@@ -33,22 +33,22 @@ class TextItem {
 		GLint dummyDisplayListAnfang();
 
 	private:
-		void StarteAnimation();
-		char Zeichenkette[2000];
-		GLfloat x,y,Hoehe,Aspekt,Alpha;
-		GLfloat alt_x,alt_y,alt_Hoehe,alt_Alpha;
-		GLfloat soll_x,soll_y,soll_Hoehe,soll_Alpha;
-		GLint Ausrichtung;
+        void StartAnimation();
+        char text[2000];
+        GLfloat x,y,Height,Aspekt,Alpha;
+        GLfloat old_x,old_y,old_Height,old_Alpha;
+        GLfloat soll_x,soll_y,soll_Height,soll_Alpha;
+        GLint align;
 		GLint InAnimation;
 		GLint Signal;
-		GLint Zeit; 
+        GLint life_time;
 		GLint DisplayListArray;
 		GLuint TextureArray[512];
-		GLint TextfeldIndex;
+        GLint TextItemIndex;
 		GLint Horchen;
-		GLint Zeilen;
+        GLint lines;
 
-		GLfloat MaxBreite;
+        GLfloat MaxWidth;
 
 };
 
@@ -59,7 +59,7 @@ class TextItem {
 
 #define HIDDEN 0.0
 #define TRANSPARENT  0.2
-#define EINGEBLENDET 0.6
+#define APPEAR 0.6
 #define SELECTED   0.8
 #define FULL_VISIBLE 1.0
 

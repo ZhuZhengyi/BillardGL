@@ -16,24 +16,24 @@ void WriteConfig(){
 	f=fopen("BillardGL.conf.v7","wb+");
 #endif
 	if (f) {
-		char Spieler1temp[10];
-		char Spieler2temp[10];
-		char NetzwerkSpielertemp[10];
+        char Player1temp[10];
+        char Player2temp[10];
+        char NetworkPlayertemp[10];
 		for (int i=0;i<10;i++) {
 			if (Player1[i]==' ') {
-				Spieler1temp[i]='%';
+                Player1temp[i]='%';
 			} else {
-				Spieler1temp[i]=Player1[i];
+                Player1temp[i]=Player1[i];
 			}
 			if (Player2[i]==' ') {
-				Spieler2temp[i]='%';
+                Player2temp[i]='%';
 			} else {
-				Spieler2temp[i]=Player2[i];
+                Player2temp[i]=Player2[i];
 			}
 			if (NetworkPlayer[i]==' ') {
-				NetzwerkSpielertemp[i]='%';
+                NetworkPlayertemp[i]='%';
 			} else {
-				NetzwerkSpielertemp[i]=NetworkPlayer[i];
+                NetworkPlayertemp[i]=NetworkPlayer[i];
 			}
 		}
 		fprintf(f,"%i\n",TextureSize);
@@ -55,9 +55,9 @@ void WriteConfig(){
 		fprintf(f,"%i\n",GreenLamp);
 		fprintf(f,"%f\n",EffectVolumeDown);
 		fprintf(f,"%f\n",MusicVolumeDown);
-		fprintf(f,"%s\n",Spieler1temp);
-		fprintf(f,"%s\n",Spieler2temp);
-		fprintf(f,"%s\n",NetzwerkSpielertemp);
+        fprintf(f,"%s\n",Player1temp);
+        fprintf(f,"%s\n",Player2temp);
+        fprintf(f,"%s\n",NetworkPlayertemp);
 		fclose(f);
 	}
 }
@@ -73,9 +73,9 @@ void LoadConfig(){
 	f=fopen("BillardGL.conf.v7","rb");
 #endif
 	if (f) {
-        char Spieler1temp[10];      //player1temp
-        char Spieler2temp[10];      //player2temp
-        char NetzwerkSpielertemp[10]; //network_player_temp
+        char Player1temp[10];      //player1temp
+        char Player2temp[10];      //player2temp
+        char NetworkPlayertemp[10]; //network_player_temp
 		fscanf(f,"%i",&TextureSize);
 		fscanf(f,"%i",&DisplayTextureSize);
 		fscanf(f,"%i",&TableTextureSize);
@@ -95,24 +95,24 @@ void LoadConfig(){
 		fscanf(f,"%i",&GreenLamp);
 		fscanf(f,"%f",&EffectVolumeDown);
 		fscanf(f,"%f",&MusicVolumeDown);
-		fscanf(f,"%s",Spieler1temp);
-		fscanf(f,"%s",Spieler2temp);
-		fscanf(f,"%s",NetzwerkSpielertemp);
+        fscanf(f,"%s",Player1temp);
+        fscanf(f,"%s",Player2temp);
+        fscanf(f,"%s",NetworkPlayertemp);
 		for (int i=0;i<10;i++) {
-			if (Spieler1temp[i]=='%') {
+            if (Player1temp[i]=='%') {
 				Player1[i]=' ';
 			} else {
-				Player1[i]=Spieler1temp[i];
+                Player1[i]=Player1temp[i];
 			}
-			if (Spieler2temp[i]=='%') {
+            if (Player2temp[i]=='%') {
 				Player2[i]=' ';
 			} else {
-				Player2[i]=Spieler2temp[i];
+                Player2[i]=Player2temp[i];
 			}
 			if (NetworkPlayer[i]=='%') {
 				NetworkPlayer[i]=' ';
 			} else {
-				NetworkPlayer[i]=NetzwerkSpielertemp[i];
+                NetworkPlayer[i]=NetworkPlayertemp[i];
 			}
 		}
 	}

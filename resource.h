@@ -1,4 +1,4 @@
-//{{NO_DEPENDENCIES}}
+//{{NONE_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
 // Used by Skript1.rc
 //

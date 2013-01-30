@@ -11,8 +11,8 @@
 #include <math.h>
 #include <string.h>
 
-#include "Textfeld.h"
-#include "Schild.h"
+#include "TextItem.h"
+#include "Label.h"
 #include "Table.h"
 #include "Camera.h"
 #include "Ball.h"
@@ -54,7 +54,7 @@ class Lighting Lighting;    //光照
 GLint   MouseLookLast_x;
 GLint   MouseLookLast_y;
 
-GLint   Stossdauer=1999;  //shock duartion
+GLint   shot_time=1999;  //shock duartion
 GLint   StartTime;
 GLint   Frames=0;
 GLint   FrameTimePoint;

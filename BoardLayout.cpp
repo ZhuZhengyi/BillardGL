@@ -4,8 +4,8 @@
 #include "ElapsedTime.h"
 #include "Namen.h"
 #include "Ball.h"
-#include "Textfeld.h"
-#include "Schild.h"
+#include "TextItem.h"
+#include "Label.h"
 #include "Menu.h"
 #include "BoardLayout.h"
 

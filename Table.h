@@ -14,10 +14,10 @@ class Table {
         void drawBorder();
         void drawLine();
 	private:
-		GLint TableAreaIndex;
-		GLint BandenIndex;
+		GLint TableSurfaceIndex;
+		GLint BorderIndex;
 		GLint LinesIndex;
-		GLuint TableAreaTexture;
+		GLuint TableSurfaceTexture;
 		GLuint HolzBandenTextur;
 };
 

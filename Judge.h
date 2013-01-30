@@ -7,8 +7,8 @@ class Judge {
 		void BallHole(GLint,GLint);
 		void NewGame(GLint);
 		void NewShot();
-		void SetPlayerToStock(GLint);
-		void SetzeFouls(GLint,GLint);
+		void SetPlayerToShot(GLint);
+		void SetFouls(GLint,GLint);
 		GLint Decision();
 
 		GLint CorrectBallWithPlay(GLint);
@@ -19,61 +19,55 @@ class Judge {
 		GLint ColoredBallSum(GLint[16]);
 		GLint Sum(GLint[16]);
 
-		GLint FrageNachSpielerAmStoss();
-		GLint FrageNachGruppenVerteilung();
-		GLint FrageNachBegruendung();
-		GLint FrageNachFouls(GLint);
+        GLint AfterPlayerShot();
+        GLint AfterGroupAllocated();
+        GLint AfterSubstantiation();
+        GLint AfterFoul(GLint);
 
 	private:
-		GLint BandeAusserhalbKopffeldvorKugelBeruehrt;
+        GLint BandOutsideBeforeBallTouched;
 		GLint FirstTouchedBall ;
-		GLint ErsteBeruehrteBande;
-		GLint ErsteVersenkteKugel;
-		GLint ErsteBeruehrung;
-		GLint FirstTouchedBallHeadField;
-		GLint ErsteBeruehrungImKopffeld;
-		GLint KugelnImSpiel[16];
-		GLint KugelnVersenkt[16];
-		GLint KugelnAnBande[16];
-
-		GLint FoulsHintereinanderSpieler1;
-		GLint FoulsHintereinanderSpieler2;
-
+        GLint FirstTouchedBand;
+        GLint FirstSunkBall;
+        GLint FirstTouching;
+        GLint FirstTouchedBallHeadField;
+        GLint FirstTouchedInHeadField;
+        GLint BallsInGame[16];
+        GLint BallsSunk[16];
+        GLint BallsBand[16];
+        GLint FoulsPlayer1;
+        GLint FoulsPlayer2;
 		GLint RefereeDecision;
-
 		GLint PlayerToStock;
-
 		GLint Substantiation;
-
-		GLint AufnahmeWechsel;
+        GLint RecordChange;
 		GLint Foul;
-		GLint LageVerbesserungKopffeld;
+        GLint LageVerbesserungKopffeld;     //Location improve header
 		GLint LageVerbesserung;
-		GLint NeuAufbauenOderWeiterspielen;
-		GLint NeuAufbauenOderAchtEinsetzen;
-		GLint Verloren;
-		GLint Gewonnen;
-		GLint Spieler1Gewonnen;
-		GLint Spieler2Gewonnen;
+        GLint NeuAufbauenOderWeiterspielen; //Rebuild Or Next play
+        GLint NeuAufbauenOderAchtEinsetzen; //Rebuild Or Eight insertion
+        GLint Losts;
+        GLint Wins;
+        GLint Player1Wins;
+        GLint Player2Wins;
 
-
-		GLint AusKopffeld;
-		GLint Eroeffnungsstoss;
-		GLint Game;
-		GLint GruppenVerteilung;
-		GLint NiedrigsteKugel;
+        GLint FromHeadField;
+        GLint BeginShot; //opening shock
+        GLint gameType;
+        GLint GroupAllocate;    //分组
+        GLint LowestBall;
 
 };
 
-#define JA   1      //TRUE  YES
-#define NEIN 0      //FALSE NO
+#define YES   1      //TRUE  YES
+#define NONE 0      //FALSE NONE
 
-#define SPIELER1 0
-#define SPIELER2 1
+#define PLAYER1 0
+#define PLAYER2 1
 
-#define KEINE 0
-#define S1_GANZE_S2_HALBE 1
-#define S1_HALBE_S2_GANZE 2
+#define NO 0
+#define P1_ALL_P2_HALF 1
+#define P1_HALF_P2_ALL 2
 
 #define EIGHT_BALL 8
 #define NINE_BALL 9

@@ -6,16 +6,16 @@
 #include "LA.h"
 #include "bmp.h"
 #include "createTexture.h"
-#include "Schild.h"
+#include "Label.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
 
 
-Scale::Scale() {
-	SchildIndex=0;
-	SchildTyp=0;
+Label::Label() {
+    LabelIndex=0;
+    labelType=0;
     Aspect=0;
 	ax=ay=bx=by=0.0;
 	Alpha=0.0;
@@ -30,12 +30,12 @@ Scale::Scale() {
 	//
 }
 
-void Scale::Init(GLint TexGr,
+void Label::Init(GLint TexGr,
 		char Name[],
 		char AlphaName[]){
 	FMatrix texr,texg,texb,texa;     // Matrix-Bilder, in die die Textur kommt
-	if (!SchildIndex) {
-		SchildIndex=glGenLists(1);
+    if (!LabelIndex) {
+        LabelIndex=glGenLists(1);
 	}
     if (!Texture)
         glGenTextures(1,&Texture);
@@ -47,7 +47,7 @@ void Scale::Init(GLint TexGr,
     glBindTexture(GL_TEXTURE_2D,Texture);
 	createTextureAlpha2(texr,texg,texb,texa);
 
-	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
+    glNewList(LabelIndex,GL_COMPILE_AND_EXECUTE);
     glBindTexture(GL_TEXTURE_2D,Texture);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
@@ -75,15 +75,15 @@ void Scale::Init(GLint TexGr,
     Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	InAnimation=0; 
 
-	SchildTyp=1;
+    labelType=1;
 
 }
 
-void Scale::Init(GLint TexGr,
+void Label::Init(GLint TexGr,
 		char Name[]){
 	FMatrix texr,texg,texb;     // Matrix-Bilder, in die die Textur kommt
-	if (!SchildIndex) {
-		SchildIndex=glGenLists(1);
+    if (!LabelIndex) {
+        LabelIndex=glGenLists(1);
 	}
     if (!Texture)
         glGenTextures(1,&Texture);
@@ -93,7 +93,7 @@ void Scale::Init(GLint TexGr,
     glBindTexture(GL_TEXTURE_2D,Texture);
 	createTextureAlpha(texr,texg,texb);
 
-	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
+    glNewList(LabelIndex,GL_COMPILE_AND_EXECUTE);
     glBindTexture(GL_TEXTURE_2D,Texture);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
@@ -120,15 +120,15 @@ void Scale::Init(GLint TexGr,
     Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	InAnimation=0; 
 
-	SchildTyp=1;
+    labelType=1;
 }
 
-void Scale::InitLogo() {
-	if (!SchildIndex) {
-		SchildIndex=glGenLists(1);
+void Label::InitLogo() {
+    if (!LabelIndex) {
+        LabelIndex=glGenLists(1);
 	}
     Texture=LogoTexture;
-	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
+    glNewList(LabelIndex,GL_COMPILE_AND_EXECUTE);
     glBindTexture(GL_TEXTURE_2D,Texture);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
@@ -151,14 +151,14 @@ void Scale::InitLogo() {
     Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	InAnimation=0; 
 
-	SchildTyp=1;
+    labelType=1;
 }
 
-void Scale::InitLetter(GLint TexGr,
+void Label::InitLetter(GLint TexGr,
 		char Name[]){
 	FMatrix texr,texg,texb;     // Matrix-Bilder, in die die Textur kommt
-	if (!SchildIndex) {
-		SchildIndex=glGenLists(1);
+    if (!LabelIndex) {
+        LabelIndex=glGenLists(1);
 	}
     if (!Texture)
         glGenTextures(1,&Texture);
@@ -168,7 +168,7 @@ void Scale::InitLetter(GLint TexGr,
     glBindTexture(GL_TEXTURE_2D,Texture);
 	createTextureAlpha(texr,texg,texb);
 
-	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
+    glNewList(LabelIndex,GL_COMPILE_AND_EXECUTE);
     glBindTexture(GL_TEXTURE_2D,Texture);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
@@ -195,16 +195,16 @@ void Scale::InitLetter(GLint TexGr,
     Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	InAnimation=0; 
 
-	SchildTyp=1;
+    labelType=1;
 }
 
-void Scale::Init(GLint TexGr,
+void Label::Init(GLint TexGr,
 		char Name[],
 		char Land){
 	Land='c';
 	FMatrix texr,texg,texb;     // Matrix-Bilder, in die die Textur kommt
-	if (!SchildIndex) {
-		SchildIndex=glGenLists(1);
+    if (!LabelIndex) {
+        LabelIndex=glGenLists(1);
 	}
     if (!Texture)
         glGenTextures(1,&Texture);
@@ -214,7 +214,7 @@ void Scale::Init(GLint TexGr,
     glBindTexture(GL_TEXTURE_2D,Texture);
 	createTexture(texr,texg,texb);
 
-	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
+    glNewList(LabelIndex,GL_COMPILE_AND_EXECUTE);
     glBindTexture(GL_TEXTURE_2D,Texture);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
@@ -241,14 +241,14 @@ void Scale::Init(GLint TexGr,
     Alpha=alt_Alpha=soll_Alpha=HIDDEN;
 	InAnimation=0; 
 
-	SchildTyp=1;
+    labelType=1;
 }
 
-void Scale::Init(){
-	if (!SchildIndex) {
-		SchildIndex=glGenLists(1);
+void Label::Init(){
+    if (!LabelIndex) {
+        LabelIndex=glGenLists(1);
 	}
-	glNewList(SchildIndex,GL_COMPILE_AND_EXECUTE);
+    glNewList(LabelIndex,GL_COMPILE_AND_EXECUTE);
 	glBegin(GL_QUADS);
 	glVertex2f(0.0,0.0);
 	glVertex2f(1.0,0.0);
@@ -263,17 +263,17 @@ void Scale::Init(){
 	by=alt_by=soll_by=6.1;
 
     Alpha=alt_Alpha=soll_Alpha=HIDDEN;
-	//Alpha=alt_Alpha=soll_Alpha=EINGEBLENDET;
+    //Alpha=alt_Alpha=soll_Alpha=APPEAR;
 	InAnimation=0; 
 
     Aspect=0.0;
 
-	SchildTyp=3;
+    labelType=3;
 }
 
-void Scale::CopyFrom(Scale Vorbild) {
-	SchildIndex=Vorbild.SchildIndex;
-	SchildTyp=Vorbild.SchildTyp;
+void Label::CopyFrom(Label Vorbild) {
+    LabelIndex=Vorbild.LabelIndex;
+    labelType=Vorbild.labelType;
     Aspect=Vorbild.Aspect;
 	ax=alt_ax=soll_ax=0;
 	ay=alt_ay=soll_ay=0;
@@ -284,18 +284,18 @@ void Scale::CopyFrom(Scale Vorbild) {
 	Signal=0;
 }
 
-void Scale::draw(){
+void Label::draw(){
 	if (Alpha) {
 		glPushMatrix();
 		glTranslatef(ax,ay,0);
 		glScalef(bx-ax,by-ay,1);
 		glColor4f(1.0,1.0,1.0,Alpha);
-		glCallList(SchildIndex);
+        glCallList(LabelIndex);
 		glPopMatrix();
 	}
 }
 
-void Scale::Positioning(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
+void Label::Positioning(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 	// Nur wenn neue Position
 	/*
 	   if (soll_ax != ax_ ||
@@ -319,10 +319,10 @@ void Scale::Positioning(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 		soll_bx=bx_;
 		soll_by=by_;
 
-		if (SchildTyp==3) {
+        if (labelType==3) {
 			soll_Alpha=TRANSPARENT;
 		} else {
-			soll_Alpha=EINGEBLENDET;
+            soll_Alpha=APPEAR;
 		}  
 
         if (Alpha==HIDDEN) {
@@ -350,7 +350,7 @@ void Scale::Positioning(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 	}
 }
 
-void Scale::PositionFix(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
+void Label::PositionFix(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 
     if (Aspect!=0.0 && Aspect!=(bx_-ax_)/(by_-ay_)) {
 		GLfloat cx=(ax_+bx_)*.5;
@@ -363,12 +363,12 @@ void Scale::PositionFix(GLfloat ax_,GLfloat ay_,GLfloat bx_,GLfloat by_) {
 	bx=soll_bx=bx_;
 	by=soll_by=by_;
 
-	Alpha=soll_Alpha=EINGEBLENDET;
+    Alpha=soll_Alpha=APPEAR;
 	Signal=0;
 }
 
 //deactivated
-void Scale::Disactive() {
+void Label::Disactive() {
     soll_Alpha=HIDDEN;
 
 	soll_ax=((ax-8)*1.5)+8;
@@ -386,25 +386,25 @@ void Scale::Disactive() {
 }
 
 //selected
-void Scale::Selected() {
+void Label::Selected() {
     Alpha=SELECTED;
-	soll_Alpha=EINGEBLENDET;
+    soll_Alpha=APPEAR;
     if (soll_Alpha!=Alpha) StartAnimation();
 }
 
 //Superimposed
-void Scale::Eingeblendet() {
-	soll_Alpha=EINGEBLENDET;
+void Label::Eingeblendet() {
+    soll_Alpha=APPEAR;
     if (soll_Alpha!=Alpha) StartAnimation();
 }
 
 //fully Visible
-void Scale::FullyVisible() {
+void Label::FullyVisible() {
     soll_Alpha=FULL_VISIBLE;
     if (soll_Alpha!=Alpha) StartAnimation();
 }
 
-void Scale::StartAnimation(){
+void Label::StartAnimation(){
 	InAnimation=1;
     ElapseTime=0;
 	alt_ax=ax;
@@ -435,7 +435,7 @@ void Scale::StartAnimation(){
    }
    }
    */
-GLint Scale::Animate(GLint Faktor){
+GLint Label::Animate(GLint Faktor){
 	if (!InAnimation) {return 0;}
     ElapseTime+=Faktor;
     if (ElapseTime>=ANIMATION_TIME) {
@@ -459,7 +459,7 @@ GLint Scale::Animate(GLint Faktor){
 
 
 
-GLint Scale::MouseButton(int Taste,int Richtung,int x,int y) {
+GLint Label::MouseButton(int Taste,int Richtung,int x,int y) {
 	GLfloat xf=16.0*x/glutGet(GLUT_WINDOW_WIDTH);
 	GLfloat yf=12.0-12.0*y/glutGet(GLUT_WINDOW_HEIGHT);
 
@@ -481,6 +481,6 @@ GLint Scale::MouseButton(int Taste,int Richtung,int x,int y) {
 	}
 }
 
-void Scale::SetSignal(GLint NewSignal) {
+void Label::SetSignal(GLint NewSignal) {
     Signal=NewSignal;
 }

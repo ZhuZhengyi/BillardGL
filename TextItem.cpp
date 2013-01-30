@@ -6,9 +6,9 @@
 #include "LA.h"
 #include "bmp.h"
 #include "createTexture.h"
-#include "Textfeld.h"
+#include "TextItem.h"
 
-GLint links[] = {
+GLint ti_left[] = {
 	0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
 	0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
 	0,  9, 11,  9,  9,  8,  8,  7,  8,  7,  7,  7,  6,  8,  9,  7, 
@@ -28,7 +28,7 @@ GLint links[] = {
 	9,  9,  8,  8,  8,  8,  8,  0,  7,  8,  8,  8,  8,  6,  8,  6
 };
 
-GLint rechts[]={
+GLint ti_right[]={
 	0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
 	0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 
 	10, 15, 22, 28, 29, 33, 33, 15, 15, 14, 20, 29, 14, 21, 14, 23, 
@@ -50,21 +50,21 @@ GLint rechts[]={
 
 TextItem::TextItem() {
 	//
-	x=y=Hoehe=Aspekt=Alpha = 0;
-	alt_x=alt_y=alt_Hoehe=alt_Alpha = 0;
-	soll_x=soll_y=soll_Hoehe=soll_Alpha = 0;
-	Ausrichtung = 0;
+    x=y=Height=Aspekt=Alpha = 0;
+    old_x=old_y=old_Height=old_Alpha = 0;
+    soll_x=soll_y=soll_Height=soll_Alpha = 0;
+    align = 0;
 	InAnimation = 0;
 	Signal = 0;
-	Zeit = 0; 
+    life_time = 0;
     DisplayListArray = 0;
 	for (GLint i=0;i<512;i++)
         TextureArray[i] = 0;
-	TextfeldIndex = 0;
+    TextItemIndex = 0;
 	Horchen = 0;
-	Zeilen=0;
+    lines=0;
 
-	MaxBreite=0;
+    MaxWidth=0;
 
 }
 
@@ -81,22 +81,22 @@ GLint TextItem::dummyInit(GLint TexGr){
 	loadBMP(tex,tex,tex,DateiName);
 	GLint Rastergroesse=(tex.nch+1)/16;
 
-	for (GLint Buchstabe=0;Buchstabe<256;Buchstabe++) {
-		GLint x = Buchstabe % 16;
-		GLint y = Buchstabe / 16;
+    for (GLint letter=0;letter<256;letter++) {
+        GLint x = letter % 16;
+        GLint y = letter / 16;
 
-		if (rechts[Buchstabe] && Buchstabe!=32) {
-            glBindTexture(GL_TEXTURE_2D,TextureArray[Buchstabe]);
+        if (ti_right[letter] && letter!=32) {
+            glBindTexture(GL_TEXTURE_2D,TextureArray[letter]);
 			createTextureText(tex,x,y,Rastergroesse);
 		}
 
-        glNewList(DisplayListArray+Buchstabe,GL_COMPILE_AND_EXECUTE);
-		if (rechts[Buchstabe] && Buchstabe!=32) {
-            glBindTexture(GL_TEXTURE_2D,TextureArray[Buchstabe]);
+        glNewList(DisplayListArray+letter,GL_COMPILE_AND_EXECUTE);
+        if (ti_right[letter] && letter!=32) {
+            glBindTexture(GL_TEXTURE_2D,TextureArray[letter]);
 			//glEnable(GL_TEXTURE_2D);
 			//glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 			glBegin(GL_QUADS);
-			//    printf ("%i %i %i\n",Buchstabe,x,y);
+            //    printf ("%i %i %i\n",letter,x,y);
 			glTexCoord2f(0.0,0.0);glVertex2f(0.0,0.0);
 			glTexCoord2f(1.0,0.0);glVertex2f(1.0,0.0);
 			glTexCoord2f(1.0,1.0);glVertex2f(1.0,1.0);
@@ -111,22 +111,22 @@ GLint TextItem::dummyInit(GLint TexGr){
 	loadBMP(tex,tex,tex,DateiName);
 	Rastergroesse=(tex.nch+1)/16;
 
-	for (GLint Buchstabe2=0;Buchstabe2<256;Buchstabe2++) {
-		GLint x = Buchstabe2 % 16;
-		GLint y = Buchstabe2 / 16;
+    for (GLint letter2=0;letter2<256;letter2++) {
+        GLint x = letter2 % 16;
+        GLint y = letter2 / 16;
 
-		if (rechts[Buchstabe2] && Buchstabe2!=32) {
-            glBindTexture(GL_TEXTURE_2D,TextureArray[256+Buchstabe2]);
+        if (ti_right[letter2] && letter2!=32) {
+            glBindTexture(GL_TEXTURE_2D,TextureArray[256+letter2]);
 			createTextureText2(tex,x,y,Rastergroesse);
 		}
 
-        glNewList(DisplayListArray+256+Buchstabe2,GL_COMPILE_AND_EXECUTE);
-		if (rechts[Buchstabe2] && Buchstabe2!=32) {
-            glBindTexture(GL_TEXTURE_2D,TextureArray[256+Buchstabe2]);
+        glNewList(DisplayListArray+256+letter2,GL_COMPILE_AND_EXECUTE);
+        if (ti_right[letter2] && letter2!=32) {
+            glBindTexture(GL_TEXTURE_2D,TextureArray[256+letter2]);
 			//glEnable(GL_TEXTURE_2D);
 			//glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 			glBegin(GL_QUADS);
-			//    printf ("%i %i %i\n",Buchstabe,x,y);
+            //    printf ("%i %i %i\n",letter,x,y);
 			glTexCoord2f(0.0,0.0);glVertex2f(0.0,0.0);
 			glTexCoord2f(1.0,0.0);glVertex2f(1.0,0.0);
 			glTexCoord2f(1.0,1.0);glVertex2f(1.0,1.0);
@@ -139,32 +139,28 @@ GLint TextItem::dummyInit(GLint TexGr){
 
 	tex.free_FMatrix();
 
-	x=y=Hoehe=Aspekt=Alpha=0.0;
-	alt_x=alt_y=alt_Hoehe=alt_Alpha=0.0;
-	soll_x=soll_y=soll_Hoehe=soll_Alpha=0.0;
-	Ausrichtung=A_LINKS;
+    x=y=Height=Aspekt=Alpha=0.0;
+    old_x=old_y=old_Height=old_Alpha=0.0;
+    soll_x=soll_y=soll_Height=soll_Alpha=0.0;
+    align=A_LINKS;
 	InAnimation=0;
 	Signal=0;
-	Zeit=0;
-	Zeichenkette[0]='\0';
+    life_time=0;
+    text[0]='\0';
 	Horchen=0;
     return DisplayListArray;
 }
 
-
-
-
-
 void TextItem::Initialisiere(GLint DLA){
     DisplayListArray=DLA;
-	x=y=Hoehe=Aspekt=Alpha=0.0;
-	alt_x=alt_y=alt_Hoehe=alt_Alpha=0.0;
-	soll_x=soll_y=soll_Hoehe=soll_Alpha=0.0;
-	Ausrichtung=A_LINKS;
+    x=y=Height=Aspekt=Alpha=0.0;
+    old_x=old_y=old_Height=old_Alpha=0.0;
+    soll_x=soll_y=soll_Height=soll_Alpha=0.0;
+    align=A_LINKS;
 	InAnimation=0;
 	Signal=0;
-	Zeit=0;
-	Zeichenkette[0]='\0';
+    life_time=0;
+    text[0]='\0';
 	Horchen=0;
 }  
 
@@ -182,30 +178,30 @@ void TextItem::draw(){
 	if (Alpha<.03) {return;}
 	glPushMatrix();
 	glTranslatef(x,y,0);
-	glScalef(Hoehe,Hoehe,1);
+    glScalef(Height,Height,1);
 	glColor4f(1.0,1.0,1.0,Alpha);
-	glCallList(TextfeldIndex);
+    glCallList(TextItemIndex);
 	glPopMatrix();
 
 }
 
 void TextItem::PositioniereFix(GLfloat X,GLfloat Y,GLfloat H,GLint A){
 
-	if (A) Ausrichtung=A;
+    if (A) align=A;
 
-	switch (Ausrichtung) {
+    switch (align) {
 		case A_LINKS: { soll_x = X; } break;
 		case A_MITTE: { soll_x = X-.5*Aspekt*H; } break;
 		case A_RECHTS:{ soll_x = X-Aspekt*H; } break;
 	}
 
 	soll_y     = Y;
-	soll_Hoehe = H; 
-	soll_Alpha = EINGEBLENDET;
+    soll_Height = H;
+    soll_Alpha = APPEAR;
 
 	x=soll_x;
 	y=soll_y;
-	Hoehe=soll_Hoehe;
+    Height=soll_Height;
 
 	Signal=0;
 
@@ -213,23 +209,23 @@ void TextItem::PositioniereFix(GLfloat X,GLfloat Y,GLfloat H,GLint A){
 
 void TextItem::Positioniere(GLfloat X,GLfloat Y,GLfloat H,GLint A){
 
-	if (A) Ausrichtung=A;
+    if (A) align=A;
 
-	switch (Ausrichtung) {
+    switch (align) {
 		case A_LINKS: { soll_x = X; } break;
 		case A_MITTE: { soll_x = X-.5*Aspekt*H; } break;
 		case A_RECHTS:{ soll_x = X-Aspekt*H; } break;
 	}
 
 	soll_y     = Y;
-	soll_Hoehe = H; 
-	soll_Alpha = EINGEBLENDET;
+    soll_Height = H;
+    soll_Alpha = APPEAR;
 
 	if (Alpha==HIDDEN) {
 
 		x=((soll_x-8)/1.5)+8;
 		y=((soll_y-6)/1.5)+6;
-		Hoehe=soll_Hoehe/1.5;
+        Height=soll_Height/1.5;
 
 		/*
 		   ax=((24.0*rand())/RAND_MAX)-4;
@@ -241,48 +237,48 @@ void TextItem::Positioniere(GLfloat X,GLfloat Y,GLfloat H,GLint A){
 
 	Signal=0;
 
-	StarteAnimation();
+    StartAnimation();
 }
 
 
 void TextItem::SetText(char TextZ[]){
 	int i=0;
 	while (TextZ[i] && i<1999) {
-		Zeichenkette[i]=TextZ[i];
+        text[i]=TextZ[i];
 		i++;
 	}
-	Zeichenkette[i]=0;
+    text[i]=0;
     GenerateDisplayList();
 }
 
 void TextItem::SetTextKDL(char TextZ[]){
 	int i=0;
 	while (TextZ[i] && i<1999) {
-		Zeichenkette[i]=TextZ[i];
+        text[i]=TextZ[i];
 		i++;
 	}
-	Zeichenkette[i]=0;
+    text[i]=0;
 }
 
-GLint TextItem::Scale(char Taste){
+GLint TextItem::Label(char Taste){
 	if (Horchen) {
 		if (Taste>=32 &&
 				Taste!=8 && Taste!=127 &&
 				Taste!=12 && Taste!=10 ) {//normale Zeichen
 			GLint i;
-			for (i=0;i<9 && Zeichenkette[i];i++) {}
-			if (i<9) sprintf(Zeichenkette,"%s%c",Zeichenkette,Taste);
+            for (i=0;i<9 && text[i];i++) {}
+            if (i<9) sprintf(text,"%s%c",text,Taste);
             GenerateDisplayList();
 			return 1;
 		} else if (Taste==8 || Taste==127) { // loeschen
 			for (GLint i=0;i<9;i++) 
-				if (!Zeichenkette[i+1]) Zeichenkette[i]='\0';
+                if (!text[i+1]) text[i]='\0';
             GenerateDisplayList();
 			return 1;
 		} else if (Taste==13 || Taste==10) { // enter
-			soll_Alpha=EINGEBLENDET;
+            soll_Alpha=APPEAR;
 			Horchen=0;
-			if (soll_Alpha!=Alpha) StarteAnimation();
+            if (soll_Alpha!=Alpha) StartAnimation();
 			//GeneriereDisplayList();
 			return 1;
 		}
@@ -290,116 +286,115 @@ GLint TextItem::Scale(char Taste){
 	return 0;
 }
 
-char* TextItem::Text(){return Zeichenkette;}
+char* TextItem::Text(){return text;}
 
 //deactivated
-void TextItem::Desaktiviere(){
+void TextItem::DisActivated(){
 	soll_Alpha=HIDDEN;
 
 	soll_x=((x-8)*1.5)+8;
 	soll_y=((y-6)*1.5)+6;
-	soll_Hoehe=Hoehe*1.5;
+    soll_Height=Height*1.5;
 
 	Horchen = 0;
 
-	if (soll_Alpha!=Alpha) StarteAnimation();
+    if (soll_Alpha!=Alpha) StartAnimation();
 }
 
 //turning a deaf ear
 void TextItem::Weghoeren(){
-	if (Alpha && soll_Alpha) Eingeblendet();
+    if (Alpha && soll_Alpha) Appear();
 	Horchen = 0;
 }
 
 //Listen up
 void TextItem::Herhoeren(){
-	VollSichtbar();
+    FullyVisible();
 	Horchen = 1;
 }
 
 //In chooses
-void TextItem::Angewaehlt(){
+void TextItem::Selected(){
 	Alpha=SELECTED;
-	soll_Alpha=EINGEBLENDET;
-	if (soll_Alpha!=Alpha) StarteAnimation();
+    soll_Alpha=APPEAR;
+    if (soll_Alpha!=Alpha) StartAnimation();
 }
 
 //Superimposed
-void TextItem::Eingeblendet(){
-	soll_Alpha=EINGEBLENDET;
-	if (soll_Alpha!=Alpha) StarteAnimation();
+void TextItem::Appear(){
+    soll_Alpha=APPEAR;
+    if (soll_Alpha!=Alpha) StartAnimation();
 }
 
 //fully Visible
-void TextItem::VollSichtbar(){
+void TextItem::FullyVisible(){
 	soll_Alpha=FULL_VISIBLE;
-	if (soll_Alpha!=Alpha) StarteAnimation();
+    if (soll_Alpha!=Alpha) StartAnimation();
 }
 
 GLint TextItem::Animiere(GLint Faktor){
 	if (!InAnimation) {return 0;}
-	Zeit+=Faktor;
-	if (Zeit>=ANIMATION_TIME) {
+    life_time+=Faktor;
+    if (life_time>=ANIMATION_TIME) {
 		x=soll_x;
 		y=soll_y;
-		Hoehe=soll_Hoehe;
+        Height=soll_Height;
 		Alpha=soll_Alpha;
 		InAnimation=0;
 		return 1;
 	} else {
-		GLfloat Faktor=(.5-.5*cos(M_PI*Zeit/ANIMATION_TIME));
-		x=(soll_x-alt_x)*Faktor+alt_x;
-		y=(soll_y-alt_y)*Faktor+alt_y;
-		Hoehe=(soll_Hoehe-alt_Hoehe)*Faktor+alt_Hoehe;
-		Alpha=(soll_Alpha-alt_Alpha)*Faktor+alt_Alpha;
+        GLfloat Faktor=(.5-.5*cos(M_PI*life_time/ANIMATION_TIME));
+        x=(soll_x-old_x)*Faktor+old_x;
+        y=(soll_y-old_y)*Faktor+old_y;
+        Height=(soll_Height-old_Height)*Faktor+old_Height;
+        Alpha=(soll_Alpha-old_Alpha)*Faktor+old_Alpha;
 		//    printf("%i: %f\n",Zeit,Alpha);
 		return 0;
 	}
 }
 
-void TextItem::SetzeSignal(GLint NeuesSignal){
-	Signal=NeuesSignal;
+void TextItem::SetSignal(GLint NewSignal){
+    Signal=NewSignal;
 }
 
-void TextItem::StarteAnimation(){
+void TextItem::StartAnimation(){
 	InAnimation=1;
-	Zeit=0;
-	alt_x=x;
-	alt_y=y;
-	alt_Hoehe=Hoehe;
-	alt_Alpha=Alpha;
+    life_time=0;
+    old_x=x;
+    old_y=y;
+    old_Height=Height;
+    old_Alpha=Alpha;
 }
 
 void TextItem::GenerateDisplayList(){
-	if (!TextfeldIndex) {
-		TextfeldIndex=glGenLists(1);
+    if (!TextItemIndex) {
+        TextItemIndex=glGenLists(1);
 	}
 
-
-	if (!MaxBreite) {
-		glNewList(TextfeldIndex,GL_COMPILE_AND_EXECUTE);
+    if (!MaxWidth) {
+        glNewList(TextItemIndex,GL_COMPILE_AND_EXECUTE);
 		glEnable(GL_TEXTURE_2D);
 		glPushMatrix();
 		Aspekt=0.0;
-		Zeilen=1;
+        lines=1;
 		GLint p=0;
 		GLint c=0;
-		while ((c=Zeichenkette[p++])) {
+        while ((c=text[p++])) {
 			if (c<0) c+=256;
-			Aspekt+=(rechts[c]-links[c]+4)/64.0;
-			glTranslatef(-links[c]/64.0,0,0);
+            Aspekt+=(ti_right[c]-ti_left[c]+4)/64.0;
+            glTranslatef(-ti_left[c]/64.0,0,0);
             glCallList(DisplayListArray+c+256);
-			glTranslatef((rechts[c]+4)/64.0,0,0);
+            glTranslatef((ti_right[c]+4)/64.0,0,0);
 		}
 		glPopMatrix();
 		glPushMatrix();
-		Zeilen=1;
+        lines=1;
 		p=0;
-		while ((c=Zeichenkette[p++])) {
+        while ((c=text[p++])) {
 			if (c<0) c+=256;
-			glTranslatef(-links[c]/64.0,0,0);
+            glTranslatef(-ti_left[c]/64.0,0,0);
             glCallList(DisplayListArray+c);
-			glTranslatef((rechts[c]+4)/64.0,0,0);
+            glTranslatef((ti_right[c]+4)/64.0,0,0);
 		}
 		glPopMatrix();
 		glDisable(GL_TEXTURE_2D);
@@ -407,28 +402,28 @@ void TextItem::GenerateDisplayList(){
 	}
 
 
-	if (MaxBreite) {
-		glNewList(TextfeldIndex,GL_COMPILE_AND_EXECUTE);
+    if (MaxWidth) {
+        glNewList(TextItemIndex,GL_COMPILE_AND_EXECUTE);
 		glEnable(GL_TEXTURE_2D);
 		Aspekt=0.0;
-		Zeilen=1;
+        lines=1;
 
 		GLint Anfang=0;
 		GLint Zeichen=0;
 		GLint Pos=0;
 		GLint LeerzeichenAnzahl=0;
 		GLint LetztesLeerzeichen=0;
-		Zeilen=0;
+        lines=0;
 		GLfloat ZeilenBreite=0.0;
 		GLfloat ZeilenBreiteBisLetztesLeerzeichen=0.0;
-		while (Zeichenkette[Pos]) {
+        while (text[Pos]) {
 
 			Anfang=Pos;
 			LeerzeichenAnzahl=0;
 			LetztesLeerzeichen=0;
 			ZeilenBreite=0.0;
 
-			while ((Zeichen=Zeichenkette[Pos]) && ZeilenBreite<MaxBreite*1.05) {
+            while ((Zeichen=text[Pos]) && ZeilenBreite<MaxWidth*1.05) {
 				if (Zeichen==32) {
 					ZeilenBreiteBisLetztesLeerzeichen=ZeilenBreite;
 					LetztesLeerzeichen=Pos;
@@ -436,65 +431,65 @@ void TextItem::GenerateDisplayList(){
 				}
 				//printf("%c",Zeichen);fflush(stdout);
 				if (Zeichen<0) Zeichen+=256;
-				ZeilenBreite+=(rechts[Zeichen]-links[Zeichen]+4)/64.0;
+                ZeilenBreite+=(ti_right[Zeichen]-ti_left[Zeichen]+4)/64.0;
 				Pos++;
 			}
 
-			if (Zeichenkette[Pos]) { // noch nicht am Ende: Blocksatz
-				GLfloat delta=(MaxBreite-ZeilenBreiteBisLetztesLeerzeichen)/(LeerzeichenAnzahl-1.0);
+            if (text[Pos]) { // noch nicht am Ende: Blocksatz
+                GLfloat delta=(MaxWidth-ZeilenBreiteBisLetztesLeerzeichen)/(LeerzeichenAnzahl-1.0);
 				//printf("%f\n",delta);
 				glPushMatrix();
-				glTranslatef(0,-Zeilen*.7,0);
+                glTranslatef(0,-lines*.7,0);
 				GLint c;
 				Pos=Anfang;
-				while ((c=Zeichenkette[Pos++])&& Pos<=LetztesLeerzeichen) {
+                while ((c=text[Pos++])&& Pos<=LetztesLeerzeichen) {
 					if (c<0) c+=256;
-					glTranslatef(-links[c]/64.0,0,0);
+                    glTranslatef(-ti_left[c]/64.0,0,0);
                     glCallList(DisplayListArray+c+256);
-					glTranslatef((rechts[c]+4)/64.0,0,0);
+                    glTranslatef((ti_right[c]+4)/64.0,0,0);
 					if (c==32) glTranslatef(delta,0,0);
 				}
 				glPopMatrix();
 				glPushMatrix();
-				glTranslatef(0,-Zeilen*.7,0);
+                glTranslatef(0,-lines*.7,0);
 				Pos=Anfang;
-				while ((c=Zeichenkette[Pos++])&& Pos<=LetztesLeerzeichen) {
+                while ((c=text[Pos++])&& Pos<=LetztesLeerzeichen) {
 					if (c<0) c+=256;
-					glTranslatef(-links[c]/64.0,0,0);
+                    glTranslatef(-ti_left[c]/64.0,0,0);
                     glCallList(DisplayListArray+c);
-					glTranslatef((rechts[c]+4)/64.0,0,0);
+                    glTranslatef((ti_right[c]+4)/64.0,0,0);
 					if (c==32) glTranslatef(delta,0,0);
 				}
 				glPopMatrix();
-				Zeilen++;      
+                lines++;
 			} else { // am Ende: Linksbuendig
 				GLfloat delta=0;
-				if (ZeilenBreite>MaxBreite) 
-					delta=(MaxBreite-ZeilenBreite)/(LeerzeichenAnzahl+0.0);
+                if (ZeilenBreite>MaxWidth)
+                    delta=(MaxWidth-ZeilenBreite)/(LeerzeichenAnzahl+0.0);
 				glPushMatrix();
-				glTranslatef(0,-Zeilen*.7,0);
+                glTranslatef(0,-lines*.7,0);
 				GLint c;
 				Pos=Anfang;
-				while ((c=Zeichenkette[Pos++])) {
+                while ((c=text[Pos++])) {
 					if (c<0) c+=256;
-					glTranslatef(-links[c]/64.0,0,0);
+                    glTranslatef(-ti_left[c]/64.0,0,0);
                     glCallList(DisplayListArray+c+256);
-					glTranslatef((rechts[c]+4)/64.0,0,0);
+                    glTranslatef((ti_right[c]+4)/64.0,0,0);
 					if (c==32) glTranslatef(delta,0,0);
 				}
 				glPopMatrix();
 				glPushMatrix();
-				glTranslatef(0,-Zeilen*.7,0);
+                glTranslatef(0,-lines*.7,0);
 				Pos=Anfang;
-				while ((c=Zeichenkette[Pos++])) {
+                while ((c=text[Pos++])) {
 					if (c<0) c+=256;
-					glTranslatef(-links[c]/64.0,0,0);
+                    glTranslatef(-ti_left[c]/64.0,0,0);
                     glCallList(DisplayListArray+c);
-					glTranslatef((rechts[c]+4)/64.0,0,0);
+                    glTranslatef((ti_right[c]+4)/64.0,0,0);
 					if (c==32) glTranslatef(delta,0,0);
 				}
 				glPopMatrix();
-				Zeilen++;      
+                lines++;
 				break;
 			}
 		}
@@ -512,10 +507,10 @@ GLint TextItem::MouseButton(int Taste,int Richtung,int x_,int y_) {
 	GLfloat yf=12.0-12.0*y_/glutGet(GLUT_WINDOW_HEIGHT);
 	if (soll_Alpha>0.0 &&
 			Signal!=0 &&
-			x<=xf && xf<=x+Hoehe*Aspekt && y<=yf && yf<=y+Hoehe) {
+            x<=xf && xf<=x+Height*Aspekt && y<=yf && yf<=y+Height) {
 		if (Taste==GLUT_LEFT_BUTTON) {
 			if (Richtung==GLUT_DOWN) {
-				Angewaehlt();
+                Selected();
 				return -1;
 			} else {
 				return Signal;
@@ -529,11 +524,11 @@ GLint TextItem::MouseButton(int Taste,int Richtung,int x_,int y_) {
 }
 
 GLfloat TextItem::TextboxHeight() {
-	return .7*Zeilen;
+    return .7*lines;
 }
 
 
 void TextItem::SetMaxWidth(GLfloat mb) {
 	if (mb<0) mb=0;
-	MaxBreite=mb;
+    MaxWidth=mb;
 }
