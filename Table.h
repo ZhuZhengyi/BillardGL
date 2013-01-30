@@ -18,7 +18,7 @@ class Table {
 		GLint BorderIndex;
 		GLint LinesIndex;
 		GLuint TableSurfaceTexture;
-		GLuint HolzBandenTextur;
+        GLuint WoodBorderTexture;
 };
 
 
