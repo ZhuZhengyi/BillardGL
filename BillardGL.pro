@@ -30,8 +30,8 @@ SOURCES += \
     Physics.cpp \
     Shadow.cpp \
     BoardLayout.cpp \
-    Display.cpp \
-    quarterHole.cpp
+    quarterHole.cpp \
+    ShotStrength.cpp
 
 HEADERS += \
     BillardGL.h \
@@ -60,7 +60,7 @@ HEADERS += \
     Physics.h \
     Shadow.h \
     BoardLayout.h \
-    Display.h \
     language.h \
-    quarterHole.h
+    quarterHole.h \
+    ShotStrength.h
 

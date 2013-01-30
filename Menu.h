@@ -255,7 +255,7 @@ extern GLint   BallsInGame[16];
 
 extern class Ball Ball[16];  
 extern class Table Table;
-extern class Display Display;
+extern class ShotStrength ShotStrength;
 extern class Judge Judge;
 extern class Lighting Lighting;
 

@@ -19,9 +19,6 @@ void BoardLayout() {
             StateMachine==NEW_WHITE||
             StateMachine==JUDGEING) {
 
-		//Anfangsstoss=1;
-		//WeisseVersetzbar=1;
-
         LageVerbesserungKopffeld=1;     //Situation improving header
 
 		GLfloat r=5.715;
@@ -40,7 +37,7 @@ void BoardLayout() {
 
         switch (GameType) {        // Was f"ur ein Spiel?
 
-			case 2: {               // Nur zwei Kugeln
+            case TWO_PLAYERS: {               // Nur zwei Kugeln
 						Ball[0].newPositionCM(0.0,0.0);
 						Ball[1].newPositionCM(20.0,0.0);
 						for (int i=0;i<2;i++) {
@@ -52,7 +49,7 @@ void BoardLayout() {
 						break;
 					}
 
-			case 8: {               // 8-Ball
+            case EIGHT_BALL: {               // 8-Ball
 
 						GLint plaziert[16];
 						GLint nummer[16];
@@ -106,7 +103,7 @@ void BoardLayout() {
 						break;
 					}
 
-			case 9: {               // 9-Ball
+            case NINE_BALL: {               // 9-Ball
 
 						GLint plaziert[10];
 						GLint nummer[10];
@@ -154,7 +151,7 @@ void BoardLayout() {
 						break;
 					}
 
-			case 7: {               // Zufalls-Belegung
+            case GT_RANDOM: {               // Zufalls-Belegung
 						{
 							for (int i=0;i<=15;i++) {
 								BallsInGame[i]=1;
@@ -180,7 +177,7 @@ void BoardLayout() {
 						}
 					}
 
-			case 0: {               // Keine Kugeln
+            case GT_EMPTY: {               // Keine Kugeln
 						{
 							for (int i=0;i<16;i++) {
 								Ball[i].disappear();

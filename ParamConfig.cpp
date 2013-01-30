@@ -234,9 +234,9 @@ void GetCommandParam(int argc,char **argv) {
 			} else if (!strcmp(argv[i],"9")||!strcmp(argv[i],"n")||!strcmp(argv[i],"neunball")||!strcmp(argv[i],"9ball")||!strcmp(argv[i],"9-ball")) {
                 GameType=NINE_BALL;
 			} else if (!strcmp(argv[i],"0")||!strcmp(argv[i],"l")||!strcmp(argv[i],"leer")) {
-                GameType=LEER;
+                GameType=GT_EMPTY;
 			} else if (!strcmp(argv[i],"z")||!strcmp(argv[i],"zufall")) {
-                GameType=ZUFALL;
+                GameType=GT_RANDOM;
 			}
 		} else if (!strcmp(argv[i],"-s")||!strcmp(argv[i],"-schatten")) {
 			Shadow=0;
@@ -338,8 +338,8 @@ void GetCommandParam(int argc,char **argv) {
 	case TWO_BALLS: printf("Zwei Kugeln");break;
     case EIGHT_BALL: printf("8-Ball");break;
 	case NINE_BALL: printf("9-Ball");break;
-	case ZUFALL: printf("Zufall");break;
-	case LEER: printf("Aus");break;
+	case GT_RANDOM: printf("Zufall");break;
+	case GT_EMPTY: printf("Aus");break;
 	}
 
 	//printf("\n  Physikfrequenz: %i\n",PhysikFrequenz);

@@ -6,7 +6,7 @@
 #include "Textfeld.h"
 #include "Camera.h"
 #include "Ball.h"
-#include "Display.h"
+#include "ShotStrength.h"
 #include "Namen.h"
 #include "Schild.h"
 #include "Menu.h"
@@ -69,7 +69,7 @@ void BackswingHandling() {
     if (KEY_END)        {Camera.Zoom_Out(Factor);}
 
 	AusholStaerke=MaxAusholStaerke*(1-exp((-FrameTimePoint+AusholStartTime)/400.0));
-    Display.setShockStaerke(AusholStaerke/3.333);
+    ShotStrength.setShockStaerke(AusholStaerke/3.333);
 
 }
 
@@ -111,7 +111,7 @@ void ShockHandling() {
 
 	//DelayAusgleich=1;
 
-    Display.setShockStaerke(AusholStaerke/3.333-Zeit/3.0);
+    ShotStrength.setShockStaerke(AusholStaerke/3.333-Zeit/3.0);
 
 	if (!(Zeit & 31)) {
 		GLint neu=0;
@@ -142,22 +142,22 @@ void ShockHandling() {
         if (GameMode == TRAINING_MODE||GameMode == TUTORIAL) {
 			if (Ball[0].Pos_x()==3000) {
                 StateMachine=NEW_WHITE;
-                Display.setShockStaerke(0.0);
+                ShotStrength.setShockStaerke(0.0);
 				LageVerbesserung=1;
 				LageVerbesserungKopffeld=1;
                 WhiteChosen();
                 Menu.NewMenuState();
 			} else {
                 StateMachine=VIEWING;
-                Display.setShockStaerke(0.0);
+                ShotStrength.setShockStaerke(0.0);
                 Menu.NewMenuState();
 			}
         } else if (Judge.Decision()) {
             StateMachine=JUDGEING;
-            Display.setShockStaerke(0.0);
+            ShotStrength.setShockStaerke(0.0);
 		} else {
             StateMachine=VIEWING;
-            Display.setShockStaerke(0.0);
+            ShotStrength.setShockStaerke(0.0);
             Menu.NewMenuState();
 		}
 	}

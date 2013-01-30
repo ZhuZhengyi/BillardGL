@@ -12,7 +12,7 @@
 #include "LA.h"                // Zum Handling von .bmp-Files bzw. Matrix-Bildern
 #include "bmp.h"
 
-#include "Display.h"
+#include "ShotStrength.h"
 
 #include "Namen.h"
 
@@ -24,8 +24,8 @@ int BallDisplay[16];
 //display
 
 /* --------- Konstruktor ---------- */
-Display::Display() {
-    ShockStrength=0;
+ShotStrength::ShotStrength() {
+    shotStrength=0;
 
 	//for (int i=1;i<16;i++) {
 	//  KugelAnzeige[i]=0;
@@ -33,32 +33,32 @@ Display::Display() {
 }
 
 
-void Display::draw() {
+void ShotStrength::draw() {
 
-    if (ShockStrength>0.0) {
+    if (shotStrength>0.0) {
 
-		glPushMatrix();
+        glPushMatrix();
 		glBegin(GL_QUADS);
-        glColor4f(1.0,1.0,1.0,0.2-0.2/ShockStrength);
+        glColor4f(1.0,1.0,1.0,0.2-0.2/shotStrength);
 		glVertex2f(14.0,2.0);
 		glVertex2f(15.0,2.0);
-        glColor4f(1.0,1.0,1.0,.7*ShockStrength/45.0);
-        glVertex2f(15.0,2.0+ShockStrength*.2666);
-        glVertex2f(14.0,2.0+ShockStrength*.2666);
-        glColor4f(1.0,1.0,1.0,0.1-0.1/ShockStrength);
+        glColor4f(1.0,1.0,1.0,.7*shotStrength/45.0);
+        glVertex2f(15.0,2.0+shotStrength*.2666);
+        glVertex2f(14.0,2.0+shotStrength*.2666);
+        glColor4f(1.0,1.0,1.0,0.1-0.1/shotStrength);
 		glVertex2f(15.0,10.0);
 		glVertex2f(14.0,10.0);
-        glColor4f(1.0,1.0,1.0,.1*ShockStrength/45.0);
-        glVertex2f(14.0,2.0+ShockStrength*.2666);
-        glVertex2f(15.0,2.0+ShockStrength*.2666);
+        glColor4f(1.0,1.0,1.0,.1*shotStrength/45.0);
+        glVertex2f(14.0,2.0+shotStrength*.2666);
+        glVertex2f(15.0,2.0+shotStrength*.2666);
 		glEnd();
 		glPopMatrix();
 	}
 }
 
-void Display::Init() {
+void ShotStrength::Init() {
 }
 
-void Display::setShockStaerke(GLfloat neuStossStaerke) {
-    ShockStrength=neuStossStaerke;
+void ShotStrength::setShockStaerke(GLfloat neuStossStaerke) {
+    shotStrength=neuStossStaerke;
 }

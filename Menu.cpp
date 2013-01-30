@@ -14,7 +14,7 @@
 #include "Camera.h"
 #include "Ball.h"
 #include "Table.h"
-#include "Display.h"
+#include "ShotStrength.h"
 #include "Judge.h"
 #include "Schild.h"
 #include "Textfeld.h"

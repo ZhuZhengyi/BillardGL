@@ -231,22 +231,14 @@ void Ball::draw(GLint Aufloesung) {
 	if (Position[0]!=3000) {
 
 		if (InAnimation) {
-
 			glPushMatrix();                // Matrix auf Stack
-
 			glScalef(2.8575,2.8575,2.8575);// Skalieren auf Zentimetersystem;
-
 			// Kugel auf die Position verschieben
 			glTranslatef(Position[0],Position[1],Position[2]);
-
 			glMultMatrixf(DrehMatrix);     // Kugel mit der Drehmatrix drehen
-
 			glCallList(sphereIndex[Aufloesung]);       // Kugel zeichnen
-
 			glPopMatrix();                 // Matrix wiederherstellen
-
 			InAnimation=0;
-
 			for (int i=0;i<30;i++) {
                 StaticExists[i]=0;
 			}

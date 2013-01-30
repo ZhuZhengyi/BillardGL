@@ -8,7 +8,7 @@
 #include "Table.h"
 #include "Camera.h"
 #include "Ball.h"
-#include "Display.h"
+#include "ShotStrength.h"
 #include "Menu.h"
 #include "Lighting.h"
 #include "Judge.h"
@@ -136,7 +136,7 @@ void LSidle() {
         case 17: Ball[15].Init(15,TextureSize,BallResolution,Shadow); break;
         case 18: Table.Init(TableTextureSize); break;
         case 19: Lighting.Init(AmbientLighting,TableLamps,GreenLamp,Reflections); break;
-        case 20: Display.Init(); break;
+        case 20: ShotStrength.Init(); break;
         case 21: Menu.Init(DisplayTextureSize); break;
         case 22: Menu.LoadLanguage(900); break;
         case 23: Menu.LoadLanguage(901); break;

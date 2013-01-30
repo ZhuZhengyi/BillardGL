@@ -4,15 +4,15 @@
  **
  ****************************************************************************/  
 
-class Display {
+class ShotStrength {
 	public:
-		Display();
+		ShotStrength();
         void Init();
         void draw();
 		void setShockStaerke(GLfloat);
 	private:
 		//GLint AusschlagIndex;
-		GLfloat ShockStrength;
+		GLfloat shotStrength;
 };
 
 

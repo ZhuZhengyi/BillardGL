@@ -13,7 +13,7 @@ void SpecialKeyRelease(int,int,int);
 
 extern class Ball Ball[16];
 extern class Camera Camera;
-extern class Display Display;
+extern class ShotStrength ShotStrength;
 extern class Menu Menu;
 extern class Judge Judge;
 

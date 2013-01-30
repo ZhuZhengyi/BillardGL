@@ -16,7 +16,7 @@
 #include "Table.h"
 #include "Camera.h"
 #include "Ball.h"
-#include "Display.h"
+#include "ShotStrength.h"
 #include "Menu.h"
 #include "Lighting.h"
 
@@ -44,7 +44,7 @@ GLint   SoundTable[1000];
 //Objekte
 class Ball   Ball[16];      //球
 class Table   Table;        //球台
-class Display Display;      //显示
+class ShotStrength ShotStrength;      //显示
 class Camera  Camera;       //相机
 class Menu Menu;            //菜单
 class Judge Judge;      //裁判
@@ -197,7 +197,7 @@ void updateGL()
     Menu.draw();
 
     if (StateMachine!=START) {
-        Display.draw();                       // Anzeige zeichnen
+        ShotStrength.draw();                       // Anzeige zeichnen
 	}
 	glEnable(GL_DEPTH_TEST);
 

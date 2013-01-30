@@ -20,7 +20,7 @@ extern GLfloat LightingTable[2000][16][3];
 
 extern class Camera Camera;
 extern class Ball Ball[16];
-extern class Display Display;
+extern class ShotStrength ShotStrength;
 extern class Menu Menu;
 extern class Judge Judge;
 

@@ -9,11 +9,11 @@
 #define NEW_WHITE   5          //
 #define JUDGEING    6        //refree
 
-// different games
+// game type
 #define EIGHT_BALL     8          //8ballgame
 #define NINE_BALL     9          //9ballgame
-#define ZUFALL       7          //RANDOM
-#define LEER         0          //EMPTY
+#define GT_RANDOM       7          //RANDOM
+#define GT_EMPTY         0          //EMPTY
 #define TWO_BALLS   2          //two balls
 
 #define TRAINING_MODE 101      //training gmae

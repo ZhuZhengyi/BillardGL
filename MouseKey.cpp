@@ -12,7 +12,7 @@
 
 #include "Ball.h"
 #include "Camera.h"
-#include "Display.h"
+#include "ShotStrength.h"
 #include "Schild.h"
 #include "Textfeld.h"
 #include "Menu.h"
@@ -116,7 +116,7 @@ void MouseClick(int button, int state, int x, int y)
                         StateMachine=VIEWING;
                         Menu.NewMenuState();
                     }
-                    Display.setShockStaerke(0);
+                    ShotStrength.setShockStaerke(0);
                 }
             } break;
             case NEW_WHITE: {
@@ -281,7 +281,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
             case SWING:
                 StateMachine=AIMING;
                 Menu.NewMenuState();
-                Display.setShockStaerke(0);
+                ShotStrength.setShockStaerke(0);
                 break;
             case SHOT: {
                 if (xnor) {
@@ -293,7 +293,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
                         }
                     }
                     Menu.NewMenuState();
-                    Display.setShockStaerke(0);
+                    ShotStrength.setShockStaerke(0);
                 }
             } break;
             }
@@ -386,7 +386,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
         } break;
         case 'z': {
             if (xnor==4) {
-                GameType=ZUFALL;
+                GameType=GT_RANDOM;
                 BoardLayout();
             }
         } break;//z
@@ -422,7 +422,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
         } break;//s
         case 'l': {
             if (xnor==4) {
-                GameType=LEER;
+                GameType=GT_EMPTY;
                 BoardLayout();
             }
         } break;//l
