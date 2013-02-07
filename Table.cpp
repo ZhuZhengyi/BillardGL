@@ -25,7 +25,7 @@ FMatrix woodtex_r,woodtex_g,woodtex_b;     // Matrix-Bilder, in die die Textur k
 
 Table::Table() {
     TableSurfaceTexture=0;
-	HolzBandenTextur=0;
+    WoodBorderTexture=0;
 
 	/* */
 }
@@ -554,15 +554,15 @@ void Table::Init(GLint TextureSize) {
 	   Banden berechnen 
 	   -------------------- */
 
-	if (!HolzBandenTextur) 
-		glGenTextures(1,&HolzBandenTextur);
+    if (!WoodBorderTexture)
+        glGenTextures(1,&WoodBorderTexture);
 
     if (TextureSize) {
 		char Name[40];
         sprintf(Name,"Texturen/%i/holz.bmp",TextureSize);
 
 		loadBMP(woodtex_r,woodtex_g,woodtex_b,Name);
-		glBindTexture(GL_TEXTURE_2D,HolzBandenTextur);
+        glBindTexture(GL_TEXTURE_2D,WoodBorderTexture);
 		//createTextureMipmap(woodtex_r,woodtex_g,woodtex_b);
 		createTexture(woodtex_r,woodtex_g,woodtex_b);
 	}
@@ -671,25 +671,25 @@ void Table::Init(GLint TextureSize) {
 			glMaterialf(GL_FRONT, GL_SHININESS,mat_shininess);
 		}
 
-		Diamant(31.75,72.5,4.9);
-		Diamant(63.5,72.5,4.9);
-		Diamant(95.25,72.5,4.9);
-		Diamant(-31.75,72.5,4.9);
-		Diamant(-63.5,72.5,4.9);
-		Diamant(-95.25,72.5,4.9);
-		Diamant(31.75,-72.5,4.9);
-		Diamant(63.5,-72.5,4.9);
-		Diamant(95.25,-72.5,4.9);
-		Diamant(-31.75,-72.5,4.9);
-		Diamant(-63.5,-72.5,4.9);
-		Diamant(-95.25,-72.5,4.9);
+        Diamod(31.75,72.5,4.9);
+        Diamod(63.5,72.5,4.9);
+        Diamod(95.25,72.5,4.9);
+        Diamod(-31.75,72.5,4.9);
+        Diamod(-63.5,72.5,4.9);
+        Diamod(-95.25,72.5,4.9);
+        Diamod(31.75,-72.5,4.9);
+        Diamod(63.5,-72.5,4.9);
+        Diamod(95.25,-72.5,4.9);
+        Diamod(-31.75,-72.5,4.9);
+        Diamod(-63.5,-72.5,4.9);
+        Diamod(-95.25,-72.5,4.9);
 
-		Diamant(136.5,31.75,4.9);
-		Diamant(136.5,0,4.9);
-		Diamant(136.5,-31.75,4.9);
-		Diamant(-136.5,31.75,4.9);
-		Diamant(-136.5,0,4.9);
-        Diamant(-136.5,-31.75,4.9);
+        Diamod(136.5,31.75,4.9);
+        Diamod(136.5,0,4.9);
+        Diamod(136.5,-31.75,4.9);
+        Diamod(-136.5,31.75,4.9);
+        Diamod(-136.5,0,4.9);
+        Diamod(-136.5,-31.75,4.9);
 
 
 		//Holzbanden
@@ -699,7 +699,7 @@ void Table::Init(GLint TextureSize) {
 
 			//loadBMP(woodtex_r,woodtex_g,woodtex_b,Name);
 			//createWoodTexture(woodtex_r,woodtex_g,woodtex_b,Nearest);
-			glBindTexture(GL_TEXTURE_2D,HolzBandenTextur);
+            glBindTexture(GL_TEXTURE_2D,WoodBorderTexture);
 			glEnable(GL_TEXTURE_2D);
 			glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 

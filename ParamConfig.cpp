@@ -310,7 +310,7 @@ void GetCommandParam(int argc,char **argv) {
 	   Schatten=0;
 	   }
 
-	   printf("  Ball Res.     : %i\n",KugelAufloesung);
+	   printf("  Ball Res.     : %i\n",Kugelresol_size);
 
 	   printf("  Shadows       : ");
 	   switch (Schatten) {
@@ -346,7 +346,7 @@ void GetCommandParam(int argc,char **argv) {
 	//printf("  Reibungsfaktor: %f\n",ReibungsFaktor);
 	//printf("  Bandenfaktor  : %f\n",BandenFaktor);
 	//printf("  Koll.faktor   : %f\n",KollisionsFaktor);
-	//printf("  Bildschirmaufl: %i\n",BildschirmAufloesung);
+	//printf("  Bildschirmaufl: %i\n",Bildschirmresol_size);
 
 
 	printf("\n");

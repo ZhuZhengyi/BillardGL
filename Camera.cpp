@@ -106,7 +106,7 @@ void Camera::newPosition(GLfloat Position[]) {
     Target_Alpha = Position[3];
     Target_Beta  = Position[4];
     Target_FOV   = Position[5];
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -153,7 +153,7 @@ void Camera::Move_In(GLfloat Faktor) {
     Target_Pos_z-=2*BewegFaktor*Faktor*cos(Target_Alpha/57.29578);
 	//  if (Pos_z>400) {Pos_z=400;}
     if (Target_Pos_z<2.8) {Target_Pos_z=2.9;}
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -164,7 +164,7 @@ void Camera::Move_Out(GLfloat Faktor) {
     Target_Pos_z+=2*BewegFaktor*Faktor*cos(Target_Alpha/57.29578);
 	//  if (Pos_z>400) {Pos_z=400;}
     if (Target_Pos_z<2.8) {Target_Pos_z=2.8;}
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -172,7 +172,7 @@ void Camera::Move_Out(GLfloat Faktor) {
 void Camera::Move_Front(GLfloat Faktor) {
     Target_Pos_x+=2*BewegFaktor*Faktor*sin(Target_Beta/57.29578);
     Target_Pos_y+=2*BewegFaktor*Faktor*cos(Target_Beta/57.29578);
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -180,7 +180,7 @@ void Camera::Move_Front(GLfloat Faktor) {
 void Camera::Move_Back(GLfloat Faktor) {
     Target_Pos_x-=2*BewegFaktor*Faktor*sin(Target_Beta/57.29578);
     Target_Pos_y-=2*BewegFaktor*Faktor*cos(Target_Beta/57.29578);
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -188,7 +188,7 @@ void Camera::Move_Back(GLfloat Faktor) {
 void Camera::Move_Right(GLfloat Faktor) {
     Target_Pos_x+=BewegFaktor*Faktor*cos(Target_Beta/57.29578);
     Target_Pos_y-=BewegFaktor*Faktor*sin(Target_Beta/57.29578);
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -196,7 +196,7 @@ void Camera::Move_Right(GLfloat Faktor) {
 void Camera::Move_Left(GLfloat Faktor) {
     Target_Pos_x-=BewegFaktor*Faktor*cos(Target_Beta/57.29578);
     Target_Pos_y+=BewegFaktor*Faktor*sin(Target_Beta/57.29578);
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -204,7 +204,7 @@ void Camera::Move_Left(GLfloat Faktor) {
 void Camera::Move_Up(GLfloat Faktor) {
     Target_Pos_z+=BewegFaktor*Faktor;
 	//  if (Pos_z>400) {Pos_z=400;}
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -212,7 +212,7 @@ void Camera::Move_Up(GLfloat Faktor) {
 void Camera::Move_Down(GLfloat Faktor) {
     Target_Pos_z-=BewegFaktor*Faktor;
     if (Target_Pos_z<2.8) {Target_Pos_z=2.8;}
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -282,7 +282,7 @@ void Camera::SwingLeft(GLfloat Faktor, GLfloat Mitte_x, GLfloat Mitte_y) {
     Target_Beta+=Faktor*DrehFaktor*7.338/sqrt(Abstand);
     Target_Pos_x=Mitte_x-Abstand*sin(Target_Beta/57.29578);
     Target_Pos_y=Mitte_y-Abstand*cos(Target_Beta/57.29578);
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -292,7 +292,7 @@ void Camera::SwingRight(GLfloat Faktor, GLfloat Mitte_x, GLfloat Mitte_y) {
     Target_Beta-=Faktor*DrehFaktor*7.338/sqrt(Abstand);
     Target_Pos_x=Mitte_x-Abstand*sin(Target_Beta/57.29578);
     Target_Pos_y=Mitte_y-Abstand*cos(Target_Beta/57.29578);
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -310,7 +310,7 @@ void Camera::SwingUp(GLfloat Faktor, GLfloat Mitte_x, GLfloat Mitte_y) {
     Target_Pos_z=2.8+Abstand*cos(Target_Alpha/57.29578);
 	//  if (Pos_z>400) {Pos_z=400;}
     if (Target_Pos_z<2.8) {Target_Pos_z=2.8;}
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -328,7 +328,7 @@ void Camera::SwingDown(GLfloat Faktor, GLfloat Mitte_x, GLfloat Mitte_y) {
     Target_Pos_z=2.8+Abstand*cos(Target_Alpha/57.29578);
 	//  if (Pos_z>400) {Pos_z=400;}
     if (Target_Pos_z<2.8) {Target_Pos_z=2.8;}
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -345,7 +345,7 @@ void Camera::setToPosition(GLfloat Soll_Pos[6]) {
 
     if (Target_Beta>Beta+180) {Target_Beta-=360;}
     if (Target_Beta<Beta-180) {Target_Beta+=360;}
-	BlickTiefeNeuBestimmen();
+    NewDetermineViewDepth();
     Persecution=-1;
 }
 
@@ -469,7 +469,7 @@ void Camera::Ride(GLfloat Faktor) {
 		Beta  += d_Beta;
 		FOV   += d_FOV;
 
-		BlickTiefeNeuBestimmen();
+        NewDetermineViewDepth();
 
 	}
 }
@@ -478,7 +478,7 @@ void Camera::Track(GLint Kugel) {
     Persecution=Kugel;
 }
 
-void Camera::BlickTiefeNeuBestimmen() {
+void Camera::NewDetermineViewDepth() {
 	GLfloat ax=fabs(Pos_x),ay=fabs(Pos_y),az=Pos_z;
 
 	if (ax<150) {

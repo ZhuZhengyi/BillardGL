@@ -176,18 +176,18 @@ void updateGL()
     Table.drawBorder();
 
     GLfloat Abstand=0;  //distance
-    GLint Aufloesung=1; //Display resolution
+    GLint resol_size=1; //Display resolution
 
 	for (int Kugelnr2=0;Kugelnr2<16;Kugelnr2++) {
         GLfloat x=Ball[Kugelnr2].Pos_xCM()-Camera.Pos_x;
         GLfloat y=Ball[Kugelnr2].Pos_yCM()-Camera.Pos_y;
 		GLfloat z=Camera.Pos_z;
 		Abstand=sqrt(x*x+y*y+z*z);
-		Aufloesung=(GLint(400/Abstand));//300
-		if (Aufloesung<3) Aufloesung=3;
-        Aufloesung=(Aufloesung/2)*2+1;
-        if (Aufloesung>BallResolution) Aufloesung=BallResolution;
-        Ball[Kugelnr2].draw(Aufloesung);              // Kugeln zeichen
+		resol_size=(GLint(400/Abstand));//300
+		if (resol_size<3) resol_size=3;
+        resol_size=(resol_size/2)*2+1;
+        if (resol_size>BallResolution) resol_size=BallResolution;
+        Ball[Kugelnr2].draw(resol_size);              // Kugeln zeichen
 	}
 
 	glDisable(GL_DEPTH_TEST);

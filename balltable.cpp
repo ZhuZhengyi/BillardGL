@@ -10,57 +10,57 @@
 
 //ball tables
 
-GLint calc_ind2(GLint b, GLint c, GLint Aufloesung) {
-	return ((c*(2*Aufloesung+3-c))/2)+b;
+GLint calc_ind2(GLint b, GLint c, GLint resol_size) {
+    return ((c*(2*resol_size+3-c))/2)+b;
 }
 
 void Triangle(GLfloat ax, GLfloat ay, GLfloat az,
 		GLfloat bx, GLfloat by, GLfloat bz,
 		GLfloat cx, GLfloat cy, GLfloat cz,
-		GLint Aufloesung, GLint &iv, GLint &ii, GLint &it,
+        GLint resol_size, GLint &iv, GLint &ii, GLint &it,
 		GLfloat *vertices,GLint *indices,GLfloat *texcoord) {
 
 	GLint c=0,b=0;
 	GLfloat orient=99;
 	GLint ivstart=iv/3;
 
-	for (c=0;c<=Aufloesung;c++) {
-		for (b=0;b<=Aufloesung-c;b++) {
-			GLfloat temp_x=ax+((b+0.0)/(Aufloesung+0.0))*(bx-ax)+((c+0.0)/(Aufloesung+0.0))*(cx-ax);
-			GLfloat temp_y=ay+((b+0.0)/(Aufloesung+0.0))*(by-ay)+((c+0.0)/(Aufloesung+0.0))*(cy-ay);
-			GLfloat temp_z=az+((b+0.0)/(Aufloesung+0.0))*(bz-az)+((c+0.0)/(Aufloesung+0.0))*(cz-az);
-			GLfloat Abstand=sqrt(temp_x*temp_x+temp_y*temp_y+temp_z*temp_z);
-			temp_x=temp_x/Abstand;
-			temp_y=temp_y/Abstand;
-			temp_z=temp_z/Abstand;
+    for (c=0;c<=resol_size;c++) {
+        for (b=0;b<=resol_size-c;b++) {
+            GLfloat temp_x=ax+((b+0.0)/(resol_size+0.0))*(bx-ax)+((c+0.0)/(resol_size+0.0))*(cx-ax);
+            GLfloat temp_y=ay+((b+0.0)/(resol_size+0.0))*(by-ay)+((c+0.0)/(resol_size+0.0))*(cy-ay);
+            GLfloat temp_z=az+((b+0.0)/(resol_size+0.0))*(bz-az)+((c+0.0)/(resol_size+0.0))*(cz-az);
+            GLfloat distance=sqrt(temp_x*temp_x+temp_y*temp_y+temp_z*temp_z);
+            temp_x=temp_x/distance;
+            temp_y=temp_y/distance;
+            temp_z=temp_z/distance;
 			vertices[iv++]=temp_x; 
 			vertices[iv++]=temp_y; 
 			vertices[iv++]=temp_z; 
-			GLfloat winkel=atan(temp_x/temp_y)/M_PI;
-			if (temp_x==0 && temp_y==0) winkel=orient;
-			if (!winkel) winkel=0;
-			if (temp_y<0) winkel+=1; 
-			else if (temp_x<0) winkel+=2;
+            GLfloat angle=atan(temp_x/temp_y)/M_PI;
+            if (temp_x==0 && temp_y==0) angle=orient;
+            if (!angle) angle=0;
+            if (temp_y<0) angle+=1;
+            else if (temp_x<0) angle+=2;
 			if (orient!=99) {
-				while (winkel<orient-.5) {winkel+=1;}
-				while (winkel>orient+.5) {winkel-=1;}
+                while (angle<orient-.5) {angle+=1;}
+                while (angle>orient+.5) {angle-=1;}
 			}
-			orient=winkel;
-			texcoord[it++]=winkel;
+            orient=angle;
+            texcoord[it++]=angle;
 			texcoord[it++]=acos(temp_z)/M_PI-1;
 		}
 	}
 
-	for (c=0;c<Aufloesung;c++) {
-		for (b=0;b<Aufloesung-c;b++) {
+    for (c=0;c<resol_size;c++) {
+        for (b=0;b<resol_size-c;b++) {
 			if (c!=0) {
-				indices[ii++]=ivstart+calc_ind2(b,c,Aufloesung);
-				indices[ii++]=ivstart+calc_ind2(b+1,c-1,Aufloesung);
-				indices[ii++]=ivstart+calc_ind2(b+1,c,Aufloesung);
+                indices[ii++]=ivstart+calc_ind2(b,c,resol_size);
+                indices[ii++]=ivstart+calc_ind2(b+1,c-1,resol_size);
+                indices[ii++]=ivstart+calc_ind2(b+1,c,resol_size);
 			}
-			indices[ii++]=ivstart+calc_ind2(b,c,Aufloesung);
-			indices[ii++]=ivstart+calc_ind2(b+1,c,Aufloesung);
-			indices[ii++]=ivstart+calc_ind2(b,c+1,Aufloesung);
+            indices[ii++]=ivstart+calc_ind2(b,c,resol_size);
+            indices[ii++]=ivstart+calc_ind2(b+1,c,resol_size);
+            indices[ii++]=ivstart+calc_ind2(b,c+1,resol_size);
 		}
 	}
 }
@@ -69,10 +69,10 @@ void Triangle(GLfloat ax, GLfloat ay, GLfloat az,
  * init Ball Table
  *
  */
-void initializeBallTables(GLint Aufloesung) {
+void initializeBallTables(GLint resol_size) {
 
-    if (Aufloesung<1) Aufloesung=1;  //Display resolution
-	if (Aufloesung>29) Aufloesung=29;
+    if (resol_size<1) resol_size=1;  //Display resolution
+    if (resol_size>29) resol_size=29;
 
 	/*
 	   GLfloat a=atan(1/1)/M_PI;
@@ -82,7 +82,7 @@ void initializeBallTables(GLint Aufloesung) {
 	   printf("%f %f %f %f\n",a,b,c,d);
 	   */
 
-	for (GLint A=1;A<=Aufloesung;A++) {
+    for (GLint A=1;A<=resol_size;A++) {
 		if (!ball_vertices[A]&& (A%2)) {
 			//printf("%i ",A);fflush(stdout);
 			ball_vertices[A] = (GLfloat*) malloc (20*3*(A+1)*(A+2)*sizeof(GLfloat)/2);

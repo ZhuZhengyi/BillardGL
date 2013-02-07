@@ -45,7 +45,7 @@ public:
     void ScenicFlight(GLint);
     void setToPosition(GLfloat[6]);
     void setToPosition(GLfloat,GLfloat,GLfloat,GLfloat,GLfloat,GLfloat);
-    void BlickTiefeNeuBestimmen();
+    void NewDetermineViewDepth();
     GLfloat Pos_xCM();
     GLfloat Pos_yCM();
     GLfloat Pos_zCM();

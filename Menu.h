@@ -214,7 +214,7 @@ class Menu {
         GLint E_BallTextureSize;        //球显示精度
         GLint E_AnzeigeTexturgroesse;   //
         GLint E_TableTextureSize;       //桌面图像精度
-        GLint E_KugelAufloesung;        //球分辨率
+        GLint E_Kugelresol_size;        //球分辨率
 		GLfloat E_MouseSpeed;
 		GLint E_InvertX;
 		GLint E_InvertY;

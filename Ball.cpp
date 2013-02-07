@@ -52,10 +52,10 @@ Ball::Ball() {
     OldTextureSize=1;
 
 	/* */
-	Texturen[1]=0;
-	Texturen[2]=0;
-	Texturen[4]=0;
-	Texturen[8]=0;
+    Textures[1]=0;
+    Textures[2]=0;
+    Textures[4]=0;
+    Textures[8]=0;
 }
 
 GLint exp2(GLint a) { //b=2^a
@@ -68,10 +68,10 @@ GLint exp2(GLint a) { //b=2^a
  *
  * @Nr: ball id
  * @TextureSize:
- * @MaxAufloesung: Max Display Resolution
+ * @Maxresol_size: Max Display Resolution
  * @Schatten_: shadow
  */
-void Ball::Init(GLint Nr, GLint TextureSize, GLint MaxAufloesung, GLint Schatten_) {
+void Ball::Init(GLint Nr, GLint TextureSize, GLint Maxresol_size, GLint Schatten_) {
 
     Shadow=Schatten_;
 
@@ -92,19 +92,19 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint MaxAufloesung, GLint Schatten
     Number=Nr;                      // KugelNummer setzen
 
     //Display resolution
-	for (int Aufloesung=3; Aufloesung<=MaxAufloesung;Aufloesung+=2) {
+	for (int resol_size=3; resol_size<=Maxresol_size;resol_size+=2) {
 
-		if (!sphereIndex[Aufloesung]||
+		if (!sphereIndex[resol_size]||
                 (OldTextureSize!=TextureSize)) {
 
 			//printf(".");fflush(stdout);
 
-			sphereIndex[Aufloesung]=glGenLists(1); 
-			sphereIndexStatisch[Aufloesung]=glGenLists(1); 
+			sphereIndex[resol_size]=glGenLists(1); 
+			sphereIndexStatisch[resol_size]=glGenLists(1); 
 
             if ((TextureSize==0)||(Number==0)) { // Keine Textur?
 
-				glNewList(sphereIndex[Aufloesung],GL_COMPILE_AND_EXECUTE);
+				glNewList(sphereIndex[resol_size],GL_COMPILE_AND_EXECUTE);
 				GLfloat mat_diffuse[]={1.0,1.0,1.0,1.0};
 				GLfloat mat_specular[]={0.5,0.5,0.5,1.0};
 				//GLfloat mat_specular[]={0.0,0.0,0.0,0.0};
@@ -116,35 +116,35 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint MaxAufloesung, GLint Schatten
 				glMaterialf(GL_FRONT, GL_SHININESS,mat_shininess);
 				glEnableClientState(GL_VERTEX_ARRAY);
                 glEnableClientState(GL_NORMAL_ARRAY);
-				glNormalPointer(GL_FLOAT, 0, ball_vertices[Aufloesung]);
-				glVertexPointer(3, GL_FLOAT, 0, ball_vertices[Aufloesung]);
-				glDrawElements(GL_TRIANGLES,20*3*Aufloesung*Aufloesung, GL_UNSIGNED_INT,ball_indices[Aufloesung]);
+				glNormalPointer(GL_FLOAT, 0, ball_vertices[resol_size]);
+				glVertexPointer(3, GL_FLOAT, 0, ball_vertices[resol_size]);
+				glDrawElements(GL_TRIANGLES,20*3*resol_size*resol_size, GL_UNSIGNED_INT,ball_indices[resol_size]);
 				glDisableClientState(GL_VERTEX_ARRAY);
                 glDisableClientState(GL_NORMAL_ARRAY);
 				glEndList();
 
 			} else {                        // sonst
 
-				GLint TG=exp2((7-Aufloesung)/2);
+				GLint TG=exp2((7-resol_size)/2);
                 if (TG<TextureSize) TG=TextureSize;
 				if (TG>8) TG=1;
-				if (!Texturen[TG]) 
-					glGenTextures(1,&Texturen[TG]);
-				glBindTexture(GL_TEXTURE_2D,Texturen[TG]);
+                if (!Textures[TG])
+                    glGenTextures(1,&Textures[TG]);
+                glBindTexture(GL_TEXTURE_2D,Textures[TG]);
 				sprintf(Name,"Texturen/%i/%i.bmp",TG,Nr); 
 				loadBMP(tex_r,tex_g,tex_b,Name);
 				GLfloat *texcoord;
 				if (tex_r.nrh!=tex_r.nch) {
 					GLfloat Aspekt=(tex_r.nch+1.0)/(tex_r.nrh+1.0);
-					texcoord = (GLfloat*) malloc (20*(Aufloesung+1)*(Aufloesung+2)*sizeof(GLfloat));
-					for (GLint a=0;a<20*(Aufloesung+1)*(Aufloesung+2);a+=2) {
-						texcoord[a]=ball_texcoord[Aufloesung][a]/Aspekt;
-						texcoord[a+1]=ball_texcoord[Aufloesung][a+1];
+					texcoord = (GLfloat*) malloc (20*(resol_size+1)*(resol_size+2)*sizeof(GLfloat));
+					for (GLint a=0;a<20*(resol_size+1)*(resol_size+2);a+=2) {
+						texcoord[a]=ball_texcoord[resol_size][a]/Aspekt;
+						texcoord[a+1]=ball_texcoord[resol_size][a+1];
 					}
 				} 
 				createTexture(tex_r,tex_g,tex_b);
 
-				glNewList(sphereIndex[Aufloesung],GL_COMPILE_AND_EXECUTE);
+				glNewList(sphereIndex[resol_size],GL_COMPILE_AND_EXECUTE);
 				GLfloat mat_diffuse[]={1.0,1.0,1.0,1.0};
 				GLfloat mat_specular[]={0.5,0.5,0.5,1.0};
 				//GLfloat mat_specular[]={0.0,0.0,0.0,0.0};
@@ -155,20 +155,20 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint MaxAufloesung, GLint Schatten
 				glMaterialfv(GL_FRONT, GL_SPECULAR,mat_specular);
 				glMaterialf(GL_FRONT, GL_SHININESS,mat_shininess);
 				//createTexture(tex_r,tex_g,tex_b,Nearest,0);
-				glBindTexture(GL_TEXTURE_2D,Texturen[TG]);
+                glBindTexture(GL_TEXTURE_2D,Textures[TG]);
 				glEnable(GL_TEXTURE_2D);
 				glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 				glEnableClientState(GL_VERTEX_ARRAY);
                 glEnableClientState(GL_NORMAL_ARRAY);
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-				glNormalPointer(GL_FLOAT, 0, ball_vertices[Aufloesung]);
-				glVertexPointer(3, GL_FLOAT, 0, ball_vertices[Aufloesung]);
+				glNormalPointer(GL_FLOAT, 0, ball_vertices[resol_size]);
+				glVertexPointer(3, GL_FLOAT, 0, ball_vertices[resol_size]);
 				if (tex_r.nrh!=tex_r.nch) {
 					glTexCoordPointer(2, GL_FLOAT, 0, texcoord);
 				} else {
-					glTexCoordPointer(2, GL_FLOAT, 0, ball_texcoord[Aufloesung]);
+					glTexCoordPointer(2, GL_FLOAT, 0, ball_texcoord[resol_size]);
 				}
-				glDrawElements(GL_TRIANGLES,20*3*Aufloesung*Aufloesung, GL_UNSIGNED_INT,ball_indices[Aufloesung]);
+				glDrawElements(GL_TRIANGLES,20*3*resol_size*resol_size, GL_UNSIGNED_INT,ball_indices[resol_size]);
 				glDisableClientState(GL_VERTEX_ARRAY);
                 glDisableClientState(GL_NORMAL_ARRAY);
 				glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -183,7 +183,7 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint MaxAufloesung, GLint Schatten
 
 			}
 
-            StaticExists[Aufloesung]=0;
+            StaticExists[resol_size]=0;
             StaticExistShadow=0;
 			InAnimation=1;
 		}
@@ -227,7 +227,7 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint MaxAufloesung, GLint Schatten
 
 
 // Draws the ball using the Display List
-void Ball::draw(GLint Aufloesung) {
+void Ball::draw(GLint resol_size) {
 	if (Position[0]!=3000) {
 
 		if (InAnimation) {
@@ -236,14 +236,14 @@ void Ball::draw(GLint Aufloesung) {
 			// Kugel auf die Position verschieben
 			glTranslatef(Position[0],Position[1],Position[2]);
 			glMultMatrixf(DrehMatrix);     // Kugel mit der Drehmatrix drehen
-			glCallList(sphereIndex[Aufloesung]);       // Kugel zeichnen
+			glCallList(sphereIndex[resol_size]);       // Kugel zeichnen
 			glPopMatrix();                 // Matrix wiederherstellen
 			InAnimation=0;
 			for (int i=0;i<30;i++) {
                 StaticExists[i]=0;
 			}
 
-        } else if (StaticExists[Aufloesung]) {
+        } else if (StaticExists[resol_size]) {
 
 			/*
 			   glPushMatrix();
@@ -251,17 +251,17 @@ void Ball::draw(GLint Aufloesung) {
 			   glScalef(1,1,-1);
 			   glFrontFace(GL_CW);
 			   glDisable(GL_DEPTH_TEST);
-			   glCallList(sphereIndexStatisch[Aufloesung]);
+			   glCallList(sphereIndexStatisch[resol_size]);
 			   glEnable(GL_DEPTH_TEST);
 			   glFrontFace(GL_CCW);
 			   glPopMatrix();
 			   */
 
-			glCallList(sphereIndexStatisch[Aufloesung]);
+			glCallList(sphereIndexStatisch[resol_size]);
 
 		} else {
 
-			glNewList(sphereIndexStatisch[Aufloesung],GL_COMPILE_AND_EXECUTE);
+			glNewList(sphereIndexStatisch[resol_size],GL_COMPILE_AND_EXECUTE);
 
 			glPushMatrix();                // Matrix auf Stack
 
@@ -272,13 +272,13 @@ void Ball::draw(GLint Aufloesung) {
 
 			glMultMatrixf(DrehMatrix);     // Kugel mit der Drehmatrix drehen
 
-			glCallList(sphereIndex[Aufloesung]);       // Kugel zeichnen
+			glCallList(sphereIndex[resol_size]);       // Kugel zeichnen
 
 			glPopMatrix();                 // Matrix wiederherstellen
 
 			glEndList();
 
-            StaticExists[Aufloesung]=1;
+            StaticExists[resol_size]=1;
 		}
 	}
 }

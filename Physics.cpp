@@ -140,7 +140,7 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 	fflush(stdout);
     // ------------------------ 变量初始化 ------------------------
 
-	GLint Aufloesung = PhysicsFrequenz; // min. 100
+	GLint resol_size = PhysicsFrequenz; // min. 100
     GLfloat TableLen = 22.22; // x-Achse
     GLfloat TableWidth = 11.11; // y-Achse
 
@@ -170,7 +170,7 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 
     // ------------- Calculation by discrete time steps ---------------------
     int moving = 0;  //moving
-	for (int zeit=0;zeit<(20*Aufloesung);zeit++){
+	for (int zeit=0;zeit<(20*resol_size);zeit++){
         moving = 0; // noch keine Bewegung
 
 		// neue Position berechnen
@@ -179,10 +179,10 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
                 newPos[nr][0] = 1500.0;
 			}
 			else {
-                newPos[nr][0] = oldPos[nr][0]+BallSpeed[nr][0]/Aufloesung;
-                newPos[nr][1] = oldPos[nr][1]+BallSpeed[nr][1]/Aufloesung;
+                newPos[nr][0] = oldPos[nr][0]+BallSpeed[nr][0]/resol_size;
+                newPos[nr][1] = oldPos[nr][1]+BallSpeed[nr][1]/resol_size;
                 if (oldPos[nr][2]<0){
-                    newPos[nr][2] = oldPos[nr][2]*(1+FallFaktor/Aufloesung);   // Kugel faellt
+                    newPos[nr][2] = oldPos[nr][2]*(1+FallFaktor/resol_size);   // Kugel faellt
                     //moving = 1;                                                   // und movingt sich damit
 				}
 				else
@@ -303,8 +303,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos37 - ystrich * sin37);
                                     BallSpeed[i][1] = (xstrich * sin37 + ystrich * cos37);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
                             // left
@@ -321,8 +321,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos37 - ystrich * sin37);
                                     BallSpeed[i][1] = (xstrich * sin37 + ystrich * cos37);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
                             // middle right
@@ -339,8 +339,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos80 - ystrich * sin80);
                                     BallSpeed[i][1] = (xstrich * sin80 + ystrich * cos80);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
                             // middle left
@@ -357,8 +357,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos80 - ystrich * sin80);
                                     BallSpeed[i][1] = (xstrich * sin80 + ystrich * cos80);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
 						}
@@ -388,8 +388,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos37 - ystrich * sin37);
                                     BallSpeed[i][1] = (xstrich * sin37 + ystrich * cos37);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
 							// links
@@ -406,8 +406,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos37 - ystrich * sin37);
                                     BallSpeed[i][1] = (xstrich * sin37 + ystrich * cos37);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
 							// Mitte rechts
@@ -424,8 +424,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos80 - ystrich * sin80);
                                     BallSpeed[i][1] = (xstrich * sin80 + ystrich * cos80);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
 							// Mitte links
@@ -442,8 +442,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos80 - ystrich * sin80);
                                     BallSpeed[i][1] = (xstrich * sin80 + ystrich * cos80);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
 						}
@@ -473,8 +473,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos37 - ystrich * sin37);
                                     BallSpeed[i][1] = (xstrich * sin37 + ystrich * cos37);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
 							// unten
@@ -491,8 +491,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos37 - ystrich * sin37);
                                     BallSpeed[i][1] = (xstrich * sin37 + ystrich * cos37);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
 						}
@@ -522,8 +522,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos37 - ystrich * sin37);
                                     BallSpeed[i][1] = (xstrich * sin37 + ystrich * cos37);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
 							// unten
@@ -540,8 +540,8 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 									xstrich = xstrich*VerlustTasche;
                                     BallSpeed[i][0] = (xstrich * cos37 - ystrich * sin37);
                                     BallSpeed[i][1] = (xstrich * sin37 + ystrich * cos37);
-                                    newPos[i][0]+=BallSpeed[i][0]/Aufloesung;
-                                    newPos[i][1]+=BallSpeed[i][1]/Aufloesung;
+                                    newPos[i][0]+=BallSpeed[i][0]/resol_size;
+                                    newPos[i][1]+=BallSpeed[i][1]/resol_size;
 								}
 							}
 						}
@@ -552,7 +552,7 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 
 
         // ------------------------------- table update -------------------------------
-		GLint zeitpunkt = zeit*100/Aufloesung; // aktuelle Zeit berechnen (fuer Tabelle)
+		GLint zeitpunkt = zeit*100/resol_size; // aktuelle Zeit berechnen (fuer Tabelle)
 		{
 			for (int i=0;i<16;i++){
                 LightingTable[zeitpunkt][i][0] = newPos[i][0];
@@ -568,7 +568,7 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 			for (int i=0;i<16;i++){
                 if (newPos[i][0] != 1500.0){
                     GLfloat geschw = sqrt(BallSpeed[i][0]* BallSpeed[i][0] +  BallSpeed[i][1]* BallSpeed[i][1]);
-					GLfloat geschwneu = geschw - (reibung/Aufloesung);
+					GLfloat geschwneu = geschw - (reibung/resol_size);
                     if (newPos[i][2]<0){ moving=1;  } // Kugel faellt und movingt sich damit
 					if (geschwneu <= 0.0) {  // Kugel bleibt stehen
                         BallSpeed[i][0] = 0.0;

@@ -518,7 +518,7 @@ void Menu::NewMenuState(){
     } break;
 
     case SETUP_VIDEO: {
-        if (E_KugelAufloesung==3 &&
+        if (E_Kugelresol_size==3 &&
                 E_BallTextureSize==8 &&
                 E_TableTextureSize==0 &&
                 E_AnzeigeTexturgroesse==2 &&
@@ -529,7 +529,7 @@ void Menu::NewMenuState(){
                 E_TableLampes==1 &&
                 E_TexMMM==0 &&
                 E_GreenLampe==0) {Quality=1;}
-        else if (E_KugelAufloesung==5 &&
+        else if (E_Kugelresol_size==5 &&
                  E_BallTextureSize==4 &&
                  E_TableTextureSize==4 &&
                  E_AnzeigeTexturgroesse==2 &&
@@ -540,7 +540,7 @@ void Menu::NewMenuState(){
                  E_TableLampes==1 &&
                  E_TexMMM==2 &&
                  E_GreenLampe==0) {Quality=2;}
-        else if (E_KugelAufloesung==7 &&
+        else if (E_Kugelresol_size==7 &&
                  E_BallTextureSize==2 &&
                  E_TableTextureSize==2 &&
                  E_AnzeigeTexturgroesse==1 &&
@@ -551,7 +551,7 @@ void Menu::NewMenuState(){
                  E_TableLampes==2 &&
                  E_TexMMM==3 &&
                  E_GreenLampe==0) {Quality=3;}
-        else if (E_KugelAufloesung==7 &&
+        else if (E_Kugelresol_size==7 &&
                  E_BallTextureSize==2 &&
                  E_TableTextureSize==1 &&
                  E_AnzeigeTexturgroesse==1 &&
@@ -562,7 +562,7 @@ void Menu::NewMenuState(){
                  E_TableLampes==2 &&
                  E_TexMMM==7 &&
                  E_GreenLampe==1) {Quality=4;}
-        else if (E_KugelAufloesung==11 &&
+        else if (E_Kugelresol_size==11 &&
                  E_BallTextureSize==1 &&
                  E_TableTextureSize==1 &&
                  E_AnzeigeTexturgroesse==1 &&
@@ -814,7 +814,7 @@ void Menu::NewMenuState(){
         }break;
         }
 
-        switch (E_KugelAufloesung) {
+        switch (E_Kugelresol_size) {
         case 3: {
             TextItemArray[T_BG_SEHRNIEDRIG]->Positioniere(8.2,6.5,.6,A_LINKS);
             TextItemArray[T_BG_SEHRNIEDRIG]->SetSignal(S_SETUP_BALLGEOMETRIE);
@@ -836,7 +836,7 @@ void Menu::NewMenuState(){
         if( E_BallTextureSize==TextureSize &&
                 E_AnzeigeTexturgroesse==DisplayTextureSize &&
                 E_TableTextureSize==TableTextureSize &&
-                E_KugelAufloesung==BallResolution &&
+                E_Kugelresol_size==BallResolution &&
                 E_ScreenResolution==ScreenResolution &&
                 E_ColorDepth==ColorDepth &&
                 E_Reflection==Reflections &&
@@ -1632,7 +1632,7 @@ void Menu::SignalExecution(GLint Signal) {
         E_BallTextureSize=TextureSize;
         E_AnzeigeTexturgroesse=DisplayTextureSize;
         E_TableTextureSize=TableTextureSize;
-        E_KugelAufloesung=BallResolution;
+        E_Kugelresol_size=BallResolution;
         E_ScreenResolution=ScreenResolution;
         E_ColorDepth=ColorDepth;
         E_Reflection=Reflections;
@@ -1744,30 +1744,30 @@ void Menu::SignalExecution(GLint Signal) {
         setMenuState(SETUP_VIDEO);
     } break;
     case S_SETUP_BALLGEOMETRIE: {
-        switch (E_KugelAufloesung) {
+        switch (E_Kugelresol_size) {
         case 1: {
-            E_KugelAufloesung=7;
+            E_Kugelresol_size=7;
         } break;
         case 2: {
-            E_KugelAufloesung=7;
+            E_Kugelresol_size=7;
         } break;
         case 3: {
-            E_KugelAufloesung=11;
+            E_Kugelresol_size=11;
         } break;
         case 5: {
-            E_KugelAufloesung=3;
+            E_Kugelresol_size=3;
         } break;
         case 7: {
-            E_KugelAufloesung=5;
+            E_Kugelresol_size=5;
         } break;
         case 9: {
-            E_KugelAufloesung=7;
+            E_Kugelresol_size=7;
         } break;
         case 11: {
-            E_KugelAufloesung=7;
+            E_Kugelresol_size=7;
         } break;
         default: {
-            E_KugelAufloesung=7;
+            E_Kugelresol_size=7;
         } break;
         }
         setMenuState(SETUP_VIDEO);
@@ -1807,7 +1807,7 @@ void Menu::SignalExecution(GLint Signal) {
     case S_SETUP_QUALITAET: {
         switch(Quality) {
         case 1: {
-            E_KugelAufloesung=11;
+            E_Kugelresol_size=11;
             E_BallTextureSize=1;
             E_TableTextureSize=1;
             E_AnzeigeTexturgroesse=1;
@@ -1820,7 +1820,7 @@ void Menu::SignalExecution(GLint Signal) {
             E_TexMMM=7;
         } break;
         case 2: {
-            E_KugelAufloesung=3;
+            E_Kugelresol_size=3;
             E_BallTextureSize=8;
             E_TableTextureSize=0;
             E_AnzeigeTexturgroesse=2;
@@ -1833,7 +1833,7 @@ void Menu::SignalExecution(GLint Signal) {
             E_TexMMM=0;
         } break;
         case 3: {
-            E_KugelAufloesung=5;
+            E_Kugelresol_size=5;
             E_BallTextureSize=4;
             E_TableTextureSize=4;
             E_AnzeigeTexturgroesse=2;
@@ -1846,7 +1846,7 @@ void Menu::SignalExecution(GLint Signal) {
             E_TexMMM=2;
         } break;
         case 4: {
-            E_KugelAufloesung=7;
+            E_Kugelresol_size=7;
             E_BallTextureSize=2;
             E_TableTextureSize=2;
             E_AnzeigeTexturgroesse=1;
@@ -1859,7 +1859,7 @@ void Menu::SignalExecution(GLint Signal) {
             E_TexMMM=3;
         } break;
         case 5: {
-            E_KugelAufloesung=7;
+            E_Kugelresol_size=7;
             E_BallTextureSize=2;
             E_TableTextureSize=1;
             E_AnzeigeTexturgroesse=1;
@@ -1872,7 +1872,7 @@ void Menu::SignalExecution(GLint Signal) {
             E_TexMMM=7;
         } break;
         default: {
-            E_KugelAufloesung=7;
+            E_Kugelresol_size=7;
             E_BallTextureSize=2;
             E_TableTextureSize=2;
             E_AnzeigeTexturgroesse=1;
@@ -1898,14 +1898,14 @@ void Menu::SignalExecution(GLint Signal) {
         }
 
         if (TextureSize!=E_BallTextureSize ||
-                BallResolution!=E_KugelAufloesung ||
+                BallResolution!=E_Kugelresol_size ||
                 TexMMMgeaendert ||
                 Shadow!=E_Shadows) {
 
-            initializeBallTables(E_KugelAufloesung);
+            initializeBallTables(E_Kugelresol_size);
 
             for (GLint j=0;j<16;j++) {  // Initialisierung der Baelle + Laden der Texturen
-                Ball[j].Init(j,E_BallTextureSize,E_KugelAufloesung,E_Shadows);
+                Ball[j].Init(j,E_BallTextureSize,E_Kugelresol_size,E_Shadows);
             }
         }
 
@@ -1926,11 +1926,11 @@ void Menu::SignalExecution(GLint Signal) {
             Init(E_AnzeigeTexturgroesse);
         }
 
-        GLint NeueAufloesung=0;
+        GLint Neueresol_size=0;
         if (ColorDepth!=E_ColorDepth || ScreenResolution!=E_ScreenResolution)
-            NeueAufloesung=1;
+            Neueresol_size=1;
 
-        BallResolution=E_KugelAufloesung;
+        BallResolution=E_Kugelresol_size;
         TextureSize=E_BallTextureSize;
         DisplayTextureSize=E_AnzeigeTexturgroesse;
         TableTextureSize=E_TableTextureSize;
@@ -1946,7 +1946,7 @@ void Menu::SignalExecution(GLint Signal) {
 
         WriteConfig();
 
-        if (NeueAufloesung)
+        if (Neueresol_size)
             setMenuState(SETUP_VIDEO_NONETICE);
         else
             setMenuState(SETUP_VIDEO);

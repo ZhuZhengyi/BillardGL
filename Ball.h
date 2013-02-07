@@ -49,7 +49,7 @@ class Ball {
 		GLfloat Shadow3_x,Shadow3_y,Shadow3_scale,Shadow3_angle;
 		GLfloat OldTextureSize;
 
-		GLuint Texturen[9];
+		GLuint Textures[9];
 };
 
 extern GLfloat *ball_vertices[30];

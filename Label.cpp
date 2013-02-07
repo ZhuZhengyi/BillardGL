@@ -393,7 +393,7 @@ void Label::Selected() {
 }
 
 //Superimposed
-void Label::Eingeblendet() {
+void Label::Appear() {
     soll_Alpha=APPEAR;
     if (soll_Alpha!=Alpha) StartAnimation();
 }

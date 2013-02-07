@@ -13,12 +13,12 @@ class Label {
         void PositionFix(GLfloat,GLfloat,GLfloat,GLfloat);
         void Disactive();    //disactive
         void Selected();      //In chooses
-        void Eingeblendet();    //
+        void Appear();    //
         void FullyVisible();    //
         void StartAnimation();  //
 		GLint Animate(GLint);
 		GLint MouseButton(int,int,int,int);
-		void SetzeZielZustand(GLint);
+        void SetTargetState(GLint);
 		void SetSignal(GLint);
 		void CopyFrom(Label);
         GLint LabelIndex;
