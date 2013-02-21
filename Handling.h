@@ -2,7 +2,7 @@ void StartHandling();
 void ViewingHandling();
 void AimHandling();
 void BackswingHandling();
-void ShockHandling();
+void ShotHandling();
 void NewWhiteHandling();
 void MenuHandling();
 void JudgeHandling();

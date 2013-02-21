@@ -1,1 +1,1 @@
-void ShadowCircle(GLint, GLfloat, GLfloat, GLfloat, GLfloat);
+void BallShadow(GLint, GLfloat, GLfloat, GLfloat, GLfloat);

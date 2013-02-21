@@ -116,7 +116,7 @@ void MouseClick(int button, int state, int x, int y)
                         StateMachine=VIEWING;
                         Menu.NewMenuState();
                     }
-                    ShotStrength.setShockStaerke(0);
+                    ShotStrength.setShotStrength(0);
                 }
             } break;
             case NEW_WHITE: {
@@ -281,7 +281,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
             case SWING:
                 StateMachine=AIMING;
                 Menu.NewMenuState();
-                ShotStrength.setShockStaerke(0);
+                ShotStrength.setShotStrength(0);
                 break;
             case SHOT: {
                 if (xnor) {
@@ -293,7 +293,7 @@ void KeyPress( unsigned char keyPressed, int x, int y )
                         }
                     }
                     Menu.NewMenuState();
-                    ShotStrength.setShockStaerke(0);
+                    ShotStrength.setShotStrength(0);
                 }
             } break;
             }

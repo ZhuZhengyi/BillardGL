@@ -9,7 +9,7 @@ class ShotStrength {
 		ShotStrength();
         void Init();
         void draw();
-		void setShockStaerke(GLfloat);
+		void setShotStrength(GLfloat);
 	private:
 		//GLint AusschlagIndex;
 		GLfloat shotStrength;

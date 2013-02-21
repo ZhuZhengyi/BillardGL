@@ -339,15 +339,6 @@ void Table::Init(GLint TextureSize) {
 
 	glBegin(GL_QUADS);
 
-	//Schattenr鋘der unter den Banden...
-	/*
-	   glColor4f(0.0,0.0,0.0,0.0);
-	   glVertex3f(7.38,63.5,-2.8575);
-	   glVertex3f(117.16,63.5,-2.8575);
-	   glColor4f(0.0,0.0,0.0,.4);
-	   glVertex3f(128.3,68.5,-2.8575);
-	   glVertex3f(6.5,68.5,-2.8575);
-	   */
     for(int i=0; i<8; i++)
     {
         glColor4f(color3[i][0],color3[i][3],color3[i][2], color3[i][3]);
@@ -356,7 +347,6 @@ void Table::Init(GLint TextureSize) {
     }
 
 	glEnd();
-
 
 	glEnable(GL_LIGHTING);
 	glEndList();
@@ -683,7 +673,6 @@ void Table::Init(GLint TextureSize) {
         Diamod(-31.75,-72.5,4.9);
         Diamod(-63.5,-72.5,4.9);
         Diamod(-95.25,-72.5,4.9);
-
         Diamod(136.5,31.75,4.9);
         Diamod(136.5,0,4.9);
         Diamod(136.5,-31.75,4.9);

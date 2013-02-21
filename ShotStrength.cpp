@@ -26,10 +26,6 @@ int BallDisplay[16];
 /* --------- Konstruktor ---------- */
 ShotStrength::ShotStrength() {
     shotStrength=0;
-
-	//for (int i=1;i<16;i++) {
-	//  KugelAnzeige[i]=0;
-	//}
 }
 
 
@@ -39,18 +35,23 @@ void ShotStrength::draw() {
 
         glPushMatrix();
 		glBegin(GL_QUADS);
+
         glColor4f(1.0,1.0,1.0,0.2-0.2/shotStrength);
 		glVertex2f(14.0,2.0);
 		glVertex2f(15.0,2.0);
+
         glColor4f(1.0,1.0,1.0,.7*shotStrength/45.0);
         glVertex2f(15.0,2.0+shotStrength*.2666);
         glVertex2f(14.0,2.0+shotStrength*.2666);
+
         glColor4f(1.0,1.0,1.0,0.1-0.1/shotStrength);
 		glVertex2f(15.0,10.0);
 		glVertex2f(14.0,10.0);
+
         glColor4f(1.0,1.0,1.0,.1*shotStrength/45.0);
         glVertex2f(14.0,2.0+shotStrength*.2666);
         glVertex2f(15.0,2.0+shotStrength*.2666);
+
 		glEnd();
 		glPopMatrix();
 	}
@@ -59,6 +60,6 @@ void ShotStrength::draw() {
 void ShotStrength::Init() {
 }
 
-void ShotStrength::setShockStaerke(GLfloat neuStossStaerke) {
-    shotStrength=neuStossStaerke;
+void ShotStrength::setShotStrength(GLfloat newShotStrength) {
+    shotStrength=newShotStrength;
 }

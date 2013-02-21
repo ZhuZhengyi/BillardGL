@@ -7,7 +7,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-void ShadowCircle(GLint Unterteilungen,
+void BallShadow(GLint Unterteilungen,
 		GLfloat Innenradius, 
 		GLfloat Aussenradius, 
 		GLfloat InnenAlpha,

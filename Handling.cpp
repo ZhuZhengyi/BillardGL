@@ -69,12 +69,12 @@ void BackswingHandling() {
     if (KEY_END)        {Camera.Zoom_Out(Factor);}
 
 	AusholStaerke=MaxAusholStaerke*(1-exp((-FrameTimePoint+AusholStartTime)/400.0));
-    ShotStrength.setShockStaerke(AusholStaerke/3.333);
+    ShotStrength.setShotStrength(AusholStaerke/3.333);
 
 }
 
 //击球处理
-void ShockHandling() {
+void ShotHandling() {
 
 	AllerersterStoss=0;
 	//WeisseVersetzbar=0;
@@ -92,28 +92,28 @@ void ShockHandling() {
 
 	//Frames++;                       // F"ur die Frames/sec-Anzeige
 
-	// Zeit seit Stossbeginn
-    GLint Zeit=FrameTimePoint-StartTime;  //time
+    // time seit Stossbeginn
+    GLint time=FrameTimePoint-StartTime;  //time
 
 	// Letzten Zustand noch zeichnen, wenn Stoss
-    if (Zeit>shot_time) {Zeit=shot_time;} // eigentlich schon vorbei
+    if (time>shot_time) {time=shot_time;} // eigentlich schon vorbei
 
-	//printf("%i-%i=%i: ",FrameZeitpunkt,Startzeit,Zeit);
+    //printf("%i-%i=%i: ",FrameZeitpunkt,Startzeit,time);
 
 	for (int Kugelnr=0;Kugelnr<16;Kugelnr++) { // Alle Kugeln neu positionieren
-		if (LightingTable[Zeit][Kugelnr][2]<=0) {
+        if (LightingTable[time][Kugelnr][2]<=0) {
 			//if (Kugelnr<8)
-			//printf("%i,%i ",(GLint)Bewegungstabelle[Zeit][Kugelnr][0],(GLint)Bewegungstabelle[Zeit][Kugelnr][1]);
-            Ball[Kugelnr].newPositionD(LightingTable[Zeit][Kugelnr]);
+            //printf("%i,%i ",(GLint)Bewegungstabelle[time][Kugelnr][0],(GLint)Bewegungstabelle[time][Kugelnr][1]);
+            Ball[Kugelnr].newPositionD(LightingTable[time][Kugelnr]);
 		}
 	}
 	//printf("\n");
 
 	//DelayAusgleich=1;
 
-    ShotStrength.setShockStaerke(AusholStaerke/3.333-Zeit/3.0);
+    ShotStrength.setShotStrength(AusholStaerke/3.333-time/3.0);
 
-	if (!(Zeit & 31)) {
+    if (!(time & 31)) {
 		GLint neu=0;
 		for (int i=0;i<16;i++) {
 			if (BallsInGame[i] && !BallsSunk[i] && (Ball[i].Pos_x()==3000)) {
@@ -125,7 +125,7 @@ void ShockHandling() {
 	}
 
 
-    if (Zeit==shot_time &&
+    if (time==shot_time &&
 			!(GameMode == TUTORIAL && FrameTimePoint-StartTime < 1900)) {
 		// Animation schon fertig?
 
@@ -142,22 +142,22 @@ void ShockHandling() {
         if (GameMode == TRAINING_MODE||GameMode == TUTORIAL) {
 			if (Ball[0].Pos_x()==3000) {
                 StateMachine=NEW_WHITE;
-                ShotStrength.setShockStaerke(0.0);
+                ShotStrength.setShotStrength(0.0);
 				LageVerbesserung=1;
 				LageVerbesserungKopffeld=1;
                 WhiteChosen();
                 Menu.NewMenuState();
 			} else {
                 StateMachine=VIEWING;
-                ShotStrength.setShockStaerke(0.0);
+                ShotStrength.setShotStrength(0.0);
                 Menu.NewMenuState();
 			}
         } else if (Judge.Decision()) {
             StateMachine=JUDGEING;
-            ShotStrength.setShockStaerke(0.0);
+            ShotStrength.setShotStrength(0.0);
 		} else {
             StateMachine=VIEWING;
-            ShotStrength.setShockStaerke(0.0);
+            ShotStrength.setShotStrength(0.0);
             Menu.NewMenuState();
 		}
 	}

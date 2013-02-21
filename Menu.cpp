@@ -57,8 +57,8 @@ void Menu::Update(GLint Faktor) {
             InAnimation=0;
         }
 
-        for (GLint SchildNr=0;SchildNr<SchildAnzahl;SchildNr++) {
-            SchildArray[SchildNr]->Animate(Faktor);
+        for (GLint SchildNr=0;SchildNr<LabelNumber;SchildNr++) {
+            LabelArray[SchildNr]->Animate(Faktor);
         }
 
         for (GLint TextfeldNr=0;TextfeldNr<1000;TextfeldNr++) {
@@ -71,15 +71,14 @@ void Menu::Update(GLint Faktor) {
 
 void Menu::draw()
 {
-
     glMatrixMode(GL_PROJECTION);        // 选择投影矩阵
     glLoadIdentity();                   // 重置投影矩阵
     gluOrtho2D(0.0,16.0,0.0,12.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    for (GLint SchildNr=0;SchildNr<SchildAnzahl;SchildNr++) {
-        SchildArray[SchildNr]->draw();
+    for (GLint SchildNr=0;SchildNr<LabelNumber;SchildNr++) {
+        LabelArray[SchildNr]->draw();
     }
 
     for (GLint TextfeldNr=0;TextfeldNr<1000;TextfeldNr++) {
@@ -188,51 +187,51 @@ void Menu::Init(GLint Texturgroesse)
         TextItemArray[T_FPS]->Initialisiere(TDL,"0 fps");
     }
 
-    SchildAnzahl=0;
+    LabelNumber=0;
 
     MenuBackground.Init();
-    SchildArray[SchildAnzahl++]=&MenuBackground;
+    LabelArray[LabelNumber++]=&MenuBackground;
 
     logo.InitLogo();
-    SchildArray[SchildAnzahl++]=&logo;
+    LabelArray[LabelNumber++]=&logo;
 
     ball[0].Init(1,"a00","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[0];
+    LabelArray[LabelNumber++]=&ball[0];
     ball[1].Init(1,"a1","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[1];
+    LabelArray[LabelNumber++]=&ball[1];
     ball[2].Init(1,"a2","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[2];
+    LabelArray[LabelNumber++]=&ball[2];
     ball[3].Init(1,"a3","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[3];
+    LabelArray[LabelNumber++]=&ball[3];
     ball[4].Init(1,"a4","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[4];
+    LabelArray[LabelNumber++]=&ball[4];
     ball[5].Init(1,"a5","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[5];
+    LabelArray[LabelNumber++]=&ball[5];
     ball[6].Init(1,"a6","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[6];
+    LabelArray[LabelNumber++]=&ball[6];
     ball[7].Init(1,"a7","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[7];
+    LabelArray[LabelNumber++]=&ball[7];
     ball[8].Init(1,"a8","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[8];
+    LabelArray[LabelNumber++]=&ball[8];
     ball[9].Init(1,"a9","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[9];
+    LabelArray[LabelNumber++]=&ball[9];
     ball[10].Init(1,"a10","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[10];
+    LabelArray[LabelNumber++]=&ball[10];
     ball[11].Init(1,"a11","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[11];
+    LabelArray[LabelNumber++]=&ball[11];
     ball[12].Init(1,"a12","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[12];
+    LabelArray[LabelNumber++]=&ball[12];
     ball[13].Init(1,"a13","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[13];
+    LabelArray[LabelNumber++]=&ball[13];
     ball[14].Init(1,"a14","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[14];
+    LabelArray[LabelNumber++]=&ball[14];
     ball[15].Init(1,"a15","aalpha");
-    SchildArray[SchildAnzahl++]=&ball[15];
+    LabelArray[LabelNumber++]=&ball[15];
 
-    volle.Init(Texturgroesse,"volle","aalpha2");
-    SchildArray[SchildAnzahl++]=&volle;
-    halbe.Init(Texturgroesse,"halbe","aalpha2");
-    SchildArray[SchildAnzahl++]=&halbe;
+    full.Init(Texturgroesse,"volle","aalpha2");
+    LabelArray[LabelNumber++]=&full;
+    half.Init(Texturgroesse,"halbe","aalpha2");
+    LabelArray[LabelNumber++]=&half;
 
     //GameStar.Initialisiere(1,"gamestar",1); //Gamestar
     //SchildArray[SchildAnzahl++]=&GameStar;
@@ -241,22 +240,22 @@ void Menu::Init(GLint Texturgroesse)
     if (!MenuState) {MenuState=HOME_SCREEN;}
 
     NewMenuState();
-    StarteAnimation();
+    StartAnimation();
 
-    MenuGesperrt=0;
+    MenuDisable=0;
 
 }
 
 GLint Menu::MouseClick(int Button,int Richtung,int x,int y){
 
-    StarteAnimation();
+    StartAnimation();
 
     GLint Signal=0;
     GLint SchildNr=0;
     GLint TextfeldNr=0;
 
-    while (!Signal && SchildNr<SchildAnzahl) {
-        Signal=SchildArray[SchildNr++]->MouseButton(Button,Richtung,x,y);
+    while (!Signal && SchildNr<LabelNumber) {
+        Signal=LabelArray[SchildNr++]->MouseButton(Button,Richtung,x,y);
     }
 
     for (TextfeldNr=0 ; TextfeldNr<1000; TextfeldNr++) {
@@ -276,7 +275,7 @@ GLint Menu::MouseClick(int Button,int Richtung,int x,int y){
         return 1;
     }
 
-    if (MenuGesperrt ||
+    if (MenuDisable ||
             MenuState!=PLAYING) {
         return 1;
     }
@@ -284,7 +283,7 @@ GLint Menu::MouseClick(int Button,int Richtung,int x,int y){
     return Signal;
 }
 
-void Menu::StarteAnimation() {
+void Menu::StartAnimation() {
     InAnimation=1;
     AnimationsTime=0;
 }
@@ -296,8 +295,8 @@ void Menu::setMenuState(GLint NeuerZustand) {
 
 void Menu::NewMenuState(){
 
-    for (GLint SchildNr=0;SchildNr<SchildAnzahl;SchildNr++) {
-        SchildArray[SchildNr]->Disactive();
+    for (GLint SchildNr=0;SchildNr<LabelNumber;SchildNr++) {
+        LabelArray[SchildNr]->Disactive();
     }
 
     for (GLint TextfeldNr=0;TextfeldNr<1000;TextfeldNr++) {
@@ -518,7 +517,7 @@ void Menu::NewMenuState(){
     } break;
 
     case SETUP_VIDEO: {
-        if (E_Kugelresol_size==3 &&
+        if (E_BallResolSize==3 &&
                 E_BallTextureSize==8 &&
                 E_TableTextureSize==0 &&
                 E_AnzeigeTexturgroesse==2 &&
@@ -529,7 +528,7 @@ void Menu::NewMenuState(){
                 E_TableLampes==1 &&
                 E_TexMMM==0 &&
                 E_GreenLampe==0) {Quality=1;}
-        else if (E_Kugelresol_size==5 &&
+        else if (E_BallResolSize==5 &&
                  E_BallTextureSize==4 &&
                  E_TableTextureSize==4 &&
                  E_AnzeigeTexturgroesse==2 &&
@@ -540,7 +539,7 @@ void Menu::NewMenuState(){
                  E_TableLampes==1 &&
                  E_TexMMM==2 &&
                  E_GreenLampe==0) {Quality=2;}
-        else if (E_Kugelresol_size==7 &&
+        else if (E_BallResolSize==7 &&
                  E_BallTextureSize==2 &&
                  E_TableTextureSize==2 &&
                  E_AnzeigeTexturgroesse==1 &&
@@ -551,7 +550,7 @@ void Menu::NewMenuState(){
                  E_TableLampes==2 &&
                  E_TexMMM==3 &&
                  E_GreenLampe==0) {Quality=3;}
-        else if (E_Kugelresol_size==7 &&
+        else if (E_BallResolSize==7 &&
                  E_BallTextureSize==2 &&
                  E_TableTextureSize==1 &&
                  E_AnzeigeTexturgroesse==1 &&
@@ -562,7 +561,7 @@ void Menu::NewMenuState(){
                  E_TableLampes==2 &&
                  E_TexMMM==7 &&
                  E_GreenLampe==1) {Quality=4;}
-        else if (E_Kugelresol_size==11 &&
+        else if (E_BallResolSize==11 &&
                  E_BallTextureSize==1 &&
                  E_TableTextureSize==1 &&
                  E_AnzeigeTexturgroesse==1 &&
@@ -814,7 +813,7 @@ void Menu::NewMenuState(){
         }break;
         }
 
-        switch (E_Kugelresol_size) {
+        switch (E_BallResolSize) {
         case 3: {
             TextItemArray[T_BG_SEHRNIEDRIG]->Positioniere(8.2,6.5,.6,A_LINKS);
             TextItemArray[T_BG_SEHRNIEDRIG]->SetSignal(S_SETUP_BALLGEOMETRIE);
@@ -836,7 +835,7 @@ void Menu::NewMenuState(){
         if( E_BallTextureSize==TextureSize &&
                 E_AnzeigeTexturgroesse==DisplayTextureSize &&
                 E_TableTextureSize==TableTextureSize &&
-                E_Kugelresol_size==BallResolution &&
+                E_BallResolSize==BallResolution &&
                 E_ScreenResolution==ScreenResolution &&
                 E_ColorDepth==ColorDepth &&
                 E_Reflection==Reflections &&
@@ -1253,12 +1252,12 @@ void Menu::NewMenuState(){
                 TextItemArray[T_PLAYER2NAME]->Positioniere(15.9,11.5,.5,A_RECHTS);
                 if (GameType==EIGHT_BALL) {
                     if (Judge.AfterGroupAllocated()==1) {
-                        volle.Positioning(0.2,10,1.2,11);
-                        halbe.Positioning(15.4,11,15.9,11.5);
+                        full.Positioning(0.2,10,1.2,11);
+                        half.Positioning(15.4,11,15.9,11.5);
                     }
                     if (Judge.AfterGroupAllocated()==2) {
-                        halbe.Positioning(0.2,10,1.2,11);
-                        volle.Positioning(15.4,11,15.9,11.5);
+                        half.Positioning(0.2,10,1.2,11);
+                        full.Positioning(15.4,11,15.9,11.5);
                     }
                 }
                 if (GameType==NINE_BALL) {
@@ -1292,12 +1291,12 @@ void Menu::NewMenuState(){
                 TextItemArray[T_PLAYER2NAME]->Positioniere(15.8,11,1,A_RECHTS);
                 if (GameType==EIGHT_BALL) {
                     if (Judge.AfterGroupAllocated()==1) {
-                        volle.Positioning(0.1,11,.5,11.5);
-                        halbe.Positioning(14.8,10,15.8,11);
+                        full.Positioning(0.1,11,.5,11.5);
+                        half.Positioning(14.8,10,15.8,11);
                     }
                     if (Judge.AfterGroupAllocated()==2) {
-                        halbe.Positioning(0.1,11,.5,11.5);
-                        volle.Positioning(14.8,10,15.8,11);
+                        half.Positioning(0.1,11,.5,11.5);
+                        full.Positioning(14.8,10,15.8,11);
                     }
                 }
                 if (GameType==NINE_BALL) {
@@ -1385,7 +1384,7 @@ void Menu::NewMenuState(){
                         TextItemArray[T_UNDHATLAGEVERBESSERUNG]->Positioniere(8,4,1,A_MITTE);
                     }
                 } else if (NeuAufbauenOderAchtEinsetzen) {
-                    MenuGesperrt=1;
+                    MenuDisable=1;
                     if (Foul) {
                         TextItemArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);
                         if (Judge.AfterSubstantiation())
@@ -1405,7 +1404,7 @@ void Menu::NewMenuState(){
                     TextItemArray[T_DIEACHTEINSETZEN]->Positioniere(10.5,2.5,1,A_MITTE);
                     TextItemArray[T_DIEACHTEINSETZEN]->SetSignal(S_SP_ACHTEINSETZEN);
                 } else if (NeuAufbauenOderWeiterspielen) {
-                    MenuGesperrt=1;
+                    MenuDisable=1;
                     if (Foul) {
                         TextItemArray[T_FOUL]->Positioniere(8,9,1.5,A_MITTE);
                         if (Judge.AfterSubstantiation())
@@ -1427,7 +1426,7 @@ void Menu::NewMenuState(){
                 }
             }
             if (Player1Win||Player2Win) {
-                MenuGesperrt=1;
+                MenuDisable=1;
                 TextItemArray[T_HATGEWONNEN]->Positioniere(8,5,1,A_MITTE);
 
                 TextItemArray[T_NEW_GAME]->Positioniere(5.5,3,1,A_MITTE);
@@ -1478,7 +1477,7 @@ void Menu::NewMenuState(){
     } break;
 
     }
-    StarteAnimation();
+    StartAnimation();
 }
 
 void Menu::SignalExecution(GLint Signal) {
@@ -1516,7 +1515,7 @@ void Menu::SignalExecution(GLint Signal) {
         NeuAufbauenOderAchtEinsetzen=0;
         Player1Win=0;
         Player2Win=0;
-        MenuGesperrt=0;
+        MenuDisable=0;
         GameMode=TRAINING_MODE;
         StateMachine=NEW_WHITE;
         GameType=EIGHT_BALL;
@@ -1534,7 +1533,7 @@ void Menu::SignalExecution(GLint Signal) {
         NeuAufbauenOderAchtEinsetzen=0;
         Player1Win=0;
         Player2Win=0;
-        MenuGesperrt=0;
+        MenuDisable=0;
         GameMode=TRAINING_MODE;
         StateMachine=NEW_WHITE;
         GameType=NINE_BALL;
@@ -1560,7 +1559,7 @@ void Menu::SignalExecution(GLint Signal) {
         NeuAufbauenOderAchtEinsetzen=0;
         Player1Win=0;
         Player2Win=0;
-        MenuGesperrt=0;
+        MenuDisable=0;
         GameMode=TWO_PLAYERS;
         StateMachine=JUDGEING;
         GameType=EIGHT_BALL;
@@ -1581,7 +1580,7 @@ void Menu::SignalExecution(GLint Signal) {
         NeuAufbauenOderAchtEinsetzen=0;
         Player1Win=0;
         Player2Win=0;
-        MenuGesperrt=0;
+        MenuDisable=0;
         GameMode=TWO_PLAYERS;
         StateMachine=JUDGEING;
         GameType=NINE_BALL;
@@ -1632,7 +1631,7 @@ void Menu::SignalExecution(GLint Signal) {
         E_BallTextureSize=TextureSize;
         E_AnzeigeTexturgroesse=DisplayTextureSize;
         E_TableTextureSize=TableTextureSize;
-        E_Kugelresol_size=BallResolution;
+        E_BallResolSize=BallResolution;
         E_ScreenResolution=ScreenResolution;
         E_ColorDepth=ColorDepth;
         E_Reflection=Reflections;
@@ -1744,30 +1743,30 @@ void Menu::SignalExecution(GLint Signal) {
         setMenuState(SETUP_VIDEO);
     } break;
     case S_SETUP_BALLGEOMETRIE: {
-        switch (E_Kugelresol_size) {
+        switch (E_BallResolSize) {
         case 1: {
-            E_Kugelresol_size=7;
+            E_BallResolSize=7;
         } break;
         case 2: {
-            E_Kugelresol_size=7;
+            E_BallResolSize=7;
         } break;
         case 3: {
-            E_Kugelresol_size=11;
+            E_BallResolSize=11;
         } break;
         case 5: {
-            E_Kugelresol_size=3;
+            E_BallResolSize=3;
         } break;
         case 7: {
-            E_Kugelresol_size=5;
+            E_BallResolSize=5;
         } break;
         case 9: {
-            E_Kugelresol_size=7;
+            E_BallResolSize=7;
         } break;
         case 11: {
-            E_Kugelresol_size=7;
+            E_BallResolSize=7;
         } break;
         default: {
-            E_Kugelresol_size=7;
+            E_BallResolSize=7;
         } break;
         }
         setMenuState(SETUP_VIDEO);
@@ -1807,7 +1806,7 @@ void Menu::SignalExecution(GLint Signal) {
     case S_SETUP_QUALITAET: {
         switch(Quality) {
         case 1: {
-            E_Kugelresol_size=11;
+            E_BallResolSize=11;
             E_BallTextureSize=1;
             E_TableTextureSize=1;
             E_AnzeigeTexturgroesse=1;
@@ -1820,7 +1819,7 @@ void Menu::SignalExecution(GLint Signal) {
             E_TexMMM=7;
         } break;
         case 2: {
-            E_Kugelresol_size=3;
+            E_BallResolSize=3;
             E_BallTextureSize=8;
             E_TableTextureSize=0;
             E_AnzeigeTexturgroesse=2;
@@ -1833,7 +1832,7 @@ void Menu::SignalExecution(GLint Signal) {
             E_TexMMM=0;
         } break;
         case 3: {
-            E_Kugelresol_size=5;
+            E_BallResolSize=5;
             E_BallTextureSize=4;
             E_TableTextureSize=4;
             E_AnzeigeTexturgroesse=2;
@@ -1846,7 +1845,7 @@ void Menu::SignalExecution(GLint Signal) {
             E_TexMMM=2;
         } break;
         case 4: {
-            E_Kugelresol_size=7;
+            E_BallResolSize=7;
             E_BallTextureSize=2;
             E_TableTextureSize=2;
             E_AnzeigeTexturgroesse=1;
@@ -1859,7 +1858,7 @@ void Menu::SignalExecution(GLint Signal) {
             E_TexMMM=3;
         } break;
         case 5: {
-            E_Kugelresol_size=7;
+            E_BallResolSize=7;
             E_BallTextureSize=2;
             E_TableTextureSize=1;
             E_AnzeigeTexturgroesse=1;
@@ -1872,7 +1871,7 @@ void Menu::SignalExecution(GLint Signal) {
             E_TexMMM=7;
         } break;
         default: {
-            E_Kugelresol_size=7;
+            E_BallResolSize=7;
             E_BallTextureSize=2;
             E_TableTextureSize=2;
             E_AnzeigeTexturgroesse=1;
@@ -1898,14 +1897,14 @@ void Menu::SignalExecution(GLint Signal) {
         }
 
         if (TextureSize!=E_BallTextureSize ||
-                BallResolution!=E_Kugelresol_size ||
+                BallResolution!=E_BallResolSize ||
                 TexMMMgeaendert ||
                 Shadow!=E_Shadows) {
 
-            initializeBallTables(E_Kugelresol_size);
+            initializeBallTables(E_BallResolSize);
 
             for (GLint j=0;j<16;j++) {  // Initialisierung der Baelle + Laden der Texturen
-                Ball[j].Init(j,E_BallTextureSize,E_Kugelresol_size,E_Shadows);
+                Ball[j].Init(j,E_BallTextureSize,E_BallResolSize,E_Shadows);
             }
         }
 
@@ -1930,7 +1929,7 @@ void Menu::SignalExecution(GLint Signal) {
         if (ColorDepth!=E_ColorDepth || ScreenResolution!=E_ScreenResolution)
             Neueresol_size=1;
 
-        BallResolution=E_Kugelresol_size;
+        BallResolution=E_BallResolSize;
         TextureSize=E_BallTextureSize;
         DisplayTextureSize=E_AnzeigeTexturgroesse;
         TableTextureSize=E_TableTextureSize;
@@ -2135,13 +2134,13 @@ void Menu::SignalExecution(GLint Signal) {
     case S_SP_WEITERSPIELEN: {
         NeuAufbauenOderWeiterspielen=0;
         NeuAufbauenOderAchtEinsetzen=0;
-        MenuGesperrt=0;
+        MenuDisable=0;
         NewMenuState();
     } break;
     case S_SP_ACHTEINSETZEN: {
         NeuAufbauenOderWeiterspielen=0;
         NeuAufbauenOderAchtEinsetzen=0;
-        MenuGesperrt=0;
+        MenuDisable=0;
         EightChosen();
         NewMenuState();
     } break;
@@ -2153,7 +2152,7 @@ void Menu::SignalExecution(GLint Signal) {
         NeuAufbauenOderAchtEinsetzen=0;
         Player1Win=0;
         Player2Win=0;
-        MenuGesperrt=0;
+        MenuDisable=0;
         StateMachine=JUDGEING;
         GLint Spieler=Judge.AfterPlayerShot();
         GLint Fouls0=Judge.AfterFoul(0);
@@ -2182,7 +2181,7 @@ void Menu::SignalExecution(GLint Signal) {
         Player2Win=0;
         NeuAufbauenOderWeiterspielen=0;
         NeuAufbauenOderAchtEinsetzen=0;
-        MenuGesperrt=0;
+        MenuDisable=0;
         StateMachine=JUDGEING;
         GLint Spieler=Judge.AfterPlayerShot();
         Judge.NewGame(GameType);
@@ -2240,7 +2239,7 @@ void Menu::SignalExecution(GLint Signal) {
         NeuAufbauenOderAchtEinsetzen=0;
         Player1Win=0;
         Player2Win=0;
-        MenuGesperrt=0;
+        MenuDisable=0;
         GameMode=TUTORIAL;
         StateMachine=VIEWING;
         GameType=EIGHT_BALL;
@@ -2357,7 +2356,7 @@ GLint Menu::KeyboardButton (unsigned char Button,int,int){
 
     if (Reaktion) return 1;
 
-    if (MenuGesperrt ||
+    if (MenuDisable ||
             MenuState!=PLAYING) {
         return 1;
     }

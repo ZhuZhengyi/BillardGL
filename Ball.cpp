@@ -25,10 +25,10 @@ Ball::Ball() {
 	Position[0]=0;
 	Position[1]=0;
 	Position[2]=0;
-    Number=-1;
+    id=-1;
 	for (GLint i=0;i<30;i++) {
-        sphereIndex[i]=0;           //ball index
-		sphereIndexStatisch[i]=0; 
+        ballIndex[i]=0;           //ball index
+        ballIndexStatic[i]=0;
         StaticExists[i]=0;
 	}
     shadowIndex=0;
@@ -51,7 +51,7 @@ Ball::Ball() {
     Shadow3_angle=0;
     OldTextureSize=1;
 
-	/* */
+    //不同分辨率下的纹理
     Textures[1]=0;
     Textures[2]=0;
     Textures[4]=0;
@@ -80,7 +80,7 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint Maxresol_size, GLint Schatten
 	char Name[40];                  // Wie hei"st die zu ladene .bmp-Datei?
     sprintf(Name,"Texturen/%i/%i.bmp",TextureSize,Nr);
 
-	if (!sphereIndex[3]) {
+    if (!ballIndex[3]) {
 		Position[0]=Position[1]=3000.0; // Kugel nicht sichtbar
 
 		glPushMatrix();                 // Drehmatrix auf die Einheitsmatrix setzen;
@@ -89,22 +89,24 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint Maxresol_size, GLint Schatten
 		glPopMatrix();
 	}
 
-    Number=Nr;                      // KugelNummer setzen
+    id=Nr;                      // KugelNummer setzen
 
     //Display resolution
-	for (int resol_size=3; resol_size<=Maxresol_size;resol_size+=2) {
+    for (int resol_size=3; resol_size<=Maxresol_size;resol_size+=2) {
 
-		if (!sphereIndex[resol_size]||
+        //
+        if (!ballIndex[resol_size]||
                 (OldTextureSize!=TextureSize)) {
 
 			//printf(".");fflush(stdout);
 
-			sphereIndex[resol_size]=glGenLists(1); 
-			sphereIndexStatisch[resol_size]=glGenLists(1); 
+            ballIndex[resol_size]=glGenLists(1);
+            ballIndexStatic[resol_size]=glGenLists(1);
 
-            if ((TextureSize==0)||(Number==0)) { // Keine Textur?
+            //白球或
+            if ((TextureSize==0)||(id==0)) { // Keine Textur?
 
-				glNewList(sphereIndex[resol_size],GL_COMPILE_AND_EXECUTE);
+                glNewList(ballIndex[resol_size],GL_COMPILE_AND_EXECUTE);
 				GLfloat mat_diffuse[]={1.0,1.0,1.0,1.0};
 				GLfloat mat_specular[]={0.5,0.5,0.5,1.0};
 				//GLfloat mat_specular[]={0.0,0.0,0.0,0.0};
@@ -123,7 +125,8 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint Maxresol_size, GLint Schatten
                 glDisableClientState(GL_NORMAL_ARRAY);
 				glEndList();
 
-			} else {                        // sonst
+            }
+            else {                        // sonst
 
 				GLint TG=exp2((7-resol_size)/2);
                 if (TG<TextureSize) TG=TextureSize;
@@ -144,7 +147,7 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint Maxresol_size, GLint Schatten
 				} 
 				createTexture(tex_r,tex_g,tex_b);
 
-				glNewList(sphereIndex[resol_size],GL_COMPILE_AND_EXECUTE);
+                glNewList(ballIndex[resol_size],GL_COMPILE_AND_EXECUTE);
 				GLfloat mat_diffuse[]={1.0,1.0,1.0,1.0};
 				GLfloat mat_specular[]={0.5,0.5,0.5,1.0};
 				//GLfloat mat_specular[]={0.0,0.0,0.0,0.0};
@@ -194,7 +197,7 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint Maxresol_size, GLint Schatten
         shadowIndexStatic=glGenLists(1);
 
         glNewList(shadowIndex,GL_COMPILE_AND_EXECUTE);
-        ShadowCircle(18, .7, 1.2, 0.2, 0.0);
+        BallShadow(18, .7, 1.2, 0.2, 0.0);
 		glEndList();
 
         Shadow=Schatten_;
@@ -213,11 +216,11 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint Maxresol_size, GLint Schatten
         Shadow3_angle=0;
 	}
 
-	if (!schatten2Index) {
-		schatten2Index=glGenLists(1);
+    if (!shadow2Index) {
+        shadow2Index=glGenLists(1);
 
-		glNewList(schatten2Index,GL_COMPILE_AND_EXECUTE);
-        ShadowCircle(14, 0.1, 0.5, 0.5, 0.0);
+        glNewList(shadow2Index,GL_COMPILE_AND_EXECUTE);
+        BallShadow(14, 0.1, 0.5, 0.5, 0.0);
 		glEndList();
 	}
 
@@ -228,22 +231,24 @@ void Ball::Init(GLint Nr, GLint TextureSize, GLint Maxresol_size, GLint Schatten
 
 // Draws the ball using the Display List
 void Ball::draw(GLint resol_size) {
-	if (Position[0]!=3000) {
 
+	if (Position[0]!=3000) {
+        //
 		if (InAnimation) {
 			glPushMatrix();                // Matrix auf Stack
 			glScalef(2.8575,2.8575,2.8575);// Skalieren auf Zentimetersystem;
 			// Kugel auf die Position verschieben
 			glTranslatef(Position[0],Position[1],Position[2]);
 			glMultMatrixf(DrehMatrix);     // Kugel mit der Drehmatrix drehen
-			glCallList(sphereIndex[resol_size]);       // Kugel zeichnen
+            glCallList(ballIndex[resol_size]);       // Kugel zeichnen
 			glPopMatrix();                 // Matrix wiederherstellen
 			InAnimation=0;
 			for (int i=0;i<30;i++) {
                 StaticExists[i]=0;
 			}
 
-        } else if (StaticExists[resol_size]) {
+        }
+        else if (StaticExists[resol_size]) {
 
 			/*
 			   glPushMatrix();
@@ -257,23 +262,20 @@ void Ball::draw(GLint resol_size) {
 			   glPopMatrix();
 			   */
 
-			glCallList(sphereIndexStatisch[resol_size]);
+            glCallList(ballIndexStatic[resol_size]);
 
-		} else {
+        }
+        //大球
+        else {
 
-			glNewList(sphereIndexStatisch[resol_size],GL_COMPILE_AND_EXECUTE);
+            glNewList(ballIndexStatic[resol_size],GL_COMPILE_AND_EXECUTE);
 
 			glPushMatrix();                // Matrix auf Stack
-
 			glScalef(2.8575,2.8575,2.8575);// Skalieren auf Zentimetersystem;
-
 			// Kugel auf die Position verschieben
 			glTranslatef(Position[0],Position[1],Position[2]);
-
 			glMultMatrixf(DrehMatrix);     // Kugel mit der Drehmatrix drehen
-
-			glCallList(sphereIndex[resol_size]);       // Kugel zeichnen
-
+            glCallList(ballIndex[resol_size]);       // Kugel zeichnen
 			glPopMatrix();                 // Matrix wiederherstellen
 
 			glEndList();
@@ -291,7 +293,7 @@ void Ball::drawShadow() {
 			glScalef(2.8575,2.8575,2.8575);// Skalieren auf Zentimetersystem;
 			glTranslatef(Position[0],Position[1],Position[2]-1);
 
-			glCallList(schatten2Index); //TEST
+            glCallList(shadow2Index); //TEST
 
 			glPushMatrix();
             glTranslatef(Shadow1_x,Shadow1_y,0);
@@ -328,7 +330,7 @@ void Ball::drawShadow() {
 			glScalef(2.8575,2.8575,2.8575);// Skalieren auf Zentimetersystem;
 			glTranslatef(Position[0],Position[1],Position[2]-1);
 
-			glCallList(schatten2Index); //TEST
+            glCallList(shadow2Index); //TEST
 
 			glPushMatrix();
             glTranslatef(Shadow1_x,Shadow1_y,0);
@@ -416,10 +418,12 @@ void Ball::newPosition(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
     newPosition(Pos);
 }
 
+/*
 void Ball::newPosition(GLfloat neuPos_x,GLfloat neuPos_y) {
 	GLfloat Pos[]={neuPos_x,neuPos_y,0.0};
     newPosition(Pos);
 }
+*/
 
 void Ball::newPositionCM(GLfloat neuPos[]) {
 	GLfloat Pos[]={neuPos[0]/2.8575,neuPos[1]/2.8575,neuPos[2]/2.8575};
@@ -431,11 +435,12 @@ void Ball::newPositionCM(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
     newPosition(Pos);
 }
 
+/*
 void Ball::newPositionCM(GLfloat neuPos_x,GLfloat neuPos_y) {
 	GLfloat Pos[]={neuPos_x/2.8575,neuPos_y/2.8575,0.0};
     newPosition(Pos);
 }
-
+*/
 void Ball::newPositionD(GLfloat neuPos[]) {
 	GLfloat Pos[]={neuPos[0]*2,neuPos[1]*2,neuPos[2]*2};
     newPosition(Pos);
@@ -445,12 +450,12 @@ void Ball::newPositionD(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
 	GLfloat Pos[]={neuPos_x*2,neuPos_y*2,neuPos_z*2};
     newPosition(Pos);
 }
-
+/*
 void Ball::newPositionD(GLfloat neuPos_x,GLfloat neuPos_y) {
 	GLfloat Pos[]={neuPos_x*2,neuPos_y*2,0.0};
     newPosition(Pos);
 }
-
+*/
 void Ball::newPositionINCH(GLfloat neuPos[]) {
 	GLfloat Pos[]={neuPos[0]/1.125,neuPos[1]/1.125,neuPos[2]/1.125};
     newPosition(Pos);
@@ -461,11 +466,12 @@ void Ball::newPositionINCH(GLfloat neuPos_x,GLfloat neuPos_y,GLfloat neuPos_z) {
     newPosition(Pos);
 }
 
+/*
 void Ball::newPositionINCH(GLfloat neuPos_x,GLfloat neuPos_y) {
 	GLfloat Pos[]={neuPos_x/1.125,neuPos_y/1.125,0.0};
     newPosition(Pos);
 }
-
+*/
 //fade out
 // l"a"st die Kugel verschwinden disappear
 void Ball::disappear() {

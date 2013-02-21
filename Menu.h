@@ -181,7 +181,7 @@ class Menu {
 		void SetFPS(GLint);
         void LoadLanguage(GLint);
 	private:
-		void StarteAnimation();
+        void StartAnimation();
         GLint AnimationsTime;
 		GLint InAnimation;
 
@@ -193,14 +193,14 @@ class Menu {
         Label logo;
         Label namen;    //
 
-        Label halbe;    //half
-        Label volle;    //full
+        Label half;    //half
+        Label full;    //full
 
         Label ball[16];
 
         Label GameStar;
 
-        Label* SchildArray[300];
+        Label* LabelArray[300];
         TextItem* TextItemArray[1000];
 
         TextItem dummyTextfeld;
@@ -208,17 +208,17 @@ class Menu {
 		GLint TDL;
 		//GLint TTA;
 
-		GLint SchildAnzahl;
-		GLint TextfeldAnzahl;
+        GLint LabelNumber;
+        GLint TextfeldNumber;
 
         GLint E_BallTextureSize;        //球显示精度
         GLint E_AnzeigeTexturgroesse;   //
         GLint E_TableTextureSize;       //桌面图像精度
-        GLint E_Kugelresol_size;        //球分辨率
+        GLint E_BallResolSize;        //球分辨率
 		GLfloat E_MouseSpeed;
 		GLint E_InvertX;
 		GLint E_InvertY;
-        GLint MenuGesperrt;     //menu locked/disabled
+        GLint MenuDisable;     //menu locked/disabled
         GLint E_Reflection;
         GLint E_ColorDepth;
         GLint E_ScreenResolution;

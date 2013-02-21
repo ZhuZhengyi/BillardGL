@@ -14,6 +14,10 @@ GLint calc_ind2(GLint b, GLint c, GLint resol_size) {
     return ((c*(2*resol_size+3-c))/2)+b;
 }
 
+/*
+ * 根据三角形A(ax,ay,az)，B(bx,by,bz)，C(cx,cy,cz)三点坐标及
+ * 分辨率获取所有像素点坐标
+ */
 void Triangle(GLfloat ax, GLfloat ay, GLfloat az,
 		GLfloat bx, GLfloat by, GLfloat bz,
 		GLfloat cx, GLfloat cy, GLfloat cz,
@@ -26,26 +30,34 @@ void Triangle(GLfloat ax, GLfloat ay, GLfloat az,
 
     for (c=0;c<=resol_size;c++) {
         for (b=0;b<=resol_size-c;b++) {
+            //获取三角形三边按分辨率等分点的坐标
             GLfloat temp_x=ax+((b+0.0)/(resol_size+0.0))*(bx-ax)+((c+0.0)/(resol_size+0.0))*(cx-ax);
             GLfloat temp_y=ay+((b+0.0)/(resol_size+0.0))*(by-ay)+((c+0.0)/(resol_size+0.0))*(cy-ay);
             GLfloat temp_z=az+((b+0.0)/(resol_size+0.0))*(bz-az)+((c+0.0)/(resol_size+0.0))*(cz-az);
+
+
             GLfloat distance=sqrt(temp_x*temp_x+temp_y*temp_y+temp_z*temp_z);
             temp_x=temp_x/distance;
             temp_y=temp_y/distance;
             temp_z=temp_z/distance;
+
+            //顶点数组
 			vertices[iv++]=temp_x; 
 			vertices[iv++]=temp_y; 
 			vertices[iv++]=temp_z; 
+
             GLfloat angle=atan(temp_x/temp_y)/M_PI;
             if (temp_x==0 && temp_y==0) angle=orient;
             if (!angle) angle=0;
             if (temp_y<0) angle+=1;
             else if (temp_x<0) angle+=2;
 			if (orient!=99) {
-                while (angle<orient-.5) {angle+=1;}
-                while (angle>orient+.5) {angle-=1;}
+                while (angle<orient-0.5) {angle+=1;}
+                while (angle>orient+0.5) {angle-=1;}
 			}
             orient=angle;
+
+            //纹理坐标
             texcoord[it++]=angle;
 			texcoord[it++]=acos(temp_z)/M_PI-1;
 		}
@@ -66,7 +78,7 @@ void Triangle(GLfloat ax, GLfloat ay, GLfloat az,
 }
 
 /*
- * init Ball Table
+ * init Ball vertex data
  *
  */
 void initializeBallTables(GLint resol_size) {
@@ -82,19 +94,20 @@ void initializeBallTables(GLint resol_size) {
 	   printf("%f %f %f %f\n",a,b,c,d);
 	   */
 
-    for (GLint A=1;A<=resol_size;A++) {
-		if (!ball_vertices[A]&& (A%2)) {
+    GLfloat a=sqrt(0.8);       // 0.8944271
+    GLfloat b=sqrt(0.2);       // 0.4472136
+    GLfloat c=a*sin(0.4*M_PI); // 0.8506508
+    GLfloat d=a*cos(0.4*M_PI); // 0.2763932
+    GLfloat e=a*sin(0.8*M_PI); // 0.5257311
+    GLfloat f=a*cos(0.8*M_PI); // 0.7236068
+
+    for (GLint A=1;A<=resol_size;A+=2) {
+
+        if (!ball_vertices[A]) {
 			//printf("%i ",A);fflush(stdout);
 			ball_vertices[A] = (GLfloat*) malloc (20*3*(A+1)*(A+2)*sizeof(GLfloat)/2);
 			ball_indices[A] = (GLint*) malloc (20*3*A*A*sizeof(GLint));
 			ball_texcoord[A] = (GLfloat*) malloc (20*(A+1)*(A+2)*sizeof(GLfloat));
-
-			GLfloat a=sqrt(.8);       // 0.8944271
-			GLfloat b=sqrt(.2);       // 0.4472136
-			GLfloat c=a*sin(.4*M_PI); // 0.8506508
-			GLfloat d=a*cos(.4*M_PI); // 0.2763932
-			GLfloat e=a*sin(.8*M_PI); // 0.5257311
-			GLfloat f=a*cos(.8*M_PI); // 0.7236068
 
 			GLint iv=0,ii=0,it=0;
 

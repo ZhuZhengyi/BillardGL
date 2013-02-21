@@ -552,7 +552,7 @@ void Physics(GLfloat ShotSpeed_x,GLfloat ShotSpeed_y) {
 
 
         // ------------------------------- table update -------------------------------
-		GLint zeitpunkt = zeit*100/resol_size; // aktuelle Zeit berechnen (fuer Tabelle)
+        GLint zeitpunkt = zeit*100/resol_size; // current time charge (for table)
 		{
 			for (int i=0;i<16;i++){
                 LightingTable[zeitpunkt][i][0] = newPos[i][0];

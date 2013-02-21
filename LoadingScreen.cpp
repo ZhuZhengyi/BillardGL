@@ -94,29 +94,63 @@ void LSupdateGL() {
 /*
  * Loading Screen idle
  */
+void initLogo()
+{
+    glEnable(GL_BLEND);
+    glDisable(GL_LIGHTING);
+    glClear(GL_COLOR_BUFFER_BIT);
+    FMatrix r,g,b;
+    loadBMP(r,g,b,"Texturen/1/dreizehn.bmp");
+    glGenTextures(1,&ThirteenTexture);
+    glBindTexture(GL_TEXTURE_2D,ThirteenTexture);
+    createTexture(r,g,b);
+    r.free_FMatrix();
+    g.free_FMatrix();
+    b.free_FMatrix();
+    loadBMP(r,g,b,"Texturen/1/logo.bmp");
+    glGenTextures(1,&LogoTexture);
+    glBindTexture(GL_TEXTURE_2D,LogoTexture);
+    createTextureAlpha(r,g,b);
+    r.free_FMatrix();
+    g.free_FMatrix();
+    b.free_FMatrix();
+}
+
+/*
+ *
+ */
+void runGame()
+{
+    glDeleteTextures(1,&ThirteenTexture);
+
+    DelayCompensation=1;
+
+    glutIgnoreKeyRepeat(1);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_BLEND);
+    glShadeModel(GL_SMOOTH);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+    //Callbacks setzen: Reaktion auf Mausklicks und -bewegungen, Tastaturaktivit鋞en
+    glutMouseFunc(MouseClick);
+    glutMotionFunc(MouseMove);
+    glutKeyboardFunc(KeyPress);
+    glutKeyboardUpFunc(KeyRelease);
+    glutSpecialFunc(SpecialKeyPress);
+    glutSpecialUpFunc(SpecialKeyRelease);
+
+    glutVisibilityFunc(Visible);
+    glutIdleFunc(timerEvent);
+    glutDisplayFunc(updateGL);
+}
+
 void LSidle() {
 
 	switch (LoadingProgress++) {
-        case 0: {   //logo
-					glEnable(GL_BLEND);
-					glDisable(GL_LIGHTING);
-					glClear(GL_COLOR_BUFFER_BIT);
-					FMatrix r,g,b;
-					loadBMP(r,g,b,"Texturen/1/dreizehn.bmp");
-					glGenTextures(1,&ThirteenTexture);
-					glBindTexture(GL_TEXTURE_2D,ThirteenTexture);
-					createTexture(r,g,b);
-					r.free_FMatrix();
-					g.free_FMatrix();
-					b.free_FMatrix();
-					loadBMP(r,g,b,"Texturen/1/logo.bmp");
-					glGenTextures(1,&LogoTexture);
-					glBindTexture(GL_TEXTURE_2D,LogoTexture);
-					createTextureAlpha(r,g,b);
-					r.free_FMatrix();
-					g.free_FMatrix();
-					b.free_FMatrix();
-				}break;
+        case 0: initLogo();break;
         case 1: initializeBallTables(BallResolution); break;  //table init
         case 2: Ball[0].Init(0,TextureSize,BallResolution,Shadow); break; //ball0 init
         case 3: Ball[1].Init(1,TextureSize,BallResolution,Shadow); break;
@@ -144,33 +178,7 @@ void LSidle() {
         case 25: Menu.Init(DisplayTextureSize); break;
         case 26: BoardLayout(); break;
         case 27: Judge.NewGame(GameType); break;
-		case 28: {
-
-					 glDeleteTextures(1,&ThirteenTexture);
-
-					 DelayCompensation=1;
-
-					 glutIgnoreKeyRepeat(1);
-					 glEnable(GL_DEPTH_TEST);
-					 glEnable(GL_CULL_FACE);
-                     glEnable(GL_NORMALIZE);
-					 glEnable(GL_BLEND);
-					 glShadeModel(GL_SMOOTH);
-					 glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-					 glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-					 //Callbacks setzen: Reaktion auf Mausklicks und -bewegungen, Tastaturaktivit鋞en
-                     glutMouseFunc(MouseClick);
-                     glutMotionFunc(MouseMove);
-                     glutKeyboardFunc(KeyPress);
-                     glutKeyboardUpFunc(KeyRelease);
-                     glutSpecialFunc(SpecialKeyPress);
-                     glutSpecialUpFunc(SpecialKeyRelease);
-
-					 glutVisibilityFunc(Visible);        
-					 glutIdleFunc(timerEvent);
-					 glutDisplayFunc(updateGL);
-				 } break;
+        case 28: runGame(); break;
 	}
 	glutPostWindowRedisplay(CurrentWindow);
 }

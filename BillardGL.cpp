@@ -38,7 +38,7 @@
 #pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 
 //Tabellen
-GLfloat LightingTable[2000][16][3];
+GLfloat LightingTable[2000][16][3];     //
 GLint   SoundTable[1000];
 
 //Objekte
@@ -157,18 +157,15 @@ void updateGL()
 {
     if (ZBufferDelete) {glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);}
 
-    Camera.draw();                        // Kamera-Postion und -Parameter setzen
-
+    Camera.draw();
     Lighting.draw();
-
-    Table.drawSurface();                  // Tischflaeche zeichen
+    Table.drawSurface();
 
 	glDisable(GL_DEPTH_TEST);
-
     Table.drawLine();
 
-    for (int BallIndex=0;BallIndex<16;BallIndex++) {
-        Ball[BallIndex].drawShadow();      // Schatten zeichen
+    for (int ball_id=0;ball_id<16;ball_id++) {
+        Ball[ball_id].drawShadow();      // Schatten zeichen
 	}
 
 	glEnable(GL_DEPTH_TEST);
@@ -178,16 +175,16 @@ void updateGL()
     GLfloat Abstand=0;  //distance
     GLint resol_size=1; //Display resolution
 
-	for (int Kugelnr2=0;Kugelnr2<16;Kugelnr2++) {
-        GLfloat x=Ball[Kugelnr2].Pos_xCM()-Camera.Pos_x;
-        GLfloat y=Ball[Kugelnr2].Pos_yCM()-Camera.Pos_y;
+    for (int ball_id2=0;ball_id2<16;ball_id2++) {
+        GLfloat x=Ball[ball_id2].Pos_xCM()-Camera.Pos_x;
+        GLfloat y=Ball[ball_id2].Pos_yCM()-Camera.Pos_y;
 		GLfloat z=Camera.Pos_z;
 		Abstand=sqrt(x*x+y*y+z*z);
 		resol_size=(GLint(400/Abstand));//300
 		if (resol_size<3) resol_size=3;
         resol_size=(resol_size/2)*2+1;
         if (resol_size>BallResolution) resol_size=BallResolution;
-        Ball[Kugelnr2].draw(resol_size);              // Kugeln zeichen
+        Ball[ball_id2].draw(resol_size);              // Kugeln zeichen
 	}
 
 	glDisable(GL_DEPTH_TEST);
@@ -244,7 +241,7 @@ void timerEvent()
 
             case SWING: BackswingHandling();break;
 
-            case SHOT: ShockHandling();break;      //击球
+            case SHOT: ShotHandling();break;      //击球
 
             case NEW_WHITE: NewWhiteHandling();break;
 
